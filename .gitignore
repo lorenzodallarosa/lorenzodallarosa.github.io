@@ -2,3 +2,7 @@ node_modules/
 .DS_Store
 Thumbs.db
 *.log
+
+projects/*/
+projects/Portfolio.md
+# Local-only sources (VTOL project is sensitive). Publishable PDFs are copied to assets/docs/
