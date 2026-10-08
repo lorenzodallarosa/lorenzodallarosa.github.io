@@ -105,62 +105,14 @@ Highlights: Coursework: fluid dynamics, continuum mechanics, aerospace systems, 
 
 # PROJECTS
 
-<!-- Copy this whole block for every project. Order here = order on the site. -->
-
-### UAV Chase Challenge - Sensing Module Support Structure
-Slug: [uav-chase-challenge]
-Type: [Competition]
-Year: [2023]
-Role: [CAD and additive manufacturing engineer]
-Tags: [CAD, Additive Manufacturing, UAV, Battery Sizing]
-Featured: [yes]
-Cover image: [cover.png]
-Images: []
-Links: []
-Summary: [Structural design and 3D printing of the sensing module support for the autonomous quadcopter that won the IEEE UAV Chase Challenge at Purdue University.]
-Details:
-Context: IEEE Unmanned Aerial Vehicle (UAV) Chase Challenge, Purdue University (USA), with the Caelus Sant'Anna autonomous quadcopter team.
-- CAD design and additive manufacturing of the support structures for the sensing module, the antennas and the compute stick.
-- Battery sizing.
-- Result: **first place worldwide**.
-
-### Caelus ONE:1 - Autonomous Fixed-Wing UAV
-Slug: [caelus-one]
-Type: [Competition]
-Year: [2024]
-Role: [Fixed-wing co-founder and lead operations engineer]
-Tags: [UAV, Aerodynamics, Carbon Fibre, PX4, STOL]
-Featured: [yes]
-Cover image: [cover.png]
-Images: []
-Links: []
-Summary: [A fully autonomous, carbon-fibre fixed-wing UAV built from scratch by a four-person student team for the IMechE UAS Challenge.]
-Details:
-Design, manufacturing and testing of a fully autonomous fixed-wing UAV for the IMechE UAS Challenge (UK). Small student team (4 people).
-- Innovative aerodynamic layout: the payload sits outside the main fuselage, with a moving fairing that retracts after the drop.
-- Full carbon-fibre monocoque airframe with a 1:1 thrust-to-weight ratio for STOL operations.
-- Fully autonomous flight with a PX4 autopilot.
-
-### Caelus Baff-1 - Autonomous Fixed-Wing UAV
-Slug: [caelus-baff-1]
-Type: [Competition]
-Year: [2025]
-Role: [Head of Aerodynamics]
-Tags: [UAV, Aerodynamics, Composites, ArduPilot, Parametric CFD]
-Featured: [yes]
-Cover image: [cover.png]
-Images: []
-Links: []
-Summary: [Second-generation IMechE UAS Challenge aircraft: A-tail pusher, D-box composite wing and 30 minutes of continuous autonomous operation.]
-Details:
-Design, manufacturing and testing of the following year's fully autonomous fixed-wing UAV for the IMechE UAS Challenge. Small student team (4 people).
-- A-tail pusher configuration for better weight distribution and dynamics.
-- Updated lightweight structure: D-box wing with a leading-edge spar.
-- Internal payload storage for improved aerodynamics; split flaps and flaperons.
-- Carbon-fibre and glass-fibre prepreg structure with internal antennas.
-- 30 minutes of continuous operation.
-- Fully autonomous flight with ArduPilot, a pitot tube and a lidar ground-height rangefinder.
-- Parametric simulation framework that automates geometry changes, meshing and solver setup across design variants.
+<!--
+One "###" block per project. Order here = order on the site.
+Tier: big   = full-screen hero section with an interactive 3D/image stage (Theme: light or dark).
+Tier: small = compact card in the "Smaller projects" section, with expandable details.
+Compare with: [slug] = on a big project, shows the named project as the earlier model in the same section
+               (the named project gets no section of its own).
+Projects without a Tier are left out of the page sections.
+-->
 
 ### ET-18 Aerodynamic Package
 Slug: [et-18-aero-package]
@@ -168,7 +120,8 @@ Type: [Competition]
 Year: [2025]
 Role: [CFD Engineer, then Head of Aerodynamics]
 Tags: [CFD, Star-CCM+, Formula Student, Composites, CHT, Wind Tunnel]
-Featured: [yes]
+Tier: [big]
+Theme: [light]
 Cover image: [cover.jpg]
 Images: []
 Links: []
@@ -185,13 +138,54 @@ Aerodynamic development of the E-Team Squadra Corse Formula Student car, first a
 - Composite manufacturing (mould tooling, carbon-fibre layup, curing) that cut package weight by 8%.
 - Presented the engineering design at Formula Student Germany 2025.
 
+### Caelus Baff-1 - Autonomous Fixed-Wing UAV
+Slug: [caelus-baff-1]
+Type: [Competition]
+Year: [2025]
+Role: [Head of Aerodynamics]
+Tags: [UAV, Aerodynamics, Composites, ArduPilot, Parametric CFD]
+Tier: [big]
+Theme: [dark]
+Compare with: [caelus-one]
+Cover image: [cover.png]
+Images: []
+Links: []
+Summary: [Second-generation IMechE UAS Challenge aircraft: A-tail pusher, D-box composite wing and 30 minutes of continuous autonomous operation.]
+Details:
+Design, manufacturing and testing of the following year's fully autonomous fixed-wing UAV for the IMechE UAS Challenge. Small student team (4 people).
+- A-tail pusher configuration for better weight distribution and dynamics.
+- Updated lightweight structure: D-box wing with a leading-edge spar.
+- Internal payload storage for improved aerodynamics; split flaps and flaperons.
+- Carbon-fibre and glass-fibre prepreg structure with internal antennas.
+- 30 minutes of continuous operation.
+- Fully autonomous flight with ArduPilot, a pitot tube and a lidar ground-height rangefinder.
+- Parametric simulation framework that automates geometry changes, meshing and solver setup across design variants.
+
+### Caelus ONE:1 - Autonomous Fixed-Wing UAV
+Slug: [caelus-one]
+Type: [Competition]
+Year: [2024]
+Role: [Fixed-wing co-founder and lead operations engineer]
+Tags: [UAV, Aerodynamics, Carbon Fibre, PX4, STOL]
+Tier: [big]
+Theme: [dark]
+Cover image: [cover.png]
+Images: []
+Links: []
+Summary: [A fully autonomous, carbon-fibre fixed-wing UAV built from scratch by a four-person student team for the IMechE UAS Challenge.]
+Details:
+Design, manufacturing and testing of a fully autonomous fixed-wing UAV for the IMechE UAS Challenge (UK). Small student team (4 people).
+- Innovative aerodynamic layout: the payload sits outside the main fuselage, with a moving fairing that retracts after the drop.
+- Full carbon-fibre monocoque airframe with a 1:1 thrust-to-weight ratio for STOL operations.
+- Fully autonomous flight with a PX4 autopilot.
+
 ### Dynamics of an Insulated Rail Joint
 Slug: [rail-joint-dynamics]
 Type: [Academic]
 Year: []
 Role: [Candidate, exam project]
 Tags: [FEA, ANSYS APDL, Python, Structural Dynamics, Signal Processing, Damage Detection]
-Featured: [yes]
+Tier: [small]
 Cover image: [cover.png]
 Images: [fe-mesh.png | Finite element mesh of the insulated rail joint]
 Links: [Presentation | assets/docs/rail-joint-presentation.pdf]
@@ -222,7 +216,7 @@ Type: [Academic]
 Year: [2025]
 Role: [BS thesis researcher]
 Tags: [CFD, Rotor Aerodynamics, VTOL, UAV, Compressible Flow, Automation]
-Featured: [yes]
+Tier: [small]
 Cover image: [cover.png]
 Images: []
 Links: []
@@ -244,28 +238,13 @@ Bachelor's thesis in collaboration with SkyEye Systems (project Vertigo) and the
 - The spanwise Mach number matches the analytical estimate near the root, but the CFD peak is higher. CFD is also the only way to locate the Mach maximum along the span, because the estimate ignores 3D flow effects.
 - Spanwise lift and drag coefficients were computed from the local asymptotic velocity seen by each blade section.
 
-### CFD/CHT Analysis of a Compressor Stage
-Slug: [compressor-stage-cfd]
-Type: [Academic]
-Year: []
-Role: []
-Tags: [CFD, CHT, Star-CCM+, Turbomachinery]
-Featured: [no]
-Cover image: [cover.jpg]
-Images: [velocity-rotating.jpg | Velocity in the rotating frame, 0 to 432 m/s]
-Links: []
-Summary: [Star-CCM+ CFD and conjugate heat transfer simulations of an axial compressor stage.]
-Details:
-Bachelor's coursework project at the University of Pisa.
-- CFD and CHT simulations of an axial compressor stage in Star-CCM+.
-
 ### Critical Engine Speed in an Engine Connecting Rod
 Slug: [connecting-rod-critical-speed]
 Type: [Academic]
 Year: [2026]
 Role: [Project author]
 Tags: [FEA, Ansys, Siemens NX, Contact Mechanics, Bolted Joints, Machine Design]
-Featured: [yes]
+Tier: [small]
 Cover image: []
 Images: []
 Links: [Project report | assets/docs/connecting-rod-report.pdf]
@@ -291,16 +270,33 @@ Machine Design course project (supervisors Prof. Francesco Frendo and Prof. Andr
 - Mesh independence demonstrated over four global refinements (150%, 100%, 80%, 60%) by solving the whole RPM ramp for each.
 - Future work: dowel interference fit, detailed threads and bearing, full engine cycle, and the crankshaft and crankpin contact.
 
+### CFD/CHT Analysis of a Compressor Stage
+Slug: [compressor-stage-cfd]
+Type: [Academic]
+Year: []
+Role: []
+Tags: [CFD, CHT, Star-CCM+, Turbomachinery]
+Tier: [small]
+Cover image: [cover.jpg]
+Images: [velocity-rotating.jpg | Velocity in the rotating frame, 0 to 432 m/s]
+Links: []
+Summary: [Star-CCM+ CFD and conjugate heat transfer simulations of an axial compressor stage.]
+Details:
+Bachelor's coursework project at the University of Pisa.
+- CFD and CHT simulations of an axial compressor stage in Star-CCM+.
+
 # PUBLICATIONS
 
 - [Authors, "Title", Venue, Year. Link: https://...]
 
 # AWARDS AND CERTIFICATIONS
 
-- 1st place worldwide, IEEE UAV Challenge | IEEE | 2023
-- Cambridge C2 Certificate in Advanced English | Cambridge | []
-- Mentee, LeadTheFuture (acceptance rate below 20%) | LeadTheFuture | []
-- Honour student, five-year full scholarship | Sant'Anna School of Advanced Studies | 2022
+<!-- Format: - Title | Issuer | Date | Description (optional) | Image (optional, path relative to assets/img/projects/) -->
+- Academic Excellence Medal | University of Pisa | 12/2025 | Awarded to graduates with the best academic performance.
+- Mentee, LeadTheFuture | LeadTheFuture | 2025 | Selected among the few Italian STEM students admitted to this mentorship non-profit (acceptance rate below 20%).
+- 1st place worldwide, IEEE UAV Chase Challenge | IEEE, Purdue University (USA) | 2023 | CAD and additive manufacturing of the support structures for the sensing module, antennas and compute stick of the Caelus Sant'Anna autonomous quadcopter, plus battery sizing. | uav-chase-challenge/cover.png
+- Honour student, five-year full scholarship | Sant'Anna School of Advanced Studies | 2022 | Admission rate 5%.
+- Cambridge C2 Certificate in Advanced English | Cambridge | 2021
 
 # EXTRAS
 
