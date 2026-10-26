@@ -221,19 +221,33 @@ export function mountStage(fig) {
 
   const v = new THREE.Vector3();
   function placeCallouts(camera, w, h) {
+    // 1. Project anchors and pick a side and a label height for each visible callout.
+    const shown = [];
     callouts.forEach((k) => {
       v.copy(k.anchor).project(camera);
       const vis = v.z < 1 && Math.abs(v.x) < 1.1 && Math.abs(v.y) < 1.1;
       k.path.style.display = k.dot.style.display = k.label.style.display = vis ? "" : "none";
       if (!vis) return;
-      const x = (v.x * 0.5 + 0.5) * w;
-      const y = (-v.y * 0.5 + 0.5) * h;
-      const dir = x > w * 0.5 ? 1 : -1;
-      const ey = Math.min(h - 70, Math.max(40, y + k.dy));
+      k.x = (v.x * 0.5 + 0.5) * w;
+      k.y = (-v.y * 0.5 + 0.5) * h;
+      k.dir = k.x > w * 0.5 ? 1 : -1;
+      k.ey = Math.min(h - 70, Math.max(40, k.y + k.dy));
+      shown.push(k);
+    });
+    // 2. Labels on the same side keep at least one line between them.
+    const GAP = 24;
+    [-1, 1].forEach((side) => {
+      const col = shown.filter((k) => k.dir === side).sort((a, b) => a.ey - b.ey);
+      for (let i = 1; i < col.length; i++) col[i].ey = Math.max(col[i].ey, col[i - 1].ey + GAP);
+    });
+    // 3. Draw: leader from the anchor to an elbow, then out to the stage margin.
+    shown.forEach((k) => {
+      const { x, y, dir, ey } = k;
       const ex = x + dir * 28;
-      // Run the leader out to the stage margin so labels sit clear of the model.
-      const lw = k.lw || (k.lw = k.label.offsetWidth || 160);
-      const lx = dir > 0 ? Math.max(ex + 24, w - 32 - lw) : Math.min(ex - 24, 32 + lw);
+      const lw = k.lw || (k.lw = k.label.offsetWidth) || 220;
+      const lx = dir > 0
+        ? Math.min(Math.max(ex + 24, w - 32 - lw), w - 16 - lw) // never past the stage edge
+        : Math.max(Math.min(ex - 24, 32 + lw), 16 + lw);
       k.path.setAttribute("points", `${x},${y} ${ex},${ey} ${lx},${ey}`);
       k.dot.setAttribute("cx", x);
       k.dot.setAttribute("cy", y);
@@ -411,8 +425,10 @@ export function mountStage(fig) {
   let tween = null;
   function setView(name, instant) {
     const { camera, controls } = three;
-    const dir = VIEWS[name].clone().normalize();
-    const to = center.clone().add(dir.multiplyScalar(fitDist));
+    // A model can override a preset, e.g. the aircraft's top view looks along the span.
+    const custom = byKey[api.current].views?.[name];
+    const dir = (custom ? new THREE.Vector3(...custom.slice(0, 3)) : VIEWS[name].clone()).normalize();
+    const to = center.clone().add(dir.multiplyScalar(fitDist * ((custom && custom[3]) || 1)));
     presetBtns.forEach((b) => b.classList.toggle("is-on", b.dataset.view === name));
     if (instant || reduceMotion.matches) {
       camera.position.copy(to);

@@ -26,16 +26,18 @@ THREE_VERSION = "0.169.0"
 KATEX_VERSION = "0.16.11"
 MODEL_KEY = b"ldr-stage-7f3a91"  # XOR key shared with assets/js/stage-core.js
 
-# 3D stage set-up per project: camera orientation and callouts (DESIGN.md section 0).
+# 3D stage set-up per project: camera orientation, preset overrides and callouts (DESIGN.md
+# section 0). The aircraft's top view looks down with the nose up, so the wings sit horizontal;
+# an optional 4th value scales the camera distance for that view.
 # "node" matches mesh names in the .glb; "bias" moves the anchor by fractions of the
 # part's half-size, "dy" offsets the label vertically in pixels.
 STAGES = {
     "et-18-aero-package": {"rotateY": 180, "smooth": 40, "fit": 0.75, "callouts": []},
-    "caelus-one": {"rotateY": 180, "callouts": [
+    "caelus-one": {"rotateY": 180, "views": {"top": [0.3, 1, 0, 1.45]}, "callouts": [
         {"node": "Alerons", "label": "Flaperons", "tone": "powder", "bias": [0, 0, 0.6], "dy": 70},
         {"node": "Fuselage", "label": "Full carbon-fibre monocoque", "tone": "bone", "bias": [-0.72, -0.5, 0], "dy": -110},
         {"node": "Payload", "label": "Payload fairing", "tone": "orange", "dy": 90}]},
-    "caelus-baff-1": {"callouts": [
+    "caelus-baff-1": {"views": {"top": [0.3, 1, 0, 1.45]}, "callouts": [
         {"node": "Tail_Body", "label": "A-tail pusher", "tone": "orange"},
         {"node": "R_DBox", "label": "D-box wing · leading-edge spar", "tone": "bone", "bias": [-0.6, 0.3, 0.45], "dy": 120},
         {"node": "R_flap", "label": "Split flaps · flaperons", "tone": "powder", "bias": [0.6, 0, 0.8], "dy": 40}]},
