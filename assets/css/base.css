@@ -1,0 +1,77 @@
+/* Reset, type scale, layout primitives, motion primitives. */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-padding-top: var(--bar-h); }
+body {
+  margin: 0;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: var(--fs-body);
+  line-height: 1.55;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+img, svg, canvas { display: block; max-width: 100%; }
+h1, h2, h3, h4, p, ul, ol, figure, dl, dd { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+strong { font-weight: 500; }
+table { border-collapse: collapse; width: 100%; }
+
+section[data-theme], footer[data-theme] { background: var(--bg); color: var(--fg); position: relative; }
+
+.wrap {
+  width: 100%;
+  max-width: calc(var(--maxw) + 2 * var(--margin));
+  margin: 0 auto;
+  padding: 0 var(--margin);
+}
+
+/* Type roles */
+.t-mega  { font-family: var(--font-display); font-weight: 800; font-size: var(--fs-mega); letter-spacing: -0.05em; line-height: .8; }
+.t-h1    { font-family: var(--font-display); font-weight: 800; font-size: var(--fs-h1); letter-spacing: -0.045em; line-height: .88; font-variation-settings: "opsz" 96; }
+.t-h2    { font-family: var(--font-body); font-weight: 300; font-size: var(--fs-h2); letter-spacing: -0.015em; line-height: 1.15; }
+.t-lead  { font-weight: 300; font-size: var(--fs-lead); line-height: 1.45; }
+.t-label { font-family: var(--font-mono); font-weight: 500; font-size: var(--fs-label); letter-spacing: .12em; text-transform: uppercase; line-height: 1.3; }
+.t-cap   { font-weight: 300; font-size: var(--fs-cap); line-height: 1.4; color: var(--mute); max-width: 45ch; }
+.t-index { font-family: var(--font-mono); font-weight: 400; font-size: var(--fs-index); letter-spacing: .05em; line-height: 1; color: var(--mute); }
+.prose   { max-width: 62ch; }
+.prose p + p { margin-top: 1em; }
+
+/* Links: 1px underline offset 4px, thickens on hover. No colour change. */
+a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; transition: text-decoration-thickness var(--t-fast) var(--ease); }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; }
+
+.skip {
+  position: absolute; left: var(--margin); top: -100px; z-index: 100;
+  background: var(--ink); color: var(--bone); padding: 10px 14px;
+  font-family: var(--font-mono); font-size: .8rem; text-decoration: none;
+}
+.skip:focus { top: 10px; }
+
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Orange square marker */
+.sq { display: inline-block; width: 6px; height: 6px; background: var(--orange); flex: none; }
+
+/* ---------- Motion primitives (section 8) ---------- */
+/* Mask-line rise: .mask > .mask-in. JS adds .is-in once at ~20% visibility. */
+.rv .mask { display: block; overflow: hidden; padding-bottom: .06em; margin-bottom: -.06em; }
+.rv .mask > .mask-in { display: block; transform: translateY(105%); transition: transform 700ms var(--ease); transition-delay: calc(var(--i, 0) * 60ms); }
+.rv .is-in .mask > .mask-in, .rv .mask.is-in > .mask-in { transform: none; }
+
+/* Body blocks: fade and rise 8px. */
+.rv .rise { opacity: 0; transform: translateY(8px); transition: opacity 600ms var(--ease), transform 600ms var(--ease); }
+.rv .rise.is-in { opacity: 1; transform: none; }
+
+/* Rules draw left to right. */
+.rv .draw { transform: scaleX(0); transform-origin: left; transition: transform 600ms var(--ease); }
+.rv .draw.is-in { transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .rv .mask > .mask-in, .rv .rise, .rv .draw { transform: none !important; opacity: 1 !important; transition: none !important; }
+  * { scroll-behavior: auto !important; }
+}

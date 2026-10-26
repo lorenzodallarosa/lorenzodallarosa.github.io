@@ -1,0 +1,66 @@
+/* Design tokens (content/DESIGN.md sections 3, 4, 5 and 8). */
+:root {
+  /* Paper (light sections) */
+  --cream:        #EAE4D3;
+  --cream-deep:   #DDD5BF;
+  --paper:        #F6F2E8;
+
+  /* Ink (dark sections + text) */
+  --ink:          #1B1B19;
+  --ink-soft:     #2A2A27;
+  --ink-mute:     #6E6A5F;
+  --bone:         #EDE7D6;
+  --bone-mute:    #9B968A;
+
+  /* The one loud colour */
+  --orange:       #F0541E;
+  --orange-deep:  #D8430F;
+
+  /* Pastels */
+  --sage:         #C7D1B6;
+  --powder:       #BCD0D6;
+  --butter:       #EBD98F;
+  --blush:        #E8C6B8;
+
+  /* Lines */
+  --rule-light:   rgba(27,27,25,.18);
+  --rule-dark:    rgba(237,231,214,.18);
+
+  /* Muted text on light/pastel grounds. --ink-mute is ~4.2:1 on cream, so small
+     text uses this slightly deeper step of the same hue to clear 4.5:1. */
+  --ink-mute-text: #58554C;
+
+  /* Type */
+  --font-display: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+  --font-body:    "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+  --font-mono:    "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --fs-mega:   clamp(8rem, 24vw, 26rem);
+  --fs-h1:     clamp(4rem, 11vw, 11rem);
+  --fs-h2:     clamp(1.75rem, 3vw, 2.75rem);
+  --fs-lead:   1.25rem;
+  --fs-body:   1.0625rem;
+  --fs-label:  0.72rem;
+  --fs-cap:    0.75rem;
+  --fs-index:  0.7rem;
+
+  /* Layout */
+  --margin:    clamp(20px, 4vw, 72px);
+  --gutter:    24px;
+  --maxw:      1440px;
+  --pad-y:     clamp(96px, 14vh, 200px);
+  --bar-h:     68px;
+
+  /* Motion */
+  --ease:      cubic-bezier(.2,.7,.2,1);
+  --t-fast:    250ms;
+  --t-reveal:  600ms;
+}
+
+/* Per-section themes: components read --bg / --fg / --mute / --rule / --surface. */
+[data-theme="light"]  { --bg: var(--cream);  --fg: var(--ink);  --mute: var(--ink-mute-text); --rule: var(--rule-light); --surface: var(--paper);      --hatch: var(--cream-deep); }
+[data-theme="paper"]  { --bg: var(--paper);  --fg: var(--ink);  --mute: var(--ink-mute-text); --rule: var(--rule-light); --surface: var(--cream);      --hatch: var(--cream-deep); }
+[data-theme="dark"]   { --bg: var(--ink);    --fg: var(--bone); --mute: var(--bone-mute);     --rule: var(--rule-dark);  --surface: var(--ink-soft);   --hatch: var(--ink-soft); }
+[data-theme="sage"]   { --bg: var(--sage);   --fg: var(--ink);  --mute: #46493E;              --rule: var(--rule-light); --surface: var(--paper);      --hatch: var(--cream-deep); }
+[data-theme="butter"] { --bg: var(--butter); --fg: var(--ink);  --mute: #4E4734;              --rule: var(--rule-light); --surface: var(--paper);      --hatch: var(--cream-deep); }
+[data-theme="orange"] { --bg: var(--orange); --fg: var(--ink);  --mute: var(--ink);           --rule: rgba(234,228,211,.75); --surface: transparent; --hatch: var(--orange-deep); }
