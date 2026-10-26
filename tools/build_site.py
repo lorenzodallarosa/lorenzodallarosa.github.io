@@ -385,7 +385,7 @@ class Page:
           <div class="stage-callouts" aria-hidden="true"></div>
           {corner_ticks()}
           <span class="stage-micro t-label">{esc(micro)}</span>
-          <p class="stage-hint t-label" aria-hidden="true">Drag to rotate</p>
+          <p class="stage-hint t-label" aria-hidden="true">Drag to rotate · Ctrl + scroll to zoom</p>
           <button class="stage-tap t-label" type="button">Tap to load 3D</button>
           <div class="stage-ui">
             <div class="presets" role="group" aria-label="Camera views">
@@ -513,7 +513,8 @@ class Page:
     # ---- 4. Smaller projects
     def smaller(self) -> str:
         small = [p for p in self.d["projects"] if p.get("tier") == "small"]
-        sid = "smaller-projects"
+        sid = "more-projects"
+        title = self.d["site"].get("Projects title") or "Projects"
         cards, panels = [], []
         for i, p in enumerate(small, 1):
             slug = p["slug"]
@@ -525,6 +526,7 @@ class Page:
           {cover}
           <span class="t-index">{i:02d}</span>
           <span class="card-title">{esc(p['title'])}</span>
+          {f'<span class="card-course t-label">{esc(p["course"])}</span>' if p.get("course") else ""}
           <span class="card-sum">{inline(p.get('summary', ''))}</span>
           <span class="card-more t-label">Open project</span>
         </button>
@@ -536,19 +538,20 @@ class Page:
       <div class="panel-head">
         <p class="t-label proj-no"><span class="sq"></span> {i:02d} <span class="proj-tags">{esc(' / '.join(tags_of(p)[:4]))}</span></p>
         <h3 class="panel-title" id="h-{slug}">{esc(p['title'])}</h3>
+        {f'<p class="panel-course">{esc(p["course"])}</p>' if p.get("course") else ""}
         <p class="t-lead">{inline(p.get('summary', ''))}</p>
         {spec_row(project_facts(p))}
         {links_html(p)}
         <button class="panel-close t-label" type="button" data-close>Close</button>
       </div>
-      <div class="panel-body">{self.steps(p, open_all=True)}</div>
+      <div class="panel-body">{self.steps(p)}</div>
     </article>""")
         return f"""
-<section id="{sid}" class="smaller" data-theme="sage" data-name="Smaller projects">
+<section id="{sid}" class="smaller" data-theme="sage" data-name="{esc(title)}">
   <div class="wrap">
-    <p class="t-label crumb">Home › Projects › Smaller</p>
-    <p class="t-label proj-no"><span class="sq"></span> No.{self.no(sid)} <span class="proj-tags">Academic · Thesis · Coursework</span></p>
-    <h2 class="t-h1 proj-title">{mask('Smaller')}{mask('projects', 1)}</h2>
+    <p class="t-label crumb">Home › Projects › {esc(title)}</p>
+    <p class="t-label proj-no"><span class="sq"></span> No.{self.no(sid)} <span class="proj-tags">Academic · Thesis · Industry · Competition</span></p>
+    <h2 class="t-h1 proj-title">{"".join(mask(esc(w), i) for i, w in enumerate(title.split()))}</h2>
     <ul class="cards">{''.join(cards)}</ul>
     <div class="panels">{''.join(panels)}</div>
   </div>
@@ -589,9 +592,17 @@ class Page:
         cv_file = pr.get("CV file", "")
         cv_link = (f'<a class="btn" href="assets/docs/{esc(cv_file)}" download>Download CV · PDF</a>'
                    if cv_file and (ROOT / "assets/docs" / cv_file).is_file() else "")
-        skills = "".join(
-            f'<div class="skill"><h4 class="t-label">{esc(k)}</h4><ul>{"".join(f"<li>{esc(v)}</li>" for v in vals)}</ul></div>'
-            for k, vals in d["skills"].items() if vals)
+        def skill(k: str, vals: list[str]) -> str:
+            if k == "Languages":
+                rows = ""
+                for v in vals:
+                    m = re.match(r"(.+?)\s*\((.+)\)$", v)
+                    name, level = (m.group(1), m.group(2)) if m else (v, "")
+                    rows += f'<div class="lang"><dt>{esc(name)}</dt><dd class="t-label">{esc(level)}</dd></div>'
+                return f'<div class="skill skill--lang"><h4 class="t-label">{esc(k)}</h4><dl>{rows}</dl></div>'
+            return f'<div class="skill"><h4 class="t-label">{esc(k)}</h4><ul>{"".join(f"<li>{esc(v)}</li>" for v in vals)}</ul></div>'
+
+        skills = "".join(skill(k, vals) for k, vals in d["skills"].items() if vals)
         extras = "".join(f'<div class="skill"><h4 class="t-label">{esc(k)}</h4><div class="prose">{md(v)}</div></div>'
                          for k, v in d["extras"].items())
 
@@ -721,7 +732,7 @@ class Page:
     # ---- page shell
     def build(self) -> str:
         order = [("intro", "top", "Intro"), ("et18", "et-18-aero-package", "ET-18"), ("caelus", "caelus", "Caelus"),
-                 ("smaller", "smaller-projects", "Smaller projects"), ("cv", "cv", "CV"), ("awards", "awards", "Awards"),
+                 ("smaller", "more-projects", self.d["site"].get("Projects title") or "Projects"), ("cv", "cv", "CV"), ("awards", "awards", "Awards"),
                  ("software", "software", "Software"), ("contact", "contact", "Contact")]
         self.sections = [(sid, name) for _, sid, name in order]
         body = "\n".join(getattr(self, fn)() for fn, _, _ in order)

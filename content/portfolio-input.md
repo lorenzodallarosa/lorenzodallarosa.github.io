@@ -18,6 +18,7 @@ HOW TO FILL THIS FILE
 Site title: [Lorenzo Dalla Rosa - Aerospace Engineer]
 Tag line: [CFD · FEA · Composites]
 Greeting: [Ciao!]
+Projects title: [More projects]
 Language: en
 
 # PROFILE
@@ -36,8 +37,6 @@ CV file: [Lorenzo Dalla Rosa.pdf]
 I am an aerospace engineer based in Pisa, specialising in computational fluid dynamics and finite element analysis. I am completing a double master's degree in Aerospace Engineering at the University of Pisa and, as an honour student, at the Sant'Anna School of Advanced Studies. I graduated summa cum laude in my bachelor's degree, in the top 1% of my class.
 
 My work sits where simulation meets hardware. I build automated CFD and FEA pipelines, then validate them against wind tunnel and on-track data. As Head of Aerodynamics of E-Team Squadra Corse, I led a 13-member team to a 13.5% downforce increase and a 16% efficiency gain. I also introduced the team's first CFD/CHT battery cooling simulations, and I led the composite manufacturing of the aero package. Before that, I co-founded a fixed-wing UAV team from scratch and won first place worldwide at the IEEE UAV Challenge 2023.
-
-I am looking for roles and research opportunities in aerodynamics, thermal and structural simulation, and advanced propulsion, including rarefied gas dynamics and plasma systems. I enjoy turning a complex physical problem into a fast, reproducible workflow and a design decision someone can trust.
 
 ## Skills
 - Domains: [Computational Fluid Dynamics, Finite Element Analysis, Conjugate Heat Transfer, Aerodynamics, Rarefied Gas and Cold Plasma Dynamics, Flight Mechanics, Composite Structures, Autonomous Flight]
@@ -143,9 +142,10 @@ Dates: [08/2022 - Present]
 One "###" block per project. Order here = order on the site.
 Tier: big     = full-screen section with an interactive 3D model (Theme: light or dark).
 Tier: compact = shorter block inside its Group (no 3D).
-Tier: small   = card in the "Smaller projects" section; it expands when clicked.
+Tier: small   = card in the projects section after Caelus (title set by "Projects title:"); it expands when clicked.
 Group: [slug] = render inside that group's section (see # GROUPS).
 Statement: short headline under the title (defaults to Summary).
+Course: the exam, thesis or team the project belongs to (shown on its card).
 Facts: label | value ; label | value  -> the spec row.
 Model: the 3D model is used automatically when assets/models/<slug>/<slug>.glb exists.
 Projects without a Tier are left out of the page.
@@ -193,24 +193,6 @@ Image: aero-map.jpg | Automated aerodynamic map
 #### Composite manufacturing
 Image: composites.jpg | Composite manufacturing of the aero package
 Led end-to-end composite manufacturing (mould tooling, carbon-fibre layup, curing), cutting package weight by 8%.
-
-### Caelus Quadcopter - IEEE UAV Chase Challenge
-Slug: [caelus-quadcopter]
-Short: [Quadcopter]
-Type: [Competition]
-Year: [2023]
-Role: [CAD and Additive Manufacturing Engineer]
-Tags: [CAD, Additive Manufacturing, Autonomous UAV]
-Tier: [compact]
-Group: [caelus]
-Cover image: [uav-chase-challenge/cover.png]
-Images: []
-Links: []
-Summary: [Structural framework for the sensor array of the autonomous quadcopter that won 1st place worldwide at the IEEE UAV Chase Challenge 2023.]
-Facts: [Result | 1st place worldwide ; Competition | IEEE UAV Chase Challenge, Purdue University (USA)]
-Details:
-- Designed and additively manufactured the structural framework for the main sensor array.
-- CAD and additive manufacturing of the support structures for the sensing module, antennas and compute stick, plus battery sizing.
 
 ### Caelus ONE:1 - Autonomous Fixed-Wing UAV
 Slug: [caelus-one]
@@ -287,6 +269,7 @@ Slug: [rail-joint-dynamics]
 Type: [Academic]
 Year: []
 Role: [Candidate, exam project]
+Course: [Principles of Machine Design with FEM Applications, Sant'Anna School of Advanced Studies]
 Tags: [FEA, ANSYS APDL, Python, Structural Dynamics, Signal Processing, Damage Detection]
 Tier: [small]
 Cover image: [cover.png]
@@ -324,39 +307,33 @@ Image: fingerprint.png | Spectral fingerprint in the diagnostic band
 
 ### Aerodynamics of a VTOL Rotor
 Slug: [vtol-rotor-aerodynamics]
-Type: [Academic]
+Type: [Industrial / Academic]
 Year: [2025]
 Role: [BS thesis researcher]
-Tags: [CFD, Rotor Aerodynamics, VTOL, UAV, Compressible Flow, Automation]
+Course: [Bachelor's thesis at SkyEye Systems, with the Laboratory of Experimental Aerodynamics, University of Pisa]
+Tags: [CFD, Star-CCM+, Rotor Aerodynamics, VTOL, Automation]
 Tier: [small]
 Cover image: [cover.png]
 Images: []
 Links: []
-Summary: [Hover CFD of a 5 m VTOL rotor blade across two airfoils, two diameters and five pitch angles, selecting the configuration that delivers 1500 N of thrust at 600 rpm with the least power.]
-Facts: [Design point | 1500 N at 600 rpm ; Optimum | V2, D = 5000 mm, 6.42°]
+Summary: [My bachelor's thesis at SkyEye Systems: hover CFD of the rotor of a large-scale VTOL UAV, run through an automated Star-CCM+ pipeline to select the most efficient configuration.]
+Facts: [Rotor diameter | 5000 mm ; Pitch angle | 6.42° ; Rotor speed | 600 rpm]
 Details:
-Bachelor's thesis in collaboration with SkyEye Systems (project Vertigo) and the Laboratory of Experimental Aerodynamics, University of Pisa.
+Bachelor's thesis carried out with SkyEye Systems (project Vertigo), in collaboration with the Laboratory of Experimental Aerodynamics, University of Pisa. Some details are confidential.
 
-#### Goal
-Compare the hover performance of a large-scale VTOL rotor for two airfoils (V1, V2), two diameters (4500 and 5000 mm) and five pitch angles (0 to 8°). The design point is **1500 N of thrust at 600 rpm**. Preliminary runs showed that diameters below 4500 mm cannot meet the requirement.
+#### Study
+- Hover CFD of the rotor in Star-CCM+ at 600 rpm, comparing airfoils, rotor diameters and pitch angles.
+- The simulation pipeline is fully automated and produces the thrust, torque and power maps across all configurations.
 
-#### Setup
-- Steady RANS with a coupled solver, compressible ideal gas and SST $k$-$\omega$ turbulence. The tip Mach number is about 0.41 to 0.45, above the $M<0.3$ incompressibility threshold, so compressibility is modelled.
-- Rotating region at 600 rpm inside a prismatic domain extending 15 m above and below the blades, with ground friction and quiescent velocity-inlet boundaries.
-- 8 to 9 million trimmed cells with 8 prism layers and $y^+\approx0.5$ to 30.
-- The simulation pipeline is fully automated, which produces the thrust, torque and power maps across all configurations.
-
-#### Results
-- Both airfoils reach the 1500 N requirement, at different pitch angles. Required power is similar, with the V2 saving about 200 W.
-- The optimum is the **V2 airfoil at $D=5000$ mm and 6.42° pitch**.
-- The spanwise Mach number matches the analytical estimate near the root, but the CFD peak is higher. CFD is also the only way to locate the Mach maximum along the span, because the estimate ignores 3D flow effects.
-- Spanwise lift and drag coefficients were computed from the local asymptotic velocity seen by each blade section.
+#### Result
+- Selected configuration: rotor diameter of 5000 mm at 6.42° pitch, the one that meets the thrust requirement with the least power.
 
 ### Critical Engine Speed in an Engine Connecting Rod
 Slug: [connecting-rod-critical-speed]
 Type: [Academic]
 Year: [2026]
 Role: [Project author]
+Course: [Machine Design, University of Pisa]
 Tags: [FEA, Ansys, Siemens NX, Contact Mechanics, Bolted Joints, Machine Design]
 Tier: [small]
 Cover image: [von-mises.png]
@@ -397,6 +374,7 @@ Type: [Academic]
 Year: []
 Role: []
 Tags: [CFD, CHT, Star-CCM+, Turbomachinery]
+Course: [Aircraft Propulsion, University of Pisa]
 Tier: [small]
 Cover image: [cover.jpg]
 Images: []
@@ -410,6 +388,25 @@ Bachelor's coursework project at the University of Pisa.
 Image: velocity-rotating.jpg | Velocity in the rotating frame, 0 to 432 m/s
 - CFD and CHT simulations of an axial compressor stage in Star-CCM+.
 
+### Caelus Quadcopter - IEEE UAV Chase Challenge
+Slug: [caelus-quadcopter]
+Short: [Quadcopter]
+Course: [Caelus Sant'Anna, autonomous quadcopter team]
+Type: [Competition]
+Year: [2023]
+Role: [CAD and Additive Manufacturing Engineer]
+Tags: [CAD, Additive Manufacturing, Autonomous UAV]
+Tier: [small]
+Cover image: [uav-chase-challenge/cover.png]
+Images: []
+Links: []
+Summary: [Structural framework for the sensor array of the autonomous quadcopter that won 1st place worldwide at the IEEE UAV Chase Challenge 2023.]
+Facts: [Result | 1st place worldwide ; Competition | IEEE UAV Chase Challenge, Purdue University (USA)]
+Details:
+- Designed and additively manufactured the structural framework for the main sensor array.
+- CAD and additive manufacturing of the support structures for the sensing module, antennas and compute stick, plus battery sizing.
+
+
 # GROUPS
 
 <!-- A group gathers several projects (Group: [slug]) into one section. -->
@@ -418,7 +415,7 @@ Image: velocity-rotating.jpg | Velocity in the rotating frame, 0 to 432 m/s
 Slug: [caelus]
 Theme: [dark]
 Tags: [Autonomous UAVs, Composites, Aerodynamics]
-Summary: [Autonomous UAVs for the IEEE UAV Challenge (USA) and the IMechE UAS Challenge (UK): one quadcopter and two fixed-wing aircraft, from 2023 to 2025.]
+Summary: [Two autonomous fixed-wing UAVs designed, built and flown by a four-person student team for the IMechE UAS Challenge (UK), in 2024 and 2025.]
 
 # SOFTWARE
 
@@ -427,25 +424,25 @@ One line per tool:  - Name | What it is for | where I used it
 "Where I used it" is a comma-separated list of project slugs (they become links) and/or free text
 such as "Coursework: autonomous flight". Leave it empty and the tool is listed without projects.
 -->
-- Star-CCM+ | Multiphysics CFD: meshing, RANS, rotating regions and conjugate heat transfer | et-18-aero-package, compressor-stage-cfd
+- Star-CCM+ | Multiphysics CFD: meshing, RANS, rotating regions and conjugate heat transfer | et-18-aero-package, vtol-rotor-aerodynamics, compressor-stage-cfd
 - BetaCAE ANSA | CFD pre-processing: CAD clean-up and surface meshing | et-18-aero-package
 - BetaCAE META | CFD post-processing and reporting | et-18-aero-package
 - ANSYS Mechanical / Workbench | Finite element analysis: meshing, contacts, static and transient solutions | rail-joint-dynamics, connecting-rod-critical-speed
 - ANSYS MAPDL / APDL | Scripted FE solver for custom loads, elements and load steps | rail-joint-dynamics, connecting-rod-critical-speed
 - Ansys SpaceClaim | Geometry preparation and partitioning for structured meshes | rail-joint-dynamics, connecting-rod-critical-speed
-- Siemens NX | Parametric CAD | connecting-rod-critical-speed
+- Siemens NX | Parametric CAD | et-18-aero-package, connecting-rod-critical-speed
 - PX4 | Open-source autopilot for autonomous flight | caelus-one, Coursework: autonomous flight
 - ArduPilot | Open-source autopilot for autonomous flight | caelus-baff-1
 - ROS2 | Robotics middleware for autonomous systems | Coursework: autonomous flight
 - Python | Signal processing, data analysis and numerical methods | rail-joint-dynamics, et-18-aero-package, Coursework: Godunov-type Riemann solver
 - MATLAB | Numerical modelling and dynamics | Coursework: multi-body landing gear dynamics
 - C | Microcontroller programming | Coursework: microcontroller programming
-- Star-CCM+ Java macros | Scripting Star-CCM+ to automate meshing, solver set-up and post-processing |
+- Star-CCM+ Java macros | Scripting Star-CCM+ to automate meshing, solver set-up and post-processing | et-18-aero-package
+- SolidWorks | CAD | et-18-aero-package
 - ANSYS Fluent | General-purpose CFD |
 - OpenFOAM | Open-source CFD |
 - ANSYS ACP | Composite layup modelling |
 - Fibersim | Composite ply design and manufacturing data |
-- SolidWorks | CAD |
 - Autodesk Fusion 360 | CAD |
 - 3DExperience CATIA | CAD |
 - C++ |  |

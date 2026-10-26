@@ -74,14 +74,24 @@ function canAutoLoad() {
   return true;
 }
 
-// Carbon fibre: a woven dielectric under a glossy clear coat, not a metal.
-function tuneMaterial(mat) {
-  if (!mat || !mat.isMeshPhysicalMaterial || !(mat.clearcoat > 0) || !mat.normalMap) return;
+// Carbon fibre: a woven dielectric under a glossy clear coat, not a metal. The exported
+// metal/roughness maps flag the weave as metallic, so metalness is forced to zero and the
+// weave reads through the roughness map and the normal map under a mirror-smooth coat.
+function tuneMaterial(mat, maxAniso) {
+  if (!mat) return;
+  // Sharp tiled textures at grazing angles (the ET-18 weave repeats 18 times per UV tile).
+  ["map", "normalMap", "roughnessMap", "metalnessMap"].forEach((k) => {
+    if (mat[k]) { mat[k].anisotropy = maxAniso; mat[k].needsUpdate = true; }
+  });
+  if (!mat.isMeshPhysicalMaterial || !(mat.clearcoat > 0) || !mat.normalMap) return;
   mat.metalness = 0;
-  mat.roughness = Math.min(mat.roughness, 0.5);
-  mat.color.multiplyScalar(0.45); // the exported weave texture is lighter than real carbon
+  mat.metalnessMap = null;
+  mat.roughness = 0.75; // scales the weave's roughness map (~0.3) to a satin fibre
+  mat.color.multiplyScalar(0.6);
+  mat.normalScale.set(0.6, 0.6);
   mat.clearcoat = 1;
-  mat.clearcoatRoughness = 0.06;
+  mat.clearcoatRoughness = 0.03;
+  mat.envMapIntensity = 1.8; // the coat needs clear reflections to read as lacquer
   mat.needsUpdate = true;
 }
 
@@ -259,6 +269,10 @@ export function mountStage(fig) {
     controls.autoRotate = !reduceMotion.matches;
     controls.autoRotateSpeed = 0.3; // 0.3 * 6 = 1.8 deg/s
     renderer.domElement.style.touchAction = "pan-y"; // never trap vertical page scroll
+    host.addEventListener("wheel", (e) => {
+      if (!e.ctrlKey && !e.metaKey) e.stopPropagation(); // plain wheel scrolls the page
+      else e.preventDefault();
+    }, { capture: true, passive: false });
     controls.addEventListener("start", () => {
       controls.autoRotate = false;
       tween = null;
@@ -301,12 +315,13 @@ export function mountStage(fig) {
     const c = b.getCenter(new THREE.Vector3());
     root.position.set(-c.x, -b.min.y, -c.z);
     root.updateMatrixWorld(true);
+    const maxAniso = three.renderer.capabilities.getMaxAnisotropy();
     const crease = m.smooth ? THREE.MathUtils.degToRad(m.smooth) : 0;
     root.traverse((o) => {
       if (!o.isMesh) return;
       o.castShadow = true;
       o.receiveShadow = true;
-      (Array.isArray(o.material) ? o.material : [o.material]).forEach(tuneMaterial);
+      (Array.isArray(o.material) ? o.material : [o.material]).forEach((mt) => tuneMaterial(mt, maxAniso));
       // Smooth faceted exports: average normals across faces closer than the crease angle.
       if (crease && !o.material.normalMap) o.geometry = toCreasedNormals(o.geometry, crease);
     });

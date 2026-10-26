@@ -202,6 +202,7 @@
 .card-btn:hover .fig-frame img { transform: scale(1.03); }
 .card-btn .ph { height: 100%; }
 .card-title { font-family: var(--font-display); font-weight: 700; font-size: 1.35rem; letter-spacing: -0.02em; line-height: 1.1; }
+.card-course { color: var(--mute); line-height: 1.5; }
 .card-sum { font-size: .95rem; line-height: 1.5; }
 .card-more { margin-top: auto; padding-top: 6px; display: inline-flex; align-items: center; gap: 8px; text-decoration: underline; text-underline-offset: 4px; }
 .card-btn[aria-expanded="true"] .card-more { text-decoration-thickness: 2px; }
@@ -210,10 +211,12 @@
 .card-specs { font-size: .9em; }
 .panels { margin-top: clamp(40px, 6vh, 72px); }
 .panel { position: relative; display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 40px var(--gutter); padding: clamp(36px, 5vh, 56px) 0; border-top: 2px solid var(--fg); scroll-margin-top: calc(var(--bar-h) + 16px); }
+.panel[hidden] { display: none; }
 .panel + .panel { margin-top: 24px; }
 .anchor { position: absolute; top: calc(-1 * var(--bar-h) - 16px); }
 .panel-head { position: sticky; top: calc(var(--bar-h) + 24px); align-self: start; display: flex; flex-direction: column; gap: 18px; }
 .panel-title { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.8rem, 3vw, 2.75rem); letter-spacing: -0.03em; line-height: 1; }
+.panel-course { color: var(--mute); font-family: var(--font-mono); font-size: .8rem; line-height: 1.5; }
 .panel-close { align-self: flex-start; text-decoration: underline; text-underline-offset: 4px; }
 .has-panels .panel-close { display: inline-block; }
 .panel-close { display: none; }
@@ -235,6 +238,9 @@
 .skills { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 28px var(--gutter); padding-top: 22px; }
 .skill h4 { color: var(--mute); margin-bottom: 10px; }
 .skill li { padding: 4px 0; border-bottom: 1px solid var(--rule); font-size: .95rem; }
+.lang { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 7px 0; border-bottom: 1px solid var(--rule); }
+.lang dt { font-family: var(--font-display); font-weight: 600; font-size: 1rem; }
+.lang dd { color: var(--mute); text-align: right; }
 
 /* ---------- Awards ---------- */
 .awards { padding: var(--pad-y) 0; }
