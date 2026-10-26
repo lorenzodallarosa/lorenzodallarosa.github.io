@@ -10,94 +10,67 @@ The design brief for the one-page portfolio of Lorenzo Dalla Rosa (CFD and FEA e
 
 | Path | Role |
 |---|---|
-| `content/portfolio-input.md` | The single source of all copy and data (profile, experience, education, projects, awards, extras). Edited by the owner only. **Read it, never edit it.** |
+| `content/portfolio-input.md` | The single source of all copy and data (profile, experience, education, activities, projects, groups, software, awards, extras). Its header explains the format. Edit it only when the owner asks |
 | `content/DESIGN.md` | This file |
+| `tools/build_site.py` | Generator: reads the input file, writes `index.html` and the obfuscated model files (`assets/models/<slug>/<slug>.bin`). Standard library only |
 | `index.html`, `assets/css/`, `assets/js/` | Generated or hand-written site output. The builder owns these |
-| `assets/img/profile/`, `assets/img/projects/<slug>/` | Portrait and per-project images (`cover.*` is the poster and index preview) |
-| `assets/models/<slug>/<slug>.glb` | 3D models (Caelus ONE:1, Caelus Baff-1, ET-18). Export conventions are in `assets/models/README.md`: Draco-compressed glTF Binary, so the viewer needs the Draco decoder |
+| `assets/img/profile/`, `assets/img/projects/<slug>/` | Portrait and per-project images (`cover.*` is the poster). Figures extracted from the project PDFs live here too |
+| `assets/models/<slug>/<slug>.glb` | Source 3D models (Draco + Meshopt glTF Binary). **Local only (gitignored)**; the site loads the obfuscated `.bin` copy |
 | `assets/docs/` | Public downloads: the CV and project PDFs. Link only what the input file lists |
 | `projects/` | **Local-only source material, gitignored. Never publish or link anything from it.** The VTOL rotor project is sensitive: no figures, numbers beyond those already written in the input file, or PDF |
 | `CNAME`, `.nojekyll`, `.github/workflows/pages.yml` | Hosting. Do not modify. The workflow deploys the repo root as-is, so the site needs no build step on GitHub |
 
 **Hosting constraints**
-- Static files only, served from the domain root, so root-relative or plain relative paths both work. No server code.
+- Static files only, served from the domain root. No server code.
 - Fonts and libraries load from Google Fonts, cdnjs or jsDelivr only. Pin versions.
 - Keep the page light: images at most ~1600px on the long side, 3D loaded lazily (section 9).
 
 **Content rules**
-- Every `[PLACEHOLDER]` in this document resolves to a field of `content/portfolio-input.md`. Never invent credentials, metrics, logos or dates. An empty `[]` field is omitted from the page, not filled in. For example, a project with no Year simply has no `YEAR` spec fact.
-- The input file's `# SITE` `Theme:` and `Accent color:` lines are **ignored**: this brief fixes the palette (cream, ink, `#F0541E`) and the light/dark rhythm. The per-project `Tier:`, `Theme:` and `Compare with:` fields are **used** (see below).
-- Language is English (British spelling, as written in the input file). Text is used as written. Do not rewrite the owner's bullets, only trim a long `Summary` to fit the H2 statement style where needed, and say so in your report.
-- The Profile photo path comes from `Photo:` but check the real extension on disk (`assets/img/profile/`). Show it greyscale (CSS filter), never in colour.
-- Markdown in the input file (bold, bullet lists, `$...$` equations) must render. For equations, load KaTeX from cdnjs only on pages that need it. Its math font is the one allowed exception to the two-font-family rule.
+- Every piece of copy comes from `content/portfolio-input.md`. Never invent credentials, metrics, logos, dates **or decorative figures** (no generated line drawings, aerofoils or illustrations standing in for real work). An empty `[]` field is omitted from the page.
+- Language is English (British spelling, as written in the input file). Text is used as written.
+- The portrait is shown greyscale (CSS filter), never in colour.
+- Markdown in the input file (bold, italic, bullet lists, `$...$` equations) must render; KaTeX loads from jsDelivr only when equations are present.
+- Missing images render as labelled placeholders (see "Image placeholders"), never as invented content.
 
-**Mapping the input file to the page anatomy (section 5)**
-
-| Page area | Source in `portfolio-input.md` |
-|---|---|
-| Wordmark | `Name` (`LORENZO DALLA ROSA`), sub-line `SELECTED WORK / <current year>` |
-| Intro | Tag from `Skills > Domains` (for example `CFD · FEA · AEROSPACE`), `Tagline` (as the one-line statement), `Location`, and the institutions from `# EDUCATION` as the second location line. The huge display word is a short single word chosen from the owner's field; propose it in the report and confirm it before shipping |
-| Work index | Merged into the bottom of the Intro section. One row per project that has a `Tier`, in input-file order, as `01  Title — Type — Year`, each linking to its section |
-| Big projects | `Tier: big` projects: ET-18, then the Caelus UAVs. Full-screen sections with a hero, described below |
-| About | `## About`, portrait, `# EDUCATION` and `# EXPERIENCE` in two columns, then `Skills` as Focus / Tools / Languages. Show the three-line CV highlights, not the full bullet lists, with the full lists in an expandable block |
-| Capabilities (orange panel) | Three numbered rows built from `Skills` and the awards, for example `01 Computational fluid dynamics`, `02 Finite element analysis`, `03 Composites and UAV design`. Only list tools and results that appear in the input file |
-| Contact / footer | `Email`, `LinkedIn`, `GitHub`, `Other links`. The single primary action is the email button. `CV file` is a text link next to it. The mega name is `Dalla Rosa` or the full name, cropped at the bottom |
-| Smaller projects | `Tier: small` projects, grouped in one section after the big ones, described below |
-| Awards | `# AWARDS AND CERTIFICATIONS`, in its own section after About. See "Awards section" below |
-| Publications, extras | Small spec-table rows in About. Omit empty sections |
-
-**Project sections: big and small**
-
-The portfolio has two kinds of project, set by `Tier:` in the input file. Never change a project's tier. Never create a section for a project without a `Tier`. Field mapping for both: `Summary` is the H2 statement, `Tags` are the mono tag line, `Role`, `Year`, `Type` and the first tags are the spec row, `Details` bullets feed the step list or facts, `Images` and `Cover image` fill the stage, and `Links` become end-of-section text links.
-
-*Big projects (`Tier: big`)*
-- Full-screen: `min-height: 100svh`, with a hero. The title is the H1 (shorten to one or two words, keeping the full title as the accessible name), the H2 statement sits under it, and the stage (3D model or the cover image) fills the right ~62% and bleeds towards the section edges. The hero is static typography plus the stage, with no animated entrance beyond the mask-line rise.
-- Below the hero, inside the same section: the numbered step list (max 5 rows from `Details`), the spec row, a caption and the links. Long `Details` and equations go in an expandable `<details>` block, so the page stays one page.
-- `Theme: light` renders the section on the warm light paper family, not a blue or other cool pastel (ET-18 is black carbon fibre with orange accents, so the section is built from the same cream, `--paper` and orange palette as the Intro above it, which makes the page flow into it). Default to `--paper` (`#F6F2E8`) as the section background with a 1px `--rule-light` hard edge against the cream Intro. If that boundary looks too faint in the browser, use `--cream-deep` instead, and say which you chose. The model is shown as "product on paper": ink linework, matte warm material, no spotlight, orange for annotations. `Theme: dark` renders it on `--ink` with the spotlight stage from section 9.
-- **ET-18 (`et-18-aero-package`, light):** hero with the car model (`assets/models/et-18-aero-package/et-18-aero-package.glb`). The cover photo is the poster and no-WebGL fallback. Stage annotations are limited to what the input file states (cornering domain, battery cooling, composite package). Spec facts: role, year, `+13.5% downforce`, `+16% efficiency`, `+7.3% track score` from the input.
-- **Caelus UAVs (`caelus-baff-1` with `Compare with: [caelus-one]`, dark):** one combined full-screen section, not two. Baff-1 is the newer model and the hero. ONE:1 is the earlier model it is compared against.
-  - The stage holds both models (`assets/models/caelus-baff-1/caelus-baff-1.glb`, `assets/models/caelus-one/caelus-one.glb`) with a two-state toggle labelled `ONE:1 · EARLIER` and `BAFF-1 · NEWER`, keyboard-accessible, that swaps the model and keeps the same camera. A slow cross-fade is not allowed, so use a hard swap.
-  - Below the hero, a two-column spec table, one column per aircraft, built only from facts in the two `Details`. Where the input states a fact for only one aircraft, show `—` in the other column. Do not infer. Suggested rows: layout, payload, structure, autopilot. Callout leaders on Baff-1 are limited to the A-tail pusher, D-box wing with leading-edge spar, split flaps and flaperons.
-  - The ONE:1 project block is **not** rendered as a separate section. Its `Role`, `Year`, `Summary`, `Details` and images feed the earlier-model column and the toggle state. The Work index lists one row for the pair (`Caelus ONE:1 → Baff-1`).
-- Do not put two dark sections back to back. The sequence in section "Section order" below keeps them apart.
-
-*Smaller projects (`Tier: small`): rail joint, VTOL rotor, connecting rod, and any later small ones*
-- One section titled `Smaller projects` (H1), on a single sage pastel, with the projects laid out as a row (3 columns on desktop, stacked on mobile) of hairline-bordered cards. No full-screen heights, no 3D.
-- Each card: index number, the `Cover image` (or none), the title, `Summary`, a mono spec row (`TYPE`, `YEAR`, `ROLE`, first tags, omitting empty fields), and an expandable `<details>` block for the full `Details` (equations rendered with KaTeX, extra images with captions) and the `Links`.
-- A small project with no cover image (the connecting rod) shows an **image placeholder** in the image slot (see "Image placeholders") and does not fabricate a figure. Flag it in the report.
-- **VTOL project:** contains sensitive material. Show only the text, numbers and the cover image already in the input file. No PDF, no extra figures, no link.
-- Small projects are in input-file order.
-
-*Common*
-- 3D models are lazy-loaded with the cover image as poster and as the no-WebGL fallback. Camera presets (section 9) are chosen after looking at each model.
-
-**Image placeholders**
-- Wherever a project's `Cover image` or a stage image is empty or the file is missing on disk, render a placeholder frame in the exact slot the image will occupy, with the final aspect ratio, so adding the image later needs no layout change.
-- Look: `--cream-deep` fill (or `--ink-soft` on dark), a 1px dashed rule, corner ticks on all four corners, a faint diagonal hatch at ~6% opacity, and a centred mono label `IMAGE PENDING · <slug>`. No icons, no stock imagery, no generated art.
-- Placeholders are labelled honestly and carry `role="img"` with an `aria-label` such as `Image pending for <project title>`. Mention each placeholder in the build report so the owner knows what to supply. Today that is the connecting rod cover, and any other project whose `Images:` is empty if its layout has an image slot.
-- To fill one, the owner drops the file into `assets/img/projects/<slug>/` and names it in `Cover image:` or `Images:`. No code change is needed.
-
-**Awards section**
-- Source: `# AWARDS AND CERTIFICATIONS`, one entry per line in the form `Title | Issuer | Date | Description (optional) | Image (optional)`. The image path is relative to `assets/img/projects/`. Keep the input order (newest first). Never invent a missing date or description.
-- Own section after About, on a single butter pastel. H1 `Awards`, a mono tag `RECOGNITION · CERTIFICATIONS`, then a hairline spec table: two-digit index, title (display weight 800 at ~1.5rem), issuer and date in mono, and the description in light body text underneath, at most 62ch.
-- An entry with an image (the IEEE UAV Chase Challenge win) shows it as a small figure with corner ticks and a caption on the right of its row. The caption states what it shows, and nothing else is added.
-- Highlight the first row only with an orange square marker, as the signature detail. No medals, trophies, icons or emoji.
-
-**Section order and themes** (replaces the page anatomy table in section 5 for the table order and the Work index; the components and rules in section 6 still apply)
+**Page structure and themes** (replaces the page anatomy table in section 5; the components and rules in section 6 still apply)
 
 | # | Section | Theme | Source |
 |---|---|---|---|
-| 0 | Top bar | Cream, inverts over dark | `Name` |
-| 1 | Intro + Work index | Cream | Profile, `Tagline`, projects with a `Tier` |
-| 2 | ET-18 Aerodynamic Package | Light, `--paper` family (no blue), big | `et-18-aero-package` |
-| 3 | Caelus Baff-1 vs ONE:1 | Dark, big | `caelus-baff-1` + `caelus-one` |
-| 4 | Smaller projects | Sage pastel | rail joint, VTOL rotor, connecting rod, compressor stage |
-| 5 | About | Cream split with paper card | About, Education, Experience, Skills |
+| 0 | Top bar | Cream, inverts over dark | `Name`; links: `CV`, `Contact` only. No year in the sub-line |
+| 1 | Intro | Cream | `Tag line` (CFD · FEA · Composites) above the name, `Greeting` (Ciao!), `Name`, `Role`, `Location`, institutions linked to their `Link:`, greyscale portrait. No work index, no figure |
+| 2 | ET-18 | Light, `--paper` family | `et-18-aero-package`: kicker "E-Team Squadra Corse" above the H1 "ET-18", the car photo as the hero image, then the 3D stage, then the numbered steps |
+| 3 | Caelus Sant'Anna | Dark | Group `caelus`: group header, then the quadcopter (compact block), ONE:1 and Baff-1, each with its own hero, 3D stage and steps |
+| 4 | Smaller projects | Sage pastel | `Tier: small` projects as cards that expand into a full-width panel with figures |
+| 5 | CV | Cream with paper cards | About, Education (completed and in progress), Experience, Activities, Skills, Interests, CV download |
 | 6 | Awards | Butter pastel | Awards and certifications |
-| 7 | Capabilities | Orange blueprint panel | Skills, results |
-| 8 | Contact / footer | Dark | Profile |
+| 7 | Software | Orange blueprint panel | `# SOFTWARE`: what each tool is for and the projects it was used in (linked) |
+| 8 | Contact / footer | Dark | Email (obfuscated), LinkedIn, GitHub, CV link, mega name |
 
-No two neighbouring sections share a theme, and the only two dark sections (3 and 8) are far apart. The section counter reads `0X / 08`, computed from the sections that are actually rendered.
+No two neighbouring sections share a theme. The section counter reads `0X / 08`, computed from the sections actually rendered.
+
+**Project rendering**
+- `Tier: big`: full section (or full sub-section inside a group) with kicker, H1 short title (`Short:`), H2 statement (`Statement:` or `Summary`), the 3D stage (when `assets/models/<slug>/<slug>.glb` exists) and the cover photo, the spec row from `Facts:`, and the steps.
+- `Tier: compact`: a shorter block inside its group: title, summary, facts, cover image, details.
+- `Tier: small`: a card (index, cover, title, summary, spec row) in the Smaller projects section; clicking it opens a full-width panel with the steps and figures.
+- **Steps**: each `#### Title` block in `Details:` is one numbered row. Rows show the title and expand on click to show the full text, bullets and figures (`Image:` lines). No boxed "project notes" panels.
+- 3D callouts are limited to what the input states: Baff-1 (A-tail pusher, D-box wing with leading-edge spar, split flaps and flaperons), ONE:1 (flaperons, full carbon-fibre monocoque, payload fairing). No legends, no generic captions under the stage, nothing on the ET-18 stage.
+- 3D materials: carbon fibre renders as a dielectric weave under a glossy clear coat (metalness 0, low clear-coat roughness), not as metal. The ET-18 mesh gets smooth (creased) normals. Dark-stage floor light stays subtle so the stage blends into `--ink`.
+- Mobile: the 3D model loads directly when the device and connection look capable (no Save-Data, 4G-class connection, at least 4 GB memory where reported); otherwise it waits for a tap.
+
+**Image placeholders**
+- Wherever an image named in the input file is missing on disk, render a placeholder in the exact slot, with the final aspect ratio, so adding the file later needs no layout change.
+- Look: `--cream-deep` fill (or `--ink-soft` on dark), a 1px dashed rule, corner ticks, a faint diagonal hatch at ~6% opacity, and a centred mono label `IMAGE PENDING · <file name>`. `role="img"` and an honest `aria-label`.
+
+**Protection (basic, not security)**
+- Email: never written in plain text in the HTML; it is stored encoded and assembled by JS, with a `name [at] domain [dot] com` fallback. (The CV PDF still contains it.)
+- 3D models: published only as XOR-obfuscated `.bin` files decoded in the browser; the raw `.glb` is not deployed and the canvas has no context menu. Anyone determined can still extract a model from a running page.
+
+**Awards section**
+- Source: `# AWARDS AND CERTIFICATIONS`, one entry per line `Title | Issuer | Date | Description | Image`. Keep the input order. Never invent a missing date or description.
+- Butter pastel, H1 `Awards`, mono tag `RECOGNITION · CERTIFICATIONS`, a hairline spec table (index, title, issuer and date in mono, description underneath). An entry with an image shows it as a small figure with corner ticks. The first row has the orange square marker.
+
+**Software section (orange blueprint panel)**
+- Source: `# SOFTWARE`, one line per tool: `Name | What it is for | where it was used`. Project slugs become anchor links to those projects; free text (e.g. coursework) is shown as written. Tools with no stated use are listed in a final "Also" row without links. Never guess which project a tool was used in.
 
 ---
 
@@ -448,9 +421,9 @@ Before calling any section done, it should pass these:
 ## 17. Working agreement for the builder
 
 - Work only inside `C:\Users\loren\Documents\Projects\Porfolio`. Do not read or write elsewhere.
-- **You may create or overwrite only:** `index.html`, `assets/css/`, `assets/js/`, `tools/`, and the `README.md` structure section. **Never modify** `content/portfolio-input.md`, anything under `assets/docs/`, `assets/img/`, `assets/models/`, `CNAME`, `.nojekyll`, `.github/` or `.gitignore`, and never open anything under `projects/`.
+- **You may create or overwrite:** `index.html`, `assets/css/`, `assets/js/`, `tools/`, the generated `assets/models/*/*.bin`, extracted figures in `assets/img/projects/`, and the `README.md` structure section. Edit `content/portfolio-input.md` and this file only when the owner asks. **Never modify** anything under `assets/docs/`, the source `.glb` models, `CNAME`, `.nojekyll` or `.github/`, and never open anything under `projects/`.
 - **The content already exists** in `content/portfolio-input.md`. Do not ask the owner for it again. Ask only when a genuine choice is open (the display word in the intro, the order of projects) or a field a section needs is empty (for example no cover image for the connecting rod). Use the image placeholders described above for missing images, clearly marked text placeholders for anything else genuinely missing, and list them in your report.
 - Build a static first pass of four sections only (intro, one light project, one dark 3D project, the orange blueprint panel) and show screenshots before continuing. Serve the site locally (`python -m http.server` from the repo root) to check it. Verify with the browser tools if available.
 - Follow the build order in Section 14 and the motion limits in Section 8.
 - When done, check desktop and mobile widths, check that the 3D models load, that every link and download resolves, and that no file from `projects/` is referenced. Report what was verified and what was not.
-- **Do not commit or push** unless the owner asks. A push publishes to `lorenzodallarosa.com` immediately.
+- Commit and push when the owner asks (they have allowed publishing the site live). A push publishes to `lorenzodallarosa.com` immediately.

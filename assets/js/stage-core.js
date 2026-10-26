@@ -1,5 +1,8 @@
-/* Shared 3D stage (DESIGN.md section 9): lazy three.js viewer for the project models.
-   - Initialises when the stage is within one viewport (desktop) or on tap (<768px).
+/* Shared 3D stage (DESIGN.md sections 0 and 9): lazy three.js viewer for the project models.
+   - Initialises when the stage is within one viewport. On phones it loads directly when the
+     device and connection look capable, otherwise on tap.
+   - Models are fetched as XOR-obfuscated .bin files and decoded here (basic anti-scraping).
+   - Carbon-fibre materials are re-tuned as a dielectric weave under a glossy clear coat.
    - Renders only while on screen. Pixel ratio capped at 2.
    - "Product on black" (dark) or "product on paper" (paper) lighting; the models keep
      their own materials.
@@ -12,6 +15,9 @@ import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
 import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+import { toCreasedNormals } from "three/addons/utils/BufferGeometryUtils.js";
+
+const MODEL_KEY = new TextEncoder().encode("ldr-stage-7f3a91"); // matches tools/build_site.py
 
 const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
 const small = matchMedia("(max-width: 767px)");
@@ -36,6 +42,49 @@ function getLoader() {
   return loader;
 }
 
+// Fetch an obfuscated model, reporting progress, and undo the XOR.
+async function fetchModel(url, onProgress) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`${url}: ${res.status}`);
+  const total = +res.headers.get("content-length") || 0;
+  const reader = res.body.getReader();
+  const chunks = [];
+  let got = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    chunks.push(value);
+    got += value.length;
+    if (total) onProgress(got / total);
+  }
+  const buf = new Uint8Array(got);
+  let o = 0;
+  for (const c of chunks) { buf.set(c, o); o += c.length; }
+  const k = MODEL_KEY, n = k.length;
+  for (let i = 0; i < got; i++) buf[i] ^= k[i % n];
+  return buf.buffer;
+}
+
+// Phones: load straight away only on a capable device and connection.
+function canAutoLoad() {
+  const c = navigator.connection;
+  if (c && (c.saveData || /(^|-)2g|3g/.test(c.effectiveType || ""))) return false;
+  if (navigator.deviceMemory && navigator.deviceMemory < 4) return false;
+  if (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4) return false;
+  return true;
+}
+
+// Carbon fibre: a woven dielectric under a glossy clear coat, not a metal.
+function tuneMaterial(mat) {
+  if (!mat || !mat.isMeshPhysicalMaterial || !(mat.clearcoat > 0) || !mat.normalMap) return;
+  mat.metalness = 0;
+  mat.roughness = Math.min(mat.roughness, 0.5);
+  mat.color.multiplyScalar(0.45); // the exported weave texture is lighter than real carbon
+  mat.clearcoat = 1;
+  mat.clearcoatRoughness = 0.06;
+  mat.needsUpdate = true;
+}
+
 function webglOK() {
   try {
     const c = document.createElement("canvas");
@@ -50,8 +99,8 @@ function poolTexture() {
   c.width = c.height = 256;
   const g = c.getContext("2d");
   const grad = g.createRadialGradient(128, 128, 0, 128, 128, 128);
-  grad.addColorStop(0, "rgba(237,231,214,0.20)");
-  grad.addColorStop(0.45, "rgba(237,231,214,0.08)");
+  grad.addColorStop(0, "rgba(237,231,214,0.07)");
+  grad.addColorStop(0.5, "rgba(237,231,214,0.025)");
   grad.addColorStop(1, "rgba(237,231,214,0)");
   g.fillStyle = grad;
   g.fillRect(0, 0, 256, 256);
@@ -124,7 +173,8 @@ export function mountStage(fig) {
     });
   };
   fig.querySelector(".stage-tap").addEventListener("click", start);
-  if (!small.matches) {
+  fig.addEventListener("contextmenu", (e) => e.preventDefault());
+  if (!small.matches || canAutoLoad()) {
     const near = new IntersectionObserver((es) => {
       if (es.some((e) => e.isIntersecting)) { near.disconnect(); start(); }
     }, { rootMargin: "100% 0px" });
@@ -242,9 +292,8 @@ export function mountStage(fig) {
     const m = byKey[key];
     const { scene } = three;
     status.textContent = "Loading model";
-    const gltf = await getLoader().loadAsync(m.src, (e) => {
-      if (e.total) status.textContent = `Loading model · ${Math.round((e.loaded / e.total) * 100)}%`;
-    });
+    const data = await fetchModel(m.src, (f) => { status.textContent = `Loading model · ${Math.round(f * 100)}%`; });
+    const gltf = await getLoader().parseAsync(data, "");
     const root = gltf.scene;
     if (m.rotateY) root.rotation.y = THREE.MathUtils.degToRad(m.rotateY);
     root.updateMatrixWorld(true);
@@ -252,8 +301,14 @@ export function mountStage(fig) {
     const c = b.getCenter(new THREE.Vector3());
     root.position.set(-c.x, -b.min.y, -c.z);
     root.updateMatrixWorld(true);
+    const crease = m.smooth ? THREE.MathUtils.degToRad(m.smooth) : 0;
     root.traverse((o) => {
-      if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; }
+      if (!o.isMesh) return;
+      o.castShadow = true;
+      o.receiveShadow = true;
+      (Array.isArray(o.material) ? o.material : [o.material]).forEach(tuneMaterial);
+      // Smooth faceted exports: average normals across faces closer than the crease angle.
+      if (crease && !o.material.normalMap) o.geometry = toCreasedNormals(o.geometry, crease);
     });
     root.visible = key === api.current;
     scene.add(root);
@@ -278,7 +333,7 @@ export function mountStage(fig) {
     const vf = THREE.MathUtils.degToRad(camera.fov);
     const hf = 2 * Math.atan(Math.tan(vf / 2) * camera.aspect);
     const prev = fitDist;
-    fitDist = (R * (cfg.fit || 0.66) * (camera.aspect < 1 ? 1.4 : 1)) / Math.sin(Math.min(vf, hf) / 2);
+    fitDist = (R * (cfg.fit || cfg.models[0].fit || 0.66) * (camera.aspect < 1 ? 1.4 : 1)) / Math.sin(Math.min(vf, hf) / 2);
     controls.minDistance = fitDist * 0.4;
     controls.maxDistance = fitDist * 1.5;
     camera.near = fitDist / 100;
@@ -298,7 +353,7 @@ export function mountStage(fig) {
     const size = R * 10;
     if (dark) {
       scene.add(new THREE.HemisphereLight(0xede7d6, 0x1b1b19, 0.35));
-      const spot = new THREE.SpotLight(0xfff3e0, 5, 0, Math.PI / 6, 0.85, 0);
+      const spot = new THREE.SpotLight(0xfff3e0, 4, 0, Math.PI / 6, 1, 0);
       spot.position.set(R * 0.2, R * 3.2, R * 0.9);
       spot.target.position.copy(center);
       spot.castShadow = true;
@@ -331,7 +386,7 @@ export function mountStage(fig) {
       fill.position.set(R * 2, R, -R * 2);
       scene.add(fill);
     }
-    const floor = new THREE.Mesh(new THREE.PlaneGeometry(size, size), new THREE.ShadowMaterial({ opacity: dark ? 0.55 : 0.2 }));
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(size, size), new THREE.ShadowMaterial({ opacity: dark ? 0.4 : 0.2 }));
     floor.rotation.x = -Math.PI / 2;
     floor.receiveShadow = true;
     scene.add(floor);

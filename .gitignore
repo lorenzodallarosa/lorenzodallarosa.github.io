@@ -6,3 +6,6 @@ Thumbs.db
 projects/*/
 projects/Portfolio.md
 # Local-only sources (VTOL project is sensitive). Publishable PDFs are copied to assets/docs/
+
+# Source 3D models stay local; the site serves the obfuscated .bin copies built by tools/build_site.py
+assets/models/**/*.glb

@@ -3,17 +3,16 @@
 
 Usage:  python tools/build_site.py
 
-Standard library only. The script writes index.html and nothing else; the CSS and
-JS in assets/ are hand-written and never touched here. Re-run it after any edit to
-the input file.
+Standard library only. Writes index.html and the obfuscated 3D model files
+(assets/models/<slug>/<slug>.bin). The CSS and JS in assets/ are hand-written and
+never touched here. Re-run it after any edit to the input file.
 """
 from __future__ import annotations
 
-import cmath
+import base64
 import datetime as _dt
 import html
 import json
-import math
 import re
 import struct
 import sys
@@ -25,14 +24,22 @@ OUTPUT = ROOT / "index.html"
 SITE_URL = "https://lorenzodallarosa.com/"
 THREE_VERSION = "0.169.0"
 KATEX_VERSION = "0.16.11"
+MODEL_KEY = b"ldr-stage-7f3a91"  # XOR key shared with assets/js/stage-core.js
 
-# Sections rendered, in page order (DESIGN.md section 0, "Section order and themes").
-# First checkpoint (DESIGN.md section 17): intro, one light project, one dark 3D
-# project and the orange blueprint panel. The rest are added after review.
-SECTIONS = ["intro", "et18", "caelus", "capabilities"]
-
-# Template text left over from the input file's instructions counts as empty.
-TEMPLATE_VALUES = {"label | url ; label | url", "dark | light", "#hex, e.g. #1e6fff"}
+# 3D stage set-up per project: camera orientation and callouts (DESIGN.md section 0).
+# "node" matches mesh names in the .glb; "bias" moves the anchor by fractions of the
+# part's half-size, "dy" offsets the label vertically in pixels.
+STAGES = {
+    "et-18-aero-package": {"rotateY": 180, "smooth": 40, "fit": 0.75, "callouts": []},
+    "caelus-one": {"rotateY": 180, "callouts": [
+        {"node": "Alerons", "label": "Flaperons", "tone": "powder", "bias": [0, 0, 0.6], "dy": 70},
+        {"node": "Fuselage", "label": "Full carbon-fibre monocoque", "tone": "bone", "bias": [-0.72, -0.5, 0], "dy": -110},
+        {"node": "Payload", "label": "Payload fairing", "tone": "orange", "dy": 90}]},
+    "caelus-baff-1": {"callouts": [
+        {"node": "Tail_Body", "label": "A-tail pusher", "tone": "orange"},
+        {"node": "R_DBox", "label": "D-box wing · leading-edge spar", "tone": "bone", "bias": [-0.6, 0.3, 0.45], "dy": 120},
+        {"node": "R_flap", "label": "Split flaps · flaperons", "tone": "powder", "bias": [0.6, 0, 0.8], "dy": 40}]},
+}
 
 
 # --------------------------------------------------------------------------- utils
@@ -42,12 +49,10 @@ def esc(s: str) -> str:
 
 
 def clean(value: str) -> str:
-    """Strip the [ ] wrapper; template or empty values become ''."""
+    """Strip the [ ] wrapper; '[]' becomes ''."""
     v = value.strip()
     if v.startswith("[") and v.endswith("]"):
         v = v[1:-1].strip()
-    if v in TEMPLATE_VALUES or v.startswith("Authors,"):
-        return ""
     return v
 
 
@@ -148,10 +153,6 @@ def md(text: str) -> str:
     return "\n".join(blocks)
 
 
-def has_math(text: str) -> bool:
-    return bool(MATH.search(text))
-
-
 # -------------------------------------------------------------------------- parser
 
 KEY = re.compile(r"^([A-Z][A-Za-z ]*):\s*(.*)$")
@@ -160,8 +161,9 @@ KEY = re.compile(r"^([A-Z][A-Za-z ]*):\s*(.*)$")
 def parse(path: Path) -> dict:
     raw = re.sub(r"<!--.*?-->", "", path.read_text(encoding="utf-8"), flags=re.S)
     d: dict = {
-        "site": {}, "profile": {}, "about": [], "skills": {}, "experience": [],
-        "education": [], "projects": [], "publications": [], "awards": [], "extras": {},
+        "site": {}, "profile": {}, "about": [], "skills": {}, "experience": [], "education": [],
+        "activities": [], "projects": [], "groups": [], "software": [], "publications": [],
+        "awards": [], "extras": {},
     }
     h1 = h2 = None
     cur = None
@@ -178,13 +180,13 @@ def parse(path: Path) -> dict:
             continue
         if line.startswith("### "):
             title, in_details = line[4:].strip(), False
-            if h1 in ("EXPERIENCE", "EDUCATION"):
+            if h1 in ("EXPERIENCE", "EDUCATION", "ACTIVITIES"):
                 role, _, org = title.partition("|")
                 cur = {"title": role.strip(), "org": org.strip(), "bullets": []}
                 d[h1.lower()].append(cur)
-            elif h1 == "PROJECTS":
+            elif h1 in ("PROJECTS", "GROUPS"):
                 cur = {"title": title, "details": []}
-                d["projects"].append(cur)
+                d[h1.lower()].append(cur)
             continue
 
         s = line.strip()
@@ -197,21 +199,25 @@ def parse(path: Path) -> dict:
         elif h1 == "PROFILE" and h2 == "Skills" and s.startswith("- "):
             k, _, v = s[2:].partition(":")
             d["skills"][k.strip()] = split_top(clean(v))
-        elif h1 in ("EXPERIENCE", "EDUCATION") and cur is not None:
+        elif h1 in ("EXPERIENCE", "EDUCATION", "ACTIVITIES") and cur is not None:
             if s.startswith("- "):
                 cur["bullets"].append(s[2:])
             elif key:
                 cur[key.group(1).lower()] = clean(key.group(2))
-        elif h1 == "PROJECTS" and cur is not None:
+        elif h1 in ("PROJECTS", "GROUPS") and cur is not None:
             if in_details:
                 cur["details"].append(line)
             elif s == "Details:":
                 in_details = True
             elif key:
                 cur[key.group(1).lower().replace(" ", "_")] = clean(key.group(2))
+        elif h1 == "SOFTWARE" and s.startswith("- "):
+            f = [p.strip() for p in s[2:].split("|")] + ["", ""]
+            uses = [u.strip() for u in f[2].split(",") if u.strip()]
+            d["software"].append({"name": f[0], "what": f[1], "uses": uses})
         elif h1 == "PUBLICATIONS" and s.startswith("- "):
             v = clean(s[2:])
-            if v:
+            if v and not v.startswith("Authors,"):
                 d["publications"].append(v)
         elif h1 == "AWARDS AND CERTIFICATIONS" and s.startswith("- "):
             f = [p.strip() for p in s[2:].split("|")] + [""] * 5
@@ -226,137 +232,24 @@ def parse(path: Path) -> dict:
     return d
 
 
-# ------------------------------------------------------------------ figure drawing
-
-def _joukowski(mu=complex(-0.08, 0.08), alpha_deg=6.0):
-    """Joukowski aerofoil and potential-flow streamlines (Kutta condition)."""
-    a = abs(1 - mu)
-    alpha = math.radians(alpha_deg)
-    beta = -cmath.phase(1 - mu)
-    gamma = 4 * math.pi * a * math.sin(alpha + beta)  # U = 1
-
-    def dwdz(zeta, g):
-        zp = zeta - mu
-        return cmath.exp(-1j * alpha) - a * a * cmath.exp(1j * alpha) / zp**2 - 1j * g / (2 * math.pi * zp)
-
-    # Pick the circulation sign that puts the rear stagnation point on the trailing edge.
-    if abs(dwdz(1 + 1e-6, -gamma)) < abs(dwdz(1 + 1e-6, gamma)):
-        gamma = -gamma
-
-    def vel(zeta):
-        w = dwdz(zeta, gamma)
-        v = w.conjugate()
-        n = abs(v)
-        return v / n if n > 1e-9 else 0
-
-    outline = [mu + a * cmath.exp(1j * t) for t in [i * 2 * math.pi / 240 for i in range(241)]]
-    foil = [z + 1 / z for z in outline]
-
-    lines = []
-    for k in range(-7, 8):
-        y0 = k * 0.42 + 0.02
-        z = complex(-7.0, y0)
-        pts = [z]
-        h = 0.03
-        for _ in range(900):
-            k1 = vel(z)
-            k2 = vel(z + h / 2 * k1)
-            k3 = vel(z + h / 2 * k2)
-            k4 = vel(z + h * k3)
-            z = z + h / 6 * (k1 + 2 * k2 + 2 * k3 + k4)
-            if abs(z - mu) < a * 1.002 or z.real > 7.5:
-                break
-            pts.append(z)
-        lines.append([p + 1 / p for p in pts if abs(p) > 1e-6])
-    return foil, lines
-
-
-def _path(points, fx, fy) -> str:
-    return "M" + " L".join(f"{fx(p):.1f} {fy(p):.1f}" for p in points)
-
-
-def intro_figure() -> str:
-    """Quiet line drawing for the intro: a Joukowski section with dimension lines."""
-    foil, _ = _joukowski()
-    xs = [p.real for p in foil]
-    x0, x1 = min(xs), max(xs)
-    W, H, pad = 640, 300, 60
-    s = (W - 2 * pad) / (x1 - x0)
-    fx = lambda p: pad + (p.real - x0) * s
-    fy = lambda p: 150 - p.imag * s
-    chord_y = 150
-    qx = pad + 0.25 * (x1 - x0) * s
-    return f"""<svg viewBox="0 0 {W} {H}" class="fig-svg" role="img" aria-labelledby="fig0-t">
-  <title id="fig0-t">Line drawing of a Joukowski aerofoil section with its chord and quarter-chord point marked</title>
-  <path d="{_path(foil, fx, fy)} Z" class="ln-ink"/>
-  <line x1="{pad}" y1="{chord_y}" x2="{W - pad}" y2="{chord_y}" class="ln-dash"/>
-  <g class="ln-dim">
-    <line x1="{pad}" y1="236" x2="{W - pad}" y2="236"/>
-    <line x1="{pad}" y1="228" x2="{pad}" y2="244"/><line x1="{W - pad}" y1="228" x2="{W - pad}" y2="244"/>
-    <line x1="{pad}" y1="{chord_y + 8}" x2="{pad}" y2="226"/><line x1="{W - pad}" y1="{chord_y + 8}" x2="{W - pad}" y2="226"/>
-  </g>
-  <text x="{W / 2}" y="258" class="fig-txt" text-anchor="middle">c</text>
-  <rect x="{qx - 4:.1f}" y="{chord_y - 4}" width="8" height="8" class="fill-orange"/>
-  <line x1="{qx:.1f}" y1="{chord_y - 6}" x2="{qx:.1f}" y2="70" class="ln-dim"/>
-  <text x="{qx + 8:.1f}" y="76" class="fig-txt">c/4</text>
-  <text x="{pad}" y="24" class="fig-txt">FIG. 00</text>
-  <text x="{W - pad}" y="24" class="fig-txt" text-anchor="end">&#956; = &#8722;0.08 + 0.08i</text>
-</svg>"""
-
-
-def blueprint_figure() -> str:
-    """Streamlines of potential flow past the same aerofoil, for the orange panel."""
-    foil, lines = _joukowski()
-    W, H = 560, 380
-    s = W / 9.0
-    fx = lambda p: W / 2 + p.real * s
-    fy = lambda p: H / 2 - p.imag * s
-    inside = lambda p: -4.5 <= p.real <= 4.5 and abs(p.imag) <= H / 2 / s - 0.05
-    paths = []
-    for ln in lines:
-        seg = [p for p in ln if inside(p)]
-        if len(seg) > 2 and fx(seg[-1]) - fx(seg[0]) > W * 0.8:
-            paths.append(f'<path d="{_path(seg, fx, fy)}"/>')
-    return f"""<svg viewBox="0 0 {W} {H}" class="fig-svg" role="img" aria-labelledby="fig1-t">
-  <title id="fig1-t">Streamlines of inviscid potential flow past a Joukowski aerofoil at 6 degrees angle of attack</title>
-  <g class="ln-cream">{''.join(paths)}</g>
-  <path d="{_path(foil, fx, fy)} Z" class="ln-ink fill-ink"/>
-</svg>"""
+def split_details(details: str) -> tuple[str, list[dict]]:
+    """Intro text and '#### Title' steps, each with its body text and Image: lines."""
+    parts = re.split(r"^#### +(.+)$", details, flags=re.M)
+    intro, steps = parts[0].strip(), []
+    for title, body in zip(parts[1::2], parts[2::2]):
+        images, lines = [], []
+        for line in body.splitlines():
+            m = re.match(r"^\s*Image:\s*(.+)$", line)
+            if m:
+                file, _, cap = m.group(1).partition("|")
+                images.append((file.strip(), cap.strip()))
+            else:
+                lines.append(line)
+        steps.append({"title": title.strip(), "body": "\n".join(lines).strip(), "images": images})
+    return intro, steps
 
 
 # ------------------------------------------------------------------------ helpers
-
-def first_sentence(text: str) -> str:
-    m = re.match(r"(.+?\.)(\s|$)", text.strip())
-    return m.group(1) if m else text.strip()
-
-
-def bullets_of(details: str) -> list[str]:
-    return [l.strip()[2:] for l in details.splitlines() if l.strip().startswith("- ")]
-
-
-def find_bullet(details: str, prefix: str) -> str:
-    for b in bullets_of(details):
-        if b.startswith(prefix):
-            return b
-    raise SystemExit(f"build_site: no Details bullet starts with {prefix!r}")
-
-
-def quote(text: str, fragment: str) -> str:
-    """Return fragment as written in text (case-insensitive), or fail: facts are never invented."""
-    i = text.lower().find(fragment.lower())
-    if i < 0:
-        raise SystemExit(f"build_site: {fragment!r} is not in the input file")
-    found = text[i : i + len(fragment)]
-    return found[0].upper() + found[1:]
-
-
-def statement_of(summary: str) -> str:
-    """Trim a long Summary to its first clause for the H2 statement (DESIGN.md section 0).
-    The dropped part is restated in the step list, spec row or comparison table."""
-    m = re.match(r"(.+?)(, with |: )", summary)
-    return (m.group(1) + ".") if m and len(summary) > 110 else summary
-
 
 def corner_ticks() -> str:
     return '<span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span>'
@@ -366,7 +259,11 @@ def mask(text: str, i: int = 0) -> str:
     return f'<span class="mask"><span class="mask-in" style="--i:{i}">{text}</span></span>'
 
 
-def img_tag(rel: str, alt: str, cls: str = "", lazy: bool = True, sizes: str = "") -> str:
+def img_path(slug: str, file: str) -> str:
+    return f"assets/img/projects/{file}" if "/" in file else f"assets/img/projects/{slug}/{file}"
+
+
+def img_tag(rel: str, alt: str, cls: str = "", lazy: bool = True) -> str:
     size = image_size(ROOT / rel)
     wh = f' width="{size[0]}" height="{size[1]}"' if size else ""
     lz = ' loading="lazy" decoding="async"' if lazy else ""
@@ -374,21 +271,69 @@ def img_tag(rel: str, alt: str, cls: str = "", lazy: bool = True, sizes: str = "
     return f'<img src="{esc(rel)}" alt="{esc(alt)}"{wh}{lz}{c}>'
 
 
-def placeholder(slug: str, title: str, ratio: str = "4 / 3") -> str:
+PENDING: list[str] = []  # image files named in the input but missing on disk (for the report)
+
+
+def placeholder(file: str, title: str, ratio: str = "4 / 3") -> str:
+    PENDING.append(file)
     return (f'<div class="ph" role="img" aria-label="Image pending for {esc(title)}" style="aspect-ratio:{ratio}">'
-            f'{corner_ticks()}<span class="t-label">Image pending · {esc(slug)}</span></div>')
+            f'{corner_ticks()}<span class="t-label">Image pending · {esc(file.split("/")[-1])}</span></div>')
 
 
-def project_image(p: dict, alt: str) -> str:
-    rel = f"assets/img/projects/{p['slug']}/{p.get('cover_image', '')}"
-    if p.get("cover_image") and (ROOT / rel).is_file():
-        return img_tag(rel, alt)
-    return placeholder(p["slug"], p["title"])
+def figure(slug: str, file: str, caption: str, title: str, cls: str = "fig") -> str:
+    rel = img_path(slug, file)
+    if (ROOT / rel).is_file():
+        body = img_tag(rel, caption or title)
+        size = image_size(ROOT / rel)
+        if size and size[0] >= 1.9 * size[1]:
+            cls += " fig--wide"  # wide plots and strips take the full row
+    else:
+        body = placeholder(rel.replace("assets/img/projects/", ""), f"{title}: {caption}" if caption else title)
+    cap = f'<figcaption class="t-cap">{esc(caption)}</figcaption>' if caption else ""
+    return f'<figure class="{cls}"><div class="fig-frame">{body}{corner_ticks()}</div>{cap}</figure>'
 
 
-def spec_row(facts: list[tuple[str, str]]) -> str:
+def spec_row(facts: list[tuple[str, str]], cls: str = "") -> str:
     cells = "".join(f'<div class="spec"><dt class="t-label">{esc(k)}</dt><dd>{esc(v)}</dd></div>' for k, v in facts if v)
-    return f'<dl class="specs rise">{cells}</dl>'
+    return f'<dl class="specs {cls}">{cells}</dl>' if cells else ""
+
+
+def project_facts(p: dict) -> list[tuple[str, str]]:
+    return [("Role", p.get("role", "")), ("Year", p.get("year", ""))] + pairs(p.get("facts", ""))
+
+
+def links_html(p: dict) -> str:
+    links = pairs(p.get("links", ""))
+    if not links:
+        return ""
+    items = "".join(f'<a href="{esc(u)}">{esc(l)}</a>' for l, u in links)
+    return f'<p class="proj-links t-label">{items}</p>'
+
+
+def tags_of(p: dict) -> list[str]:
+    return [t.strip() for t in p.get("tags", "").split(",") if t.strip()]
+
+
+def has_model(slug: str) -> bool:
+    return (ROOT / f"assets/models/{slug}/{slug}.glb").is_file() or (ROOT / f"assets/models/{slug}/{slug}.bin").is_file()
+
+
+def obfuscate_models() -> None:
+    """Write assets/models/<slug>/<slug>.bin, the XOR-obfuscated copy the site loads."""
+    for glb in sorted((ROOT / "assets/models").glob("*/*.glb")):
+        out = glb.with_suffix(".bin")
+        if out.is_file() and out.stat().st_mtime >= glb.stat().st_mtime:
+            continue
+        data = bytearray(glb.read_bytes())
+        k = MODEL_KEY
+        for i in range(len(data)):
+            data[i] ^= k[i % len(k)]
+        out.write_bytes(bytes(data))
+        print(f"obfuscated {glb.relative_to(ROOT)} -> {out.name}")
+
+
+def b64r(s: str) -> str:
+    return base64.b64encode(s[::-1].encode()).decode()
 
 
 # ----------------------------------------------------------------------- sections
@@ -398,94 +343,51 @@ class Page:
         self.d = data
         self.year = _dt.date.today().year
         self.by_slug = {p.get("slug"): p for p in data["projects"]}
-        self.rendered: list[tuple[str, str]] = []  # (id, counter name)
-        self.needs_math = False
+        self.groups = {g.get("slug"): g for g in data["groups"]}
+        self.sections: list[tuple[str, str]] = []  # (id, counter name), filled in build()
+        self.needs_math = "$" in "".join(p["details"] + p.get("summary", "") for p in data["projects"])
 
-    # ---- index rows (one per tiered project; Compare-with partners share a row)
-    def work_rows(self) -> list[dict]:
-        partners = {p.get("compare_with") for p in self.d["projects"] if p.get("compare_with")}
+    def no(self, sid: str) -> str:
+        return f"{[i for i, _ in self.sections].index(sid) + 1:02d}"
+
+    # ---- steps: numbered, expandable rows (DESIGN.md section 0, "Steps")
+    def steps(self, p: dict, open_all: bool = False) -> str:
+        intro, steps = split_details(p["details"])
         rows = []
-        for p in self.d["projects"]:
-            if not p.get("tier") or p.get("slug") in partners:
-                continue
-            row = {"slug": p["slug"], "title": p["title"].split(" - ")[0], "type": p.get("type", ""),
-                   "year": p.get("year", ""), "cover": p.get("cover_image", "")}
-            if p.get("compare_with") in self.by_slug:
-                other = self.by_slug[p["compare_with"]]
-                a = other["title"].split(" - ")[0]
-                b = p["title"].split(" - ")[0].replace("Caelus ", "")
-                row["title"] = f"{a} → {b}"
-                years = sorted({other.get("year", ""), p.get("year", "")} - {""})
-                row["year"] = "–".join(years)
-            rows.append(row)
-        return rows
+        for i, st in enumerate(steps, 1):
+            figs = "".join(figure(p["slug"], f, c, p["title"]) for f, c in st["images"])
+            figs_html = f'<div class="step-figs">{figs}</div>' if figs else ""
+            body = f'<div class="step-body"><div class="prose">{md(st["body"])}</div>{figs_html}</div>'
+            if open_all:
+                rows.append(f'<section class="step step--flat"><h4 class="step-head"><span class="t-index">{i:02d}</span>'
+                            f'<span class="step-t">{inline(st["title"])}</span></h4>{body}</section>')
+            else:
+                rows.append(f'<details class="step"><summary class="step-head"><span class="t-index">{i:02d}</span>'
+                            f'<span class="step-t">{inline(st["title"])}</span><span class="step-plus" aria-hidden="true"></span>'
+                            f'</summary>{body}</details>')
+        intro_html = f'<div class="prose proj-intro t-lead">{md(intro)}</div>' if intro else ""
+        list_html = f'<div class="steps">{"".join(rows)}</div>' if rows else ""
+        return intro_html + list_html
 
-    def section_no(self, sid: str) -> str:
-        ids = [i for i, _ in self.rendered]
-        return f"{ids.index(sid) + 1:02d}"
-
-    # ---- 1. intro + work index
-    def intro(self) -> str:
-        pr = self.d["profile"]
-        first, _, last = pr["Name"].partition(" ")
-        insts = []
-        for e in self.d["education"]:
-            if e["org"] not in insts:
-                insts.append(e["org"])
-        rows = []
-        rendered_ids = {i for i, _ in self.rendered}
-        for n, r in enumerate(self.work_rows(), 1):
-            sid = r["slug"]
-            target = sid if sid in rendered_ids else ("smaller-projects" if "smaller-projects" in rendered_ids else "")
-            meta = " — ".join(x for x in (r["type"], r["year"]) if x)
-            cover = f"assets/img/projects/{sid}/{r['cover']}"
-            prev = img_tag(cover, "", "ix-prev") if r["cover"] and (ROOT / cover).is_file() else ""
-            inner = (f'<span class="t-index">{n:02d}</span><span class="ix-title">{esc(r["title"])}</span>'
-                     f'<span class="ix-meta t-label">{esc(meta)}</span>{prev}')
-            tag = f'<a class="ix-row" href="#{target}">{inner}</a>' if target else f'<div class="ix-row is-off">{inner}</div>'
-            rows.append(f'<li class="rise">{tag}<span class="ix-rule draw"></span></li>')
+    # ---- 3D stage
+    def stage(self, p: dict, theme: str, micro: str = "") -> str:
+        slug = p["slug"]
+        cfg = {"theme": theme, "models": [{
+            "key": slug, "src": f"assets/models/{slug}/{slug}.bin",
+            "poster": img_path(slug, p.get("cover_image", "")), **STAGES.get(slug, {})}]}
+        poster_rel = img_path(slug, p.get("cover_image", ""))
+        poster = img_tag(poster_rel, f"{p['title']}", "stage-poster", lazy=False) if (ROOT / poster_rel).is_file() else ""
         return f"""
-<section id="top" class="intro" data-theme="light" data-name="Intro">
-  <div class="wrap">
-    <p class="t-label intro-tag mask"><span class="mask-in">CFD · FEA · Aerospace</span></p>
-    <h1 class="t-h1 intro-name">{mask(esc(first))}{mask(esc(last), 1)}</h1>
-    <div class="intro-grid">
-      <div class="intro-copy">
-        <p class="t-h2 rise">{esc(self.d['site'].get('Tagline', '').strip())}.</p>
-        <p class="t-label intro-role rise">{esc(pr.get('Role', ''))}</p>
-        <p class="rise"><a href="#work">See selected work</a></p>
-        <p class="t-label intro-loc rise"><span class="sq"></span> {esc(pr.get('Location', ''))}<br>{' / '.join(esc(i) for i in insts)}</p>
-      </div>
-      <figure class="intro-fig rise">
-        {intro_figure()}
-      </figure>
-    </div>
-    <div class="index" id="work">
-      <div class="index-head t-label"><span>Index</span><span>{len(rows):02d} projects</span></div>
-      <ol class="ix">{''.join(rows)}</ol>
-    </div>
-  </div>
-</section>"""
-
-    # ---- big project helpers
-    def stage(self, sid: str, title: str, theme: str, models: list[dict], caption: str, legend: list[tuple[str, str]],
-              toggle: str = "", micro: str = "") -> str:
-        cfg = {"theme": theme, "models": models}
-        first = models[0]
-        poster = img_tag(first["poster"], first["alt"], "stage-poster", lazy=False)
-        legend_html = "".join(f'<li><span class="chip chip--{tone}"></span>{esc(t)}</li>' for t, tone in legend)
-        return f"""
-      <figure class="stage stage--{theme}" data-stage aria-label="{esc(title)}: interactive 3D model">
+      <figure class="stage stage--{theme}" data-stage aria-label="{esc(p['title'])}: interactive 3D model, drag to rotate">
         <div class="stage-box">
           {poster}
           <div class="stage-gl" aria-hidden="true"></div>
           <div class="stage-callouts" aria-hidden="true"></div>
           {corner_ticks()}
-          <span class="stage-micro t-label">{micro}</span>
+          <span class="stage-micro t-label">{esc(micro)}</span>
           <p class="stage-hint t-label" aria-hidden="true">Drag to rotate</p>
-          <button class="stage-tap t-label" type="button">Tap to interact</button>
+          <button class="stage-tap t-label" type="button">Tap to load 3D</button>
           <div class="stage-ui">
-            {toggle}
             <div class="presets" role="group" aria-label="Camera views">
               <button type="button" class="t-label" data-view="three">3/4</button>
               <button type="button" class="t-label" data-view="side">Side</button>
@@ -494,213 +396,344 @@ class Page:
             </div>
           </div>
         </div>
-        <figcaption class="stage-cap">
-          <ul class="legend t-label">{legend_html}</ul>
-          <span class="t-cap">{caption}</span>
-        </figcaption>
         <script type="application/json" class="stage-cfg">{json.dumps(cfg)}</script>
       </figure>"""
 
-    def head(self, sid: str, short: str, title: str, tags: list[str], statement: str) -> str:
+    def head(self, p: dict, crumb: str, number: str, level: int = 2) -> str:
+        short = p.get("short") or p["title"]
+        kicker = f'<p class="proj-kicker">{esc(p["kicker"])}</p>' if p.get("kicker") else ""
+        statement = p.get("statement") or p.get("summary", "")
+        tag = f"h{level}"
         return f"""
       <div class="proj-head">
-        <p class="t-label crumb">Home › Work › {esc(short)}</p>
-        <p class="t-label proj-no"><span class="sq"></span> No.{self.section_no(sid)} <span class="proj-tags">{esc(' / '.join(tags[:3]))}</span></p>
-        <h2 class="t-h1 proj-title" aria-label="{esc(title)}">{mask(esc(short))}</h2>
+        <p class="t-label crumb">{esc(crumb)}</p>
+        <p class="t-label proj-no"><span class="sq"></span> No.{number} <span class="proj-tags">{esc(' / '.join(tags_of(p)[:3]))}</span></p>
+        {kicker}
+        <{tag} class="t-h1 proj-title" aria-label="{esc(p['title'])}">{mask(esc(short))}</{tag}>
         <p class="t-h2 proj-statement rise">{inline(statement)}</p>
       </div>"""
 
-    # ---- 2. ET-18 (light, paper)
+    # ---- 1. intro
+    def intro(self) -> str:
+        pr, site = self.d["profile"], self.d["site"]
+        first, _, last = pr["Name"].partition(" ")
+        insts = []
+        for e in self.d["education"]:
+            if e["org"] not in [i[0] for i in insts]:
+                insts.append((e["org"], e.get("link", "")))
+        inst_html = " / ".join(f'<a href="{esc(u)}" rel="noopener">{esc(o)}</a>' if u else esc(o) for o, u in insts)
+        photo = f"assets/img/profile/{pr.get('Photo', '')}"
+        portrait = (f'<figure class="intro-portrait rise"><div class="fig-frame">{img_tag(photo, "Portrait of " + pr["Name"], "portrait", lazy=False)}'
+                    f'{corner_ticks()}</div></figure>') if (ROOT / photo).is_file() else ""
+        greet = f'<p class="intro-greet">{mask(esc(site["Greeting"]))}</p>' if site.get("Greeting") else ""
+        return f"""
+<section id="top" class="intro" data-theme="light" data-name="Intro">
+  <div class="wrap intro-grid">
+    <div class="intro-text">
+      <p class="t-label intro-tag mask"><span class="mask-in">{esc(site.get('Tag line', ''))}</span></p>
+      {greet}
+      <h1 class="t-h1 intro-name">{mask(esc(first))}{mask(esc(last), 1)}</h1>
+      <p class="t-h2 intro-role rise">{esc(pr.get('Role', ''))}</p>
+      <p class="t-label intro-loc rise"><span class="sq"></span> {esc(pr.get('Location', ''))}<br>{inst_html}</p>
+    </div>
+    {portrait}
+  </div>
+</section>"""
+
+    # ---- big project body (used standalone and inside groups)
+    def big(self, p: dict, theme: str, crumb: str, number: str, flip: bool = False, level: int = 2) -> str:
+        cover_rel = img_path(p["slug"], p.get("cover_image", ""))
+        model = has_model(p["slug"])
+        if theme == "paper":
+            # Photo is the hero image; the 3D model follows as its own band.
+            hero_img = figure(p["slug"], p.get("cover_image", ""), "", p["title"], "fig hero-photo") if p.get("cover_image") else ""
+            stage_band = f'<div class="stage-band">{self.stage(p, theme, micro=p.get("short", ""))}</div>' if model else ""
+            hero = f'<div class="hero">{self.head(p, crumb, number, level)}{hero_img}</div>{stage_band}'
+        else:
+            visual = self.stage(p, theme, micro=p.get("short", "")) if model else (
+                figure(p["slug"], p.get("cover_image", ""), "", p["title"], "fig hero-photo") if (ROOT / cover_rel).is_file() else "")
+            hero = f'<div class="hero{" hero--flip" if flip else ""}">{self.head(p, crumb, number, level)}{visual}</div>'
+        return f"""
+    {hero}
+    <div class="proj-body">
+      {spec_row(project_facts(p), "rise")}
+      <div class="proj-steps">{self.steps(p)}{links_html(p)}</div>
+    </div>"""
+
+    # ---- 2. ET-18
     def et18(self) -> str:
         p = self.by_slug["et-18-aero-package"]
-        det = p["details"]
-        steps = [find_bullet(det, k) for k in (
-            "Cornering simulations", "CFD validation", "First CFD/CHT", "Reduced Order Model", "Composite manufacturing")]
-        facts = [("Role", p.get("role", "")), ("Year", p.get("year", "")),
-                 ("Downforce", quote(det, "+13.5%")), ("Efficiency", quote(det, "+16%")), ("Track score", quote(det, "+7.3%"))]
-        cover = f"assets/img/projects/{p['slug']}/{p['cover_image']}"
-        stage = self.stage(
-            p["slug"], p["title"], "paper",
-            [{"key": "et18", "src": f"assets/models/{p['slug']}/{p['slug']}.glb", "poster": cover, "rotateY": 180,
-              "alt": "The ET-18 Formula Student car, black carbon fibre with orange accents",
-              "callouts": [{"node": "RW_Main", "label": "Composite package", "tone": "orange", "dy": 40}]}],
-            "Interactive model of the ET-18, loaded from the team's exported CAD. The photo stands in until it loads.",
-            [("Cornering · rotating domain", "orange"), ("Battery cooling · CFD/CHT", "ink")],
-            micro="ET-18 · FS 2025")
-        step_rows = "".join(f'<li class="step"><span class="t-index">{i:02d}</span><span class="step-t">{inline(s)}</span></li>'
-                            for i, s in enumerate(steps, 1))
+        sid = p["slug"]
         return f"""
-<section id="{p['slug']}" class="proj proj--big" data-theme="paper" data-name="ET-18">
-  <div class="wrap">
-    <div class="hero">
-      {self.head(p['slug'], 'ET-18', p['title'], [t.strip() for t in p['tags'].split(',')], statement_of(p['summary']))}
-      {stage}
-    </div>
-    <div class="proj-body">
-      <ol class="steps rise">{step_rows}</ol>
-      {spec_row(facts)}
-      <details class="more rise">
-        <summary class="t-label">Full project notes</summary>
-        <div class="prose">{md(det)}</div>
-      </details>
-    </div>
+<section id="{sid}" class="proj proj--big" data-theme="paper" data-name="{esc(p.get('short', ''))}">
+  <div class="wrap">{self.big(p, "paper", f"Home › Projects › {p.get('short', '')}", self.no(sid))}
   </div>
 </section>"""
 
-    # ---- 3. Caelus Baff-1 vs ONE:1 (dark)
+    # ---- 3. Caelus group
     def caelus(self) -> str:
-        b = self.by_slug["caelus-baff-1"]
-        o = self.by_slug[b["compare_with"]]
-        bd, od = b["details"], o["details"]
-        dash = "—"
-        rows = [
-            ("Role", o.get("role", dash), b.get("role", dash)),
-            ("Layout", dash, quote(bd, "A-tail pusher configuration for better weight distribution and dynamics")),
-            ("Payload", quote(od, "the payload sits outside the main fuselage, with a moving fairing that retracts after the drop"),
-             quote(bd, "Internal payload storage for improved aerodynamics")),
-            ("Structure", quote(od, "Full carbon-fibre monocoque airframe"),
-             quote(bd, "Carbon-fibre and glass-fibre prepreg structure with internal antennas")),
-            ("Wing", dash, quote(bd, "D-box wing with a leading-edge spar")),
-            ("Control surfaces", dash, quote(bd, "split flaps and flaperons")),
-            ("Autopilot", quote(od, "Fully autonomous flight with a PX4 autopilot"),
-             quote(bd, "Fully autonomous flight with ArduPilot, a pitot tube and a lidar ground-height rangefinder")),
-            ("Thrust-to-weight", quote(od, "1:1 thrust-to-weight ratio for STOL operations"), dash),
-            ("Endurance", dash, quote(bd, "30 minutes of continuous operation")),
-        ]
-        def td(label, v):
-            nil = ' class="nil"' if v == dash else ""
-            return f'<td data-label="{label}"{nil}>{esc(v)}</td>'
-
-        trs = "".join(
-            f'<tr><th scope="row" class="t-label"><span class="t-index">{i:02d}</span> {esc(k)}</th>'
-            f'{td("ONE:1", v1)}{td("Baff-1", v2)}</tr>'
-            for i, (k, v1, v2) in enumerate(rows, 1))
-        team = quote(bd, "4 people")
-        toggle = """<div class="toggle" role="group" aria-label="Aircraft">
-              <button type="button" class="t-label" data-model="one" aria-pressed="false">ONE:1 · Earlier</button>
-              <button type="button" class="t-label" data-model="baff" aria-pressed="true">Baff-1 · Newer</button>
-            </div>"""
-        stage = self.stage(
-            b["slug"], "Caelus Baff-1 and ONE:1", "dark",
-            [{"key": "baff", "src": f"assets/models/{b['slug']}/{b['slug']}.glb",
-              "poster": f"assets/img/projects/{b['slug']}/{b['cover_image']}",
-              "alt": "Render of Caelus Baff-1, a fixed-wing UAV with an A-tail and a pusher propeller",
-              "callouts": [{"node": "Tail_Body", "label": "A-tail pusher", "tone": "orange"},
-                           {"node": "R_DBox", "label": "D-box wing · leading-edge spar", "tone": "bone", "bias": [-0.6, 0.3, 0.45], "dy": 120},
-                           {"node": "R_flap", "label": "Split flaps · flaperons", "tone": "powder", "bias": [0.6, 0, 0.8], "dy": 40}]},
-             {"key": "one", "src": f"assets/models/{o['slug']}/{o['slug']}.glb",
-              "poster": f"assets/img/projects/{o['slug']}/{o['cover_image']}", "rotateY": 180,
-              "alt": "Render of Caelus ONE:1, a carbon-fibre fixed-wing UAV with a tractor propeller and an external payload",
-              "callouts": []}],
-            "Both aircraft are loaded from their exported CAD and shown at the same scale, so switching keeps the camera and the size difference is real.",
-            [("Structure", "bone"), ("Configuration", "orange"), ("Control surfaces", "powder")],
-            toggle=toggle, micro="IMechE UAS Challenge")
-        return f"""
-<section id="{b['slug']}" class="proj proj--big proj--flip" data-theme="dark" data-name="Caelus">
-  <div class="wrap">
-    <div class="hero">
-      {self.head(b['slug'], 'Caelus', 'Caelus Baff-1 compared with Caelus ONE:1', [t.strip() for t in b['tags'].split(',')], statement_of(b['summary']))}
-      {stage}
-    </div>
-    <div class="proj-body">
-      <div class="cmp rise">
-        <table class="spec-table">
-          <caption class="sr-only">Caelus ONE:1 compared with Caelus Baff-1</caption>
-          <thead><tr><th scope="col" class="t-label">Aircraft</th><th scope="col" class="t-label">ONE:1 · {esc(o.get('year', ''))}</th><th scope="col" class="t-label">Baff-1 · {esc(b.get('year', ''))}</th></tr></thead>
-          <tbody>{trs}</tbody>
-        </table>
+        g = self.groups["caelus"]
+        members = [p for p in self.d["projects"] if p.get("group") == "caelus" and p.get("tier")]
+        n = self.no("caelus")
+        blocks, flip = [], False
+        for i, p in enumerate(members, 1):
+            num = f"{n}.{i}"
+            if p["tier"] == "compact":
+                cover = figure(p["slug"], p["cover_image"], "", p["title"], "fig compact-fig") if p.get("cover_image") else ""
+                blocks.append(f"""
+    <article id="{p['slug']}" class="compact rise">
+      <div class="compact-text">
+        <p class="t-label proj-no"><span class="sq"></span> No.{num} <span class="proj-tags">{esc(' / '.join(tags_of(p)[:3]))}</span></p>
+        <h3 class="compact-title">{esc(p.get('short') or p['title'])}<span class="compact-year t-label">{esc(p.get('year', ''))}</span></h3>
+        <p class="t-lead">{inline(p.get('summary', ''))}</p>
+        {spec_row(project_facts(p))}
+        <div class="prose">{md(p['details'])}</div>
       </div>
-      {spec_row([("Team", team), ("Competition", quote(bd, "IMechE UAS Challenge")), ("Role", b.get("role", "")), ("Year", b.get("year", ""))])}
-      <details class="more rise">
-        <summary class="t-label">Full project notes</summary>
-        <div class="more-cols">
-          <div class="prose"><h3 class="t-label">Baff-1 · {esc(b.get('year', ''))}</h3>{md(bd)}</div>
-          <div class="prose"><h3 class="t-label">ONE:1 · {esc(o.get('year', ''))}</h3><p class="t-label">{esc(o.get('role', ''))}</p>{md(od)}</div>
-        </div>
-      </details>
+      {cover}
+    </article>""")
+            else:
+                blocks.append(f"""
+    <article id="{p['slug']}" class="sub-proj">
+      {self.big(p, "dark", f"Home › Projects › Caelus › {p.get('short', '')}", num, flip, level=3)}
+    </article>""")
+                flip = not flip
+        return f"""
+<section id="caelus" class="proj proj--group" data-theme="dark" data-name="Caelus">
+  <div class="wrap">
+    <header class="group-head">
+      <p class="t-label crumb">Home › Projects › Caelus</p>
+      <p class="t-label proj-no"><span class="sq"></span> No.{n} <span class="proj-tags">{esc(' / '.join(tags_of(g)[:3]))}</span></p>
+      <h2 class="t-h1 proj-title" aria-label="{esc(g['title'])}">{mask('Caelus')}</h2>
+      <p class="t-h2 proj-statement rise">{inline(g.get('summary', ''))}</p>
+    </header>
+    {''.join(blocks)}
+  </div>
+</section>"""
+
+    # ---- 4. Smaller projects
+    def smaller(self) -> str:
+        small = [p for p in self.d["projects"] if p.get("tier") == "small"]
+        sid = "smaller-projects"
+        cards, panels = [], []
+        for i, p in enumerate(small, 1):
+            slug = p["slug"]
+            cover = figure(slug, p["cover_image"], "", p["title"], "fig card-fig") if p.get("cover_image") else placeholder(f"{slug}/cover", p["title"])
+            facts = [("Type", p.get("type", "")), ("Year", p.get("year", ""))] + pairs(p.get("facts", ""))[:1]
+            cards.append(f"""
+      <li class="card rise">
+        <button class="card-btn" type="button" aria-expanded="false" aria-controls="panel-{slug}" data-panel="{slug}">
+          {cover}
+          <span class="t-index">{i:02d}</span>
+          <span class="card-title">{esc(p['title'])}</span>
+          <span class="card-sum">{inline(p.get('summary', ''))}</span>
+          <span class="card-more t-label">Open project</span>
+        </button>
+        {spec_row(facts, "card-specs")}
+      </li>""")
+            panels.append(f"""
+    <article class="panel" id="panel-{slug}" data-slug="{slug}" aria-labelledby="h-{slug}">
+      <span id="{slug}" class="anchor"></span>
+      <div class="panel-head">
+        <p class="t-label proj-no"><span class="sq"></span> {i:02d} <span class="proj-tags">{esc(' / '.join(tags_of(p)[:4]))}</span></p>
+        <h3 class="panel-title" id="h-{slug}">{esc(p['title'])}</h3>
+        <p class="t-lead">{inline(p.get('summary', ''))}</p>
+        {spec_row(project_facts(p))}
+        {links_html(p)}
+        <button class="panel-close t-label" type="button" data-close>Close</button>
+      </div>
+      <div class="panel-body">{self.steps(p, open_all=True)}</div>
+    </article>""")
+        return f"""
+<section id="{sid}" class="smaller" data-theme="sage" data-name="Smaller projects">
+  <div class="wrap">
+    <p class="t-label crumb">Home › Projects › Smaller</p>
+    <p class="t-label proj-no"><span class="sq"></span> No.{self.no(sid)} <span class="proj-tags">Academic · Thesis · Coursework</span></p>
+    <h2 class="t-h1 proj-title">{mask('Smaller')}{mask('projects', 1)}</h2>
+    <ul class="cards">{''.join(cards)}</ul>
+    <div class="panels">{''.join(panels)}</div>
+  </div>
+</section>"""
+
+    # ---- 5. CV
+    def cv(self) -> str:
+        d, pr = self.d, self.d["profile"]
+        sid = "cv"
+
+        def entry(e: dict, kind: str) -> str:
+            org = esc(e["org"])
+            if e.get("link"):
+                org = f'<a href="{esc(e["link"])}" rel="noopener">{org}</a>'
+            meta = " · ".join(esc(x) for x in (e.get("dates", ""), e.get("location", "")) if x)
+            rows = []
+            if e.get("grade"):
+                rows.append(("Grade", e["grade"]))
+            if e.get("thesis"):
+                rows.append(("Thesis", e["thesis"]))
+            facts = spec_row(rows)
+            hl = f'<p>{inline(e["highlights"])}</p>' if e.get("highlights") else ""
+            bullets = "<ul>" + "".join(f"<li>{inline(b)}</li>" for b in e["bullets"]) + "</ul>" if e["bullets"] else ""
+            return f"""
+        <li class="cv-row rise">
+          <p class="cv-dates t-label">{meta}</p>
+          <div class="cv-main">
+            <h4 class="cv-title">{esc(e['title'])}</h4>
+            <p class="cv-org">{org}</p>
+            {facts}
+            <div class="prose">{hl}{bullets}</div>
+          </div>
+        </li>"""
+
+        edu_now = [e for e in d["education"] if e.get("status", "").lower().startswith("in progress")]
+        edu_done = [e for e in d["education"] if e not in edu_now]
+        about = md(d["about"])
+        cv_file = pr.get("CV file", "")
+        cv_link = (f'<a class="btn" href="assets/docs/{esc(cv_file)}" download>Download CV · PDF</a>'
+                   if cv_file and (ROOT / "assets/docs" / cv_file).is_file() else "")
+        skills = "".join(
+            f'<div class="skill"><h4 class="t-label">{esc(k)}</h4><ul>{"".join(f"<li>{esc(v)}</li>" for v in vals)}</ul></div>'
+            for k, vals in d["skills"].items() if vals)
+        extras = "".join(f'<div class="skill"><h4 class="t-label">{esc(k)}</h4><div class="prose">{md(v)}</div></div>'
+                         for k, v in d["extras"].items())
+
+        def block(title: str, items: list[dict], kind: str) -> str:
+            if not items:
+                return ""
+            return (f'<div class="cv-block"><h3 class="cv-h t-label"><span class="sq"></span> {esc(title)}</h3>'
+                    f'<ol class="cv-list">{"".join(entry(e, kind) for e in items)}</ol></div>')
+
+        return f"""
+<section id="{sid}" class="cv" data-theme="light" data-name="CV">
+  <div class="wrap">
+    <p class="t-label crumb">Home › CV</p>
+    <p class="t-label proj-no"><span class="sq"></span> No.{self.no(sid)} <span class="proj-tags">Curriculum vitae</span></p>
+    <h2 class="t-h1 proj-title">{mask('About')}</h2>
+    <div class="cv-top">
+      <div class="prose cv-about rise">{about}</div>
+      <div class="cv-actions rise">{cv_link}</div>
+    </div>
+    <div class="cv-card">
+      {block('Education · in progress', edu_now, 'edu')}
+      {block('Education · completed', edu_done, 'edu')}
+      {block('Experience', d['experience'], 'exp')}
+      {block('Activities', d['activities'], 'act')}
+      <div class="cv-block"><h3 class="cv-h t-label"><span class="sq"></span> Skills</h3><div class="skills rise">{skills}{extras}</div></div>
     </div>
   </div>
 </section>"""
 
-    # ---- 7. Capabilities (orange blueprint panel)
-    def capabilities(self) -> str:
-        sk = self.d["skills"]
-        tools = sk.get("Tools", [])
-        about = self.d["about"]
-
-        def pick(*names):
-            out = []
-            for n in names:
-                hit = next((t for t in tools if t.startswith(n)), None)
-                if hit is None:
-                    raise SystemExit(f"build_site: tool {n!r} not in Skills > Tools")
-                out.append(hit)
-            return " · ".join(out)
-
-        ansys = next(t for t in tools if t.startswith("ANSYS"))
-        rows = [
-            ("Computational fluid dynamics", pick("Star-CCM+", "OpenFOAM") + " · ANSYS Fluent",
-             "Conjugate heat transfer, rotating cornering domains, automated meshing and aerodynamic maps",
-             "ET-18: +13.5% downforce, +16% efficiency"),
-            ("Finite element analysis", "ANSYS MAPDL, Mechanical, Workbench · " + pick("BetaCAE"),
-             "Transient dynamics, nonlinear contact, modal analysis, Python post-processing",
-             "Rail joint: failure detected from a 360 to 330 Hz shift"),
-            ("Composites and UAV design", pick("Fibersim", "Siemens NX") + " · ANSYS ACP · " + pick("PX4", "ROS2"),
-             "Mould tooling, carbon-fibre layup and curing; autonomous fixed-wing and quadcopter platforms",
-             "1st place worldwide, IEEE UAV Chase Challenge 2023"),
-        ]
-        assert "ACP" in ansys and "MAPDL" in ansys and "Fluent" in ansys
-        # Results must be stated in the input file.
-        src = INPUT.read_text(encoding="utf-8")
-        for r in ("+13.5% downforce", "+16% efficiency", "360 Hz to 330 Hz", "IEEE UAV Chase Challenge"):
-            if r not in src:
-                raise SystemExit(f"build_site: capability result {r!r} not in input")
-        statement = quote(about, "I enjoy turning a complex physical problem into a fast, reproducible workflow and a design decision someone can trust.")
-        trs = "".join(
-            f'<tr><td class="bp-n">{i:02d}</td><th scope="row">{esc(a)}</th><td>{esc(b)}<span class="bp-sub">{esc(c)}</span></td><td>{esc(d)}</td></tr>'
-            for i, (a, b, c, d) in enumerate(rows, 1))
-        sid = "capabilities"
+    # ---- 6. Awards
+    def awards(self) -> str:
+        sid = "awards"
+        rows = []
+        for i, a in enumerate(self.d["awards"], 1):
+            meta = " · ".join(esc(x) for x in (a["issuer"], a["date"]) if x)
+            fig = ""
+            if a.get("image"):
+                rel = f"assets/img/projects/{a['image']}"
+                if (ROOT / rel).is_file():
+                    fig = (f'<figure class="aw-fig"><div class="fig-frame">{img_tag(rel, a["title"])}{corner_ticks()}</div>'
+                           f'<figcaption class="t-cap">{esc(a["title"])}</figcaption></figure>')
+            marker = '<span class="sq"></span>' if i == 1 else ""
+            desc = f'<p class="aw-desc">{inline(a["desc"])}</p>' if a.get("desc") else ""
+            rows.append(f"""
+      <li class="aw-row rise">
+        <span class="t-index">{marker}{i:02d}</span>
+        <div class="aw-main"><h3 class="aw-title">{esc(a['title'])}</h3><p class="t-label aw-meta">{meta}</p>{desc}</div>
+        {fig}
+      </li>""")
         return f"""
-<section id="{sid}" class="bp" data-theme="orange" data-name="Capabilities">
+<section id="{sid}" class="awards" data-theme="butter" data-name="Awards">
+  <div class="wrap">
+    <p class="t-label proj-no"><span class="sq"></span> No.{self.no(sid)} <span class="proj-tags">Recognition · Certifications</span></p>
+    <h2 class="t-h1 proj-title">{mask('Awards')}</h2>
+    <ol class="aw-list">{''.join(rows)}</ol>
+  </div>
+</section>"""
+
+    # ---- 7. Software (orange blueprint panel)
+    def software(self) -> str:
+        sid = "software"
+        known = {p["slug"]: p for p in self.d["projects"] if p.get("tier")}
+        used, also = [], []
+        for t in self.d["software"]:
+            (used if t["uses"] else also).append(t)
+
+        def use_html(u: str) -> str:
+            if u in known:
+                p = known[u]
+                return f'<a href="#{u}">{esc(p.get("short") or p["title"])}</a>'
+            if re.fullmatch(r"[a-z0-9-]+", u):
+                raise SystemExit(f"build_site: software use {u!r} is not a project slug")
+            return f'<span>{esc(u)}</span>'
+
+        trs = "".join(
+            f'<tr><td class="bp-n">{i:02d}</td><th scope="row">{esc(t["name"])}</th><td>{esc(t["what"])}</td>'
+            f'<td><div class="bp-uses">{"".join(use_html(u) for u in t["uses"])}</div></td></tr>'
+            for i, t in enumerate(used, 1))
+        if also:
+            trs += (f'<tr class="bp-also"><td class="bp-n">+</td><th scope="row">Also</th>'
+                    f'<td colspan="2">{" · ".join(esc(t["name"]) for t in also)}</td></tr>')
+        return f"""
+<section id="{sid}" class="bp" data-theme="orange" data-name="Software">
   <div class="bp-sheet">
     <div class="wrap">
-      <div class="bp-top t-label"><span>Home › Capabilities</span><span>Sheet {self.section_no(sid)}/{len(self.rendered):02d}</span></div>
-      <h2 class="bp-title">{mask('Capabilities')}</h2>
-      <div class="bp-grid">
-        <figure class="bp-fig rise">
-          {blueprint_figure()}
-          <figcaption class="t-label">Fig. 01 · Potential flow past a Joukowski aerofoil, <span class="nocase">α</span> = 6°, Kutta condition</figcaption>
-        </figure>
-        <table class="bp-table rise">
-          <caption class="sr-only">What I do: capability, tools and results</caption>
-          <thead><tr><th scope="col">No.</th><th scope="col">Capability</th><th scope="col">Tools and methods</th><th scope="col">Result</th></tr></thead>
-          <tbody>{trs}</tbody>
-        </table>
-      </div>
-      <p class="bp-statement rise">{esc(statement)}</p>
+      <div class="bp-top t-label"><span>Home › Software</span><span>Sheet {self.no(sid)}/{len(self.sections):02d}</span></div>
+      <h2 class="bp-title">{mask('Software')}</h2>
+      <table class="bp-table rise">
+        <caption class="sr-only">Software, what it is for, and the projects it was used in</caption>
+        <thead><tr><th scope="col">No.</th><th scope="col">Tool</th><th scope="col">What it is for</th><th scope="col">Used in</th></tr></thead>
+        <tbody>{trs}</tbody>
+      </table>
       <div class="bp-bar t-label"><span>{esc(self.d['profile']['Name'])}</span><span>{self.year}</span></div>
     </div>
   </div>
 </section>"""
 
+    # ---- 8. Contact / footer
+    def contact(self) -> str:
+        pr = self.d["profile"]
+        user, _, domain = pr.get("Email", "").partition("@")
+        name, _, tld = domain.rpartition(".")
+        fallback = f"{user} [at] {name} [dot] {tld}"
+        mail = (f'<a class="btn btn--primary js-mail" data-u="{b64r(user)}" data-d="{b64r(domain)}" href="#contact">'
+                f'<span class="js-mail-t">{esc(fallback)}</span></a>') if user else ""
+        links = [("LinkedIn", pr.get("LinkedIn", "")), ("GitHub", pr.get("GitHub", ""))] + pairs(pr.get("Other links", ""))
+        if pr.get("CV file"):
+            links.append(("CV · PDF", f"assets/docs/{pr['CV file']}"))
+        link_html = "".join(f'<li><a href="{esc(u)}" rel="noopener">{esc(l)}</a></li>' for l, u in links if u)
+        last = pr["Name"].partition(" ")[2]
+        return f"""
+<section id="contact" class="contact" data-theme="dark" data-name="Contact">
+  <div class="wrap">
+    <p class="t-label proj-no"><span class="sq"></span> No.{self.no('contact')} <span class="proj-tags">Contact</span></p>
+    <div class="contact-grid">
+      <div>
+        <h2 class="t-h1 contact-title">{mask("Let's talk.")}</h2>
+        <p class="contact-mail rise">{mail}</p>
+      </div>
+      <ul class="contact-links rise">{link_html}</ul>
+    </div>
+  </div>
+  <p class="t-mega contact-mega" aria-hidden="true">{esc(last)}</p>
+  <div class="contact-legal t-label"><div class="wrap"><span>© {self.year} {esc(pr['Name'])}</span><span>{esc(pr.get('Location', ''))}</span></div></div>
+</section>"""
+
     # ---- page shell
     def build(self) -> str:
-        names = {"intro": ("top", "Intro"), "et18": ("et-18-aero-package", "ET-18"),
-                 "caelus": ("caelus-baff-1", "Caelus"), "capabilities": ("capabilities", "Capabilities")}
-        self.rendered = [names[s] for s in SECTIONS]
-        body = "\n".join(getattr(self, s)() for s in SECTIONS)
-        ids = {i for i, _ in self.rendered}
-        nav = [(l, h) for l, h in (("Work", "work"), ("About", "about"), ("Capabilities", "capabilities"), ("Contact", "contact"))
-               if h in ids or h == "work"]
-        nav_html = "".join(f'<li><a href="#{h}">{l}</a></li>' for l, h in nav)
-        menu_html = "".join(f'<li><a href="#{h}">{l}</a></li>' for l, h in nav)
+        order = [("intro", "top", "Intro"), ("et18", "et-18-aero-package", "ET-18"), ("caelus", "caelus", "Caelus"),
+                 ("smaller", "smaller-projects", "Smaller projects"), ("cv", "cv", "CV"), ("awards", "awards", "Awards"),
+                 ("software", "software", "Software"), ("contact", "contact", "Contact")]
+        self.sections = [(sid, name) for _, sid, name in order]
+        body = "\n".join(getattr(self, fn)() for fn, _, _ in order)
+        nav_html = '<li><a href="#cv">CV</a></li><li><a href="#contact">Contact</a></li>'
         pr = self.d["profile"]
         title = self.d["site"].get("Site title") or pr["Name"]
-        desc = first_sentence(self.d["about"])
+        desc = re.match(r"(.+?\.)(\s|$)", self.d["about"]).group(1)
         katex = ""
         if self.needs_math:
             katex = (f'<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@{KATEX_VERSION}/dist/katex.min.css">\n'
-                     f'<script defer src="https://cdn.jsdelivr.net/npm/katex@{KATEX_VERSION}/dist/katex.min.js"></script>')
+                     f'<script defer src="https://cdn.jsdelivr.net/npm/katex@{KATEX_VERSION}/dist/katex.min.js"></script>\n'
+                     f'<script defer src="assets/js/math.js"></script>')
         importmap = json.dumps({"imports": {
             "three": f"https://cdn.jsdelivr.net/npm/three@{THREE_VERSION}/build/three.module.js",
             "three/addons/": f"https://cdn.jsdelivr.net/npm/three@{THREE_VERSION}/examples/jsm/"}})
@@ -732,22 +765,22 @@ class Page:
 <a class="skip" href="#main">Skip to content</a>
 <header class="bar" data-on="light">
   <div class="wrap bar-in">
-    <a class="wm" href="#top"><span class="wm-name">{esc(pr['Name'])}</span><span class="wm-sub t-label">Selected work / {self.year}</span></a>
+    <a class="wm" href="#top"><span class="wm-name">{esc(pr['Name'])}</span><span class="wm-sub t-label">{esc(pr.get('Role', ''))}</span></a>
     <nav class="bar-nav" aria-label="Primary"><ul>{nav_html}</ul></nav>
     <button class="bar-menu" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
   </div>
 </header>
 <div class="menu" id="menu" data-theme="light" hidden>
-  <nav aria-label="Mobile"><ul>{menu_html}</ul></nav>
+  <nav aria-label="Mobile"><ul>{nav_html}</ul></nav>
 </div>
 <main id="main">
 {body}
 </main>
-<div class="counter t-label" aria-hidden="true" data-on="light"><span class="sq"></span><span class="c-num">01</span><span>/ {len(self.rendered):02d} —</span><span class="c-name">Intro</span></div>
+<div class="counter t-label" aria-hidden="true" data-on="light"><span class="sq"></span><span class="c-num">01</span><span>/ {len(self.sections):02d} —</span><span class="c-name">Intro</span></div>
 <script src="assets/js/reveal.js" defer></script>
 <script src="assets/js/theme-nav.js" defer></script>
-<script type="module" src="assets/js/stage-et18.js"></script>
-<script type="module" src="assets/js/stage-caelus.js"></script>
+<script src="assets/js/site.js" defer></script>
+<script type="module" src="assets/js/stage-projects.js"></script>
 </body>
 </html>
 """
@@ -755,9 +788,14 @@ class Page:
 
 def main() -> int:
     data = parse(INPUT)
+    obfuscate_models()
     page = Page(data).build()
     OUTPUT.write_text(page, encoding="utf-8", newline="\n")
     print(f"wrote {OUTPUT.relative_to(ROOT)} ({len(page) // 1024} KB)")
+    if PENDING:
+        print("image placeholders (drop these files in assets/img/projects/):")
+        for f in dict.fromkeys(PENDING):
+            print("  -", f)
     return 0
 
 
