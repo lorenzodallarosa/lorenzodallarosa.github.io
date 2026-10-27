@@ -31,6 +31,7 @@ MODEL_KEY = b"ldr-stage-7f3a91"  # XOR key shared with assets/js/stage-core.js
 # wings lie horizontal, and an optional 4th value scales the camera distance for that view.
 # "node" matches mesh names in the .glb; "bias" moves the anchor by fractions of the
 # part's half-size, "dy" offsets the label vertically in pixels.
+# "pitch" tilts a model nose up (+) or down (-) in degrees, so every wheel touches the ground.
 # "hoverCallouts" shows the callouts only while the stage is hovered; "carbon" overrides the
 # carbon-fibre finish (see tuneMaterial in assets/js/stage-core.js).
 AIRCRAFT_TOP = {"top": [-0.002, 1, 0, 1.45]}
@@ -46,10 +47,11 @@ STAGES = {
             {"node": "L18_AE_RW_Flap", "label": "Low-drag configuration", "tone": "orange", "bias": [0, 0.6, 0.5], "dy": -70}]},
     "caelus-one": {"rotateY": 180, "views": AIRCRAFT_TOP, "callouts": [
         {"node": "Alerons", "label": "Flaperons", "tone": "powder", "bias": [0, 0, 0.6], "dy": 70},
-        {"node": "Fuselage", "label": "Full carbon-fibre monocoque", "tone": "bone", "bias": [-0.72, -0.5, 0], "dy": -110},
-        {"node": "Payload", "label": "Payload fairing", "tone": "orange", "dy": 90}]},
-    "caelus-baff-1": {"views": AIRCRAFT_TOP, "callouts": [
-        {"node": "Tail_Body", "label": "A-tail pusher", "tone": "orange"},
+        {"node": "Fuselage", "label": "Full carbon-fibre monocoque", "tone": "bone", "bias": [-0.72, 0.4, 0], "dy": -110},
+        {"node": "Windshield", "label": "Payload fairing", "tone": "orange", "dy": 90}]},
+    "caelus-baff-1": {"pitch": 1.15, "views": AIRCRAFT_TOP, "callouts": [
+        {"node": "Tail_Body", "label": "A-tail", "tone": "orange", "dy": -70},
+        {"node": "Motor", "label": "Pusher configuration", "tone": "orange", "dy": -25},
         {"node": "R_DBox", "label": "D-box wing · leading-edge spar", "tone": "bone", "bias": [-0.6, 0.3, 0.45], "dy": 120},
         {"node": "R_flap", "label": "Split flaps · flaperons", "tone": "powder", "bias": [0.6, 0, 0.8], "dy": 40}]},
 }

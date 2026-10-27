@@ -73,6 +73,10 @@ Dates: [01/2023 - 09/2023]
 Location: [Pisa, Italy]
 - Support structure for the main sensor array; 1st place worldwide at the IEEE UAV Challenge 2023 (USA).
 
+### CNC Machining | Naval defence sector supply chain (undisclosed)
+Dates: []
+Location: []
+
 # EDUCATION
 
 <!-- Status: [in progress] or [completed]. Link: the institution's website. -->
@@ -423,7 +427,7 @@ such as "Coursework: autonomous flight". Leave it empty and the tool is listed w
 - OpenFOAM | Open-source CFD |
 - ANSYS ACP | Composite layup modelling |
 - Fibersim | Composite ply design and ply-book generation | et-18-aero-package
-- Autodesk Fusion 360 | CAD |
+- Autodesk Fusion 360 and CAM | CAD and CAM toolpaths for CNC machining | Experience: CNC machining (naval defence supply chain)
 - 3DExperience CATIA | CAD |
 - C++ |  |
 - Git | Version control |

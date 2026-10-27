@@ -132,7 +132,7 @@ function anchorFor(root, token, bias = [0, 0, 0]) {
   const key = token.replace(/[\s.]/g, "_");
   const box = new THREE.Box3();
   root.traverse((o) => {
-    if (o.isMesh && o.name.replace(/[\s.]/g, "_").includes(key)) box.union(new THREE.Box3().setFromObject(o));
+    if (o.isMesh && o.name.replace(/[\s.]/g, "_").includes(key)) box.union(new THREE.Box3().setFromObject(o, true));
   });
   if (box.isEmpty()) return null;
   const half = box.getSize(new THREE.Vector3()).multiplyScalar(0.5);
@@ -345,8 +345,11 @@ export function mountStage(fig) {
     const gltf = await getLoader().parseAsync(data, "");
     const root = gltf.scene;
     if (m.rotateY) root.rotation.y = THREE.MathUtils.degToRad(m.rotateY);
+    // Nose points to -X, so a nose-up pitch is a negative rotation about Z (applied before the yaw).
+    if (m.pitch) root.rotation.z = -THREE.MathUtils.degToRad(m.pitch);
     root.updateMatrixWorld(true);
-    const b = new THREE.Box3().setFromObject(root);
+    // Precise bounds: the quick ones inflate for rotated meshes and leave the model floating.
+    const b = new THREE.Box3().setFromObject(root, true);
     const c = b.getCenter(new THREE.Vector3());
     root.position.set(-c.x, -b.min.y, -c.z);
     root.updateMatrixWorld(true);
@@ -363,7 +366,7 @@ export function mountStage(fig) {
     root.visible = key === api.current;
     scene.add(root);
     const anchors = (m.callouts || []).map((co) => anchorFor(root, co.node, co.bias));
-    loaded[key] = { root, box: new THREE.Box3().setFromObject(root), anchors };
+    loaded[key] = { root, box: new THREE.Box3().setFromObject(root, true), anchors };
   }
 
   // Frame the union of all loaded models, so swapping keeps the same camera.
