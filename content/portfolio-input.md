@@ -36,7 +36,7 @@ CV file: [Lorenzo Dalla Rosa.pdf]
 ## About
 I am a final-year master's student in Aerospace Engineering, dual-enrolled at the University of Pisa and, as an honour student, at the Sant'Anna School of Advanced Studies (admission rate below 5%). I completed my bachelor's degree in less than three years, with 110/110 summa cum laude, in the top 1% of my cohort.
 
-My focus is numerical methods for CFD and aerodynamics, checked against the wind tunnel and the track. As Head of Aerodynamics at E-Team Squadra Corse, I overhauled the team's CFD set-up, introduced its first cornering and thermal simulations, and held the design event at Formula Student Germany 2025. Before that, I co-founded the first fixed-wing autonomous UAV team at Sant'Anna.
+My focus is aerodynamics and numerical methods for CFD, alongside FEM and composite structures, with results checked in the wind tunnel and on track. As Head of Aerodynamics at E-Team Squadra Corse, I overhauled the team's CFD set-up, introduced its first cornering and thermal simulations, and held the design event at Formula Student Germany 2025. Before that, I co-founded the first fixed-wing autonomous UAV team at Sant'Anna.
 
 ## Skills
 <!-- Software and programming languages are listed in # SOFTWARE, not here. -->
