@@ -27,17 +27,28 @@ KATEX_VERSION = "0.16.11"
 MODEL_KEY = b"ldr-stage-7f3a91"  # XOR key shared with assets/js/stage-core.js
 
 # 3D stage set-up per project: camera orientation, preset overrides and callouts (DESIGN.md
-# section 0). The aircraft's top view looks down with the nose up, so the wings sit horizontal;
-# an optional 4th value scales the camera distance for that view.
+# section 0). Top views look straight down; the aircraft's camera sits on the nose side so the
+# wings lie horizontal, and an optional 4th value scales the camera distance for that view.
 # "node" matches mesh names in the .glb; "bias" moves the anchor by fractions of the
 # part's half-size, "dy" offsets the label vertically in pixels.
+# "hoverCallouts" shows the callouts only while the stage is hovered; "carbon" overrides the
+# carbon-fibre finish (see tuneMaterial in assets/js/stage-core.js).
+AIRCRAFT_TOP = {"top": [-0.002, 1, 0, 1.45]}
 STAGES = {
-    "et-18-aero-package": {"rotateY": 180, "smooth": 40, "fit": 0.75, "callouts": []},
-    "caelus-one": {"rotateY": 180, "views": {"top": [0.3, 1, 0, 1.45]}, "callouts": [
+    "et-18-aero-package": {
+        "rotateY": 180, "smooth": 40, "fit": 0.75, "hoverCallouts": True,
+        "carbon": {"roughness": 0.9, "clearcoat": 0.45, "clearcoatRoughness": 0.38, "envMapIntensity": 1.0},
+        "callouts": [
+            {"node": "L18_AE_flap", "label": "Adjustable flaps", "tone": "orange", "bias": [0, 0.5, 0.75], "dy": -90},
+            {"node": "L18_AE_FW_Endplate", "label": "Footplate", "tone": "ink", "bias": [0, -0.7, 0.9], "dy": 80},
+            {"node": "L18_AE_Fairing", "label": "Flow diverters", "tone": "ink", "bias": [-0.5, 0.6, 0.95], "dy": -60},
+            {"node": "L18_AE_Undertray", "label": "Venturi-style undertray", "tone": "ink", "bias": [0, -0.3, 0.9], "dy": 90},
+            {"node": "L18_AE_RW_Flap", "label": "Low-drag configuration", "tone": "orange", "bias": [0, 0.6, 0.5], "dy": -70}]},
+    "caelus-one": {"rotateY": 180, "views": AIRCRAFT_TOP, "callouts": [
         {"node": "Alerons", "label": "Flaperons", "tone": "powder", "bias": [0, 0, 0.6], "dy": 70},
         {"node": "Fuselage", "label": "Full carbon-fibre monocoque", "tone": "bone", "bias": [-0.72, -0.5, 0], "dy": -110},
         {"node": "Payload", "label": "Payload fairing", "tone": "orange", "dy": 90}]},
-    "caelus-baff-1": {"views": {"top": [0.3, 1, 0, 1.45]}, "callouts": [
+    "caelus-baff-1": {"views": AIRCRAFT_TOP, "callouts": [
         {"node": "Tail_Body", "label": "A-tail pusher", "tone": "orange"},
         {"node": "R_DBox", "label": "D-box wing · leading-edge spar", "tone": "bone", "bias": [-0.6, 0.3, 0.45], "dy": 120},
         {"node": "R_flap", "label": "Split flaps · flaperons", "tone": "powder", "bias": [0.6, 0, 0.8], "dy": 40}]},
@@ -468,7 +479,7 @@ class Page:
         sid = p["slug"]
         return f"""
 <section id="{sid}" class="proj proj--big" data-theme="paper" data-name="{esc(p.get('short', ''))}">
-  <div class="wrap">{self.big(p, "paper", f"Home › Projects › {p.get('short', '')}", self.no(sid))}
+  <div class="wrap">{self.big(p, "paper", f"Projects › {p.get('short', '')}", self.no(sid))}
   </div>
 </section>"""
 
@@ -496,14 +507,14 @@ class Page:
             else:
                 blocks.append(f"""
     <article id="{p['slug']}" class="sub-proj">
-      {self.big(p, "dark", f"Home › Projects › Caelus › {p.get('short', '')}", num, flip, level=3)}
+      {self.big(p, "dark", f"Projects › Caelus › {p.get('short', '')}", num, flip, level=3)}
     </article>""")
                 flip = not flip
         return f"""
 <section id="caelus" class="proj proj--group" data-theme="dark" data-name="Caelus">
   <div class="wrap">
     <header class="group-head">
-      <p class="t-label crumb">Home › Projects › Caelus</p>
+      <p class="t-label crumb">Projects › Caelus</p>
       <p class="t-label proj-no"><span class="sq"></span> No.{n} <span class="proj-tags">{esc(' / '.join(tags_of(g)[:3]))}</span></p>
       <h2 class="t-h1 proj-title" aria-label="{esc(g['title'])}">{mask('Caelus')}</h2>
       <p class="t-h2 proj-statement rise">{inline(g.get('summary', ''))}</p>
@@ -551,7 +562,7 @@ class Page:
         return f"""
 <section id="{sid}" class="smaller" data-theme="sage" data-name="{esc(title)}">
   <div class="wrap">
-    <p class="t-label crumb">Home › Projects › {esc(title)}</p>
+    <p class="t-label crumb">Projects › {esc(title)}</p>
     <p class="t-label proj-no"><span class="sq"></span> No.{self.no(sid)} <span class="proj-tags">Academic · Thesis · Industry · Competition</span></p>
     <h2 class="t-h1 proj-title">{"".join(mask(esc(w), i) for i, w in enumerate(title.split()))}</h2>
     <ul class="cards">{''.join(cards)}</ul>
@@ -617,7 +628,7 @@ class Page:
         return f"""
 <section id="{sid}" class="cv" data-theme="light" data-name="CV">
   <div class="wrap">
-    <p class="t-label crumb">Home › CV</p>
+    <p class="t-label crumb">CV</p>
     <p class="t-label proj-no"><span class="sq"></span> No.{self.no(sid)} <span class="proj-tags">Curriculum vitae</span></p>
     <h2 class="t-h1 proj-title">{mask('About')}</h2>
     <div class="cv-top">
@@ -629,14 +640,14 @@ class Page:
       {block('Education · completed', edu_done, 'edu')}
       {block('Experience', d['experience'], 'exp')}
       {block('Activities', d['activities'], 'act')}
+      {self.awards()}
       <div class="cv-block"><h3 class="cv-h t-label"><span class="sq"></span> Skills</h3><div class="skills rise">{skills}{extras}</div></div>
     </div>
   </div>
 </section>"""
 
-    # ---- 6. Awards
+    # ---- awards, a block of the CV section
     def awards(self) -> str:
-        sid = "awards"
         rows = []
         for i, a in enumerate(self.d["awards"], 1):
             meta = " · ".join(esc(x) for x in (a["issuer"], a["date"]) if x)
@@ -646,24 +657,20 @@ class Page:
                 if (ROOT / rel).is_file():
                     fig = (f'<figure class="aw-fig"><div class="fig-frame">{img_tag(rel, a["title"])}{corner_ticks()}</div>'
                            f'<figcaption class="t-cap">{esc(a["title"])}</figcaption></figure>')
-            marker = '<span class="sq"></span>' if i == 1 else ""
+            marker = ""
             desc = f'<p class="aw-desc">{inline(a["desc"])}</p>' if a.get("desc") else ""
             rows.append(f"""
       <li class="aw-row rise">
         <span class="t-index">{marker}{i:02d}</span>
-        <div class="aw-main"><h3 class="aw-title">{esc(a['title'])}</h3><p class="t-label aw-meta">{meta}</p>{desc}</div>
+        <div class="aw-main"><h4 class="aw-title">{esc(a["title"])}</h4><p class="t-label aw-meta">{meta}</p>{desc}</div>
         {fig}
       </li>""")
-        return f"""
-<section id="{sid}" class="awards" data-theme="butter" data-name="Awards">
-  <div class="wrap">
-    <p class="t-label proj-no"><span class="sq"></span> No.{self.no(sid)} <span class="proj-tags">Recognition · Certifications</span></p>
-    <h2 class="t-h1 proj-title">{mask('Awards')}</h2>
-    <ol class="aw-list">{''.join(rows)}</ol>
-  </div>
-</section>"""
+        if not rows:
+            return ""
+        return (f'<div class="cv-block" id="awards"><h3 class="cv-h t-label"><span class="sq"></span> Awards and certifications</h3>'
+                f'<ol class="aw-list">{"".join(rows)}</ol></div>')
 
-    # ---- 7. Software (orange blueprint panel)
+    # ---- 6. Software (orange blueprint panel)
     def software(self) -> str:
         sid = "software"
         known = {p["slug"]: p for p in self.d["projects"] if p.get("tier")}
@@ -690,7 +697,7 @@ class Page:
 <section id="{sid}" class="bp" data-theme="orange" data-name="Software">
   <div class="bp-sheet">
     <div class="wrap">
-      <div class="bp-top t-label"><span>Home › Software</span><span>Sheet {self.no(sid)}/{len(self.sections):02d}</span></div>
+      <div class="bp-top t-label"><span>Software</span><span>Sheet {self.no(sid)}/{len(self.sections):02d}</span></div>
       <h2 class="bp-title">{mask('Software')}</h2>
       <table class="bp-table rise">
         <caption class="sr-only">Software, what it is for, and the projects it was used in</caption>
@@ -702,7 +709,7 @@ class Page:
   </div>
 </section>"""
 
-    # ---- 8. Contact / footer
+    # ---- 7. Contact / footer
     def contact(self) -> str:
         pr = self.d["profile"]
         user, _, domain = pr.get("Email", "").partition("@")
@@ -727,14 +734,14 @@ class Page:
       <ul class="contact-links rise">{link_html}</ul>
     </div>
   </div>
-  <p class="t-mega contact-mega" aria-hidden="true">{esc(last)}</p>
+  <div class="mega-wrap"><p class="t-mega contact-mega" aria-hidden="true">{esc(last)}</p></div>
   <div class="contact-legal t-label"><div class="wrap"><span>© {self.year} {esc(pr['Name'])}</span><span>{esc(pr.get('Location', ''))}</span></div></div>
 </section>"""
 
     # ---- page shell
     def build(self) -> str:
         order = [("intro", "top", "Intro"), ("et18", "et-18-aero-package", "ET-18"), ("caelus", "caelus", "Caelus"),
-                 ("smaller", "more-projects", self.d["site"].get("Projects title") or "Projects"), ("cv", "cv", "CV"), ("awards", "awards", "Awards"),
+                 ("smaller", "more-projects", self.d["site"].get("Projects title") or "Projects"), ("cv", "cv", "CV"),
                  ("software", "software", "Software"), ("contact", "contact", "Contact")]
         self.sections = [(sid, name) for _, sid, name in order]
         body = "\n".join(getattr(self, fn)() for fn, _, _ in order)
@@ -793,6 +800,7 @@ class Page:
 <script src="assets/js/reveal.js" defer></script>
 <script src="assets/js/theme-nav.js" defer></script>
 <script src="assets/js/site.js" defer></script>
+<script src="assets/js/tunnel.js" defer></script>
 <script type="module" src="assets/js/stage-projects.js"></script>
 </body>
 </html>

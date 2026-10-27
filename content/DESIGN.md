@@ -39,22 +39,23 @@ The design brief for the one-page portfolio of Lorenzo Dalla Rosa (CFD and FEA e
 | 0 | Top bar | Cream, inverts over dark | `Name`; links: `CV`, `Contact` only. No year in the sub-line |
 | 1 | Intro | Cream | `Tag line` (CFD · FEA · Composites) above the name, `Greeting` (Ciao!), `Name`, `Role`, `Location`, institutions linked to their `Link:`, greyscale portrait. No work index, no figure |
 | 2 | ET-18 | Light, `--paper` family | `et-18-aero-package`: kicker "E-Team Squadra Corse" above the H1 "ET-18", the car photo as the hero image, then the 3D stage, then the numbered steps |
-| 3 | Caelus Sant'Anna | Dark | Group `caelus`: group header, then the quadcopter (compact block), ONE:1 and Baff-1, each with its own hero, 3D stage and steps |
-| 4 | Smaller projects | Sage pastel | `Tier: small` projects as cards that expand into a full-width panel with figures |
-| 5 | CV | Cream with paper cards | About, Education (completed and in progress), Experience, Activities, Skills, Interests, CV download |
-| 6 | Awards | Butter pastel | Awards and certifications |
-| 7 | Software | Orange blueprint panel | `# SOFTWARE`: what each tool is for and the projects it was used in (linked) |
-| 8 | Contact / footer | Dark | Email (obfuscated), LinkedIn, GitHub, CV link, mega name |
+| 3 | Caelus Sant'Anna | Dark | Group `caelus`: group header, then ONE:1 and Baff-1, each with its own hero, 3D stage and steps |
+| 4 | More projects (`Projects title`) | Sage pastel | `Tier: small` projects as cards that expand into a full-width panel with figures (the quadcopter is the last card) |
+| 5 | CV | Cream with paper cards | About, Education (in progress, completed), Experience, Activities, Awards and certifications, Skills (domains, technical, languages), Interests, CV download. Compact: no project lists, no software (that is section 6) |
+| 6 | Software | Orange blueprint panel | `# SOFTWARE`: what each tool is for and the projects it was used in (linked) |
+| 7 | Contact / footer | Dark | Email (obfuscated), LinkedIn, GitHub, CV link, mega last name sized to fit the viewport |
 
-No two neighbouring sections share a theme. The section counter reads `0X / 08`, computed from the sections actually rendered.
+No two neighbouring sections share a theme. The section counter reads `0X / 07`, computed from the sections actually rendered, and fades out when the footer name comes into view. Breadcrumbs start at the section (`Projects › Caelus › ONE:1`), never with "Home".
 
 **Project rendering**
 - `Tier: big`: full section (or full sub-section inside a group) with kicker, H1 short title (`Short:`), H2 statement (`Statement:` or `Summary`), the 3D stage (when `assets/models/<slug>/<slug>.glb` exists) and the cover photo, the spec row from `Facts:`, and the steps.
 - `Tier: compact`: a shorter block inside its group: title, summary, facts, cover image, details.
 - `Tier: small`: a card (index, cover, title, summary, spec row) in the Smaller projects section; clicking it opens a full-width panel with the steps and figures.
 - **Steps**: each `#### Title` block in `Details:` is one numbered row. Rows show the title and expand on click to show the full text, bullets and figures (`Image:` lines). No boxed "project notes" panels.
-- 3D callouts are limited to what the input states: Baff-1 (A-tail pusher, D-box wing with leading-edge spar, split flaps and flaperons), ONE:1 (flaperons, full carbon-fibre monocoque, payload fairing). No legends, no generic captions under the stage, nothing on the ET-18 stage.
-- 3D materials: carbon fibre renders as a dielectric weave under a glossy clear coat (metalness 0, low clear-coat roughness), not as metal. The ET-18 mesh gets smooth (creased) normals. Dark-stage floor light stays subtle so the stage blends into `--ink`.
+- 3D callouts are limited to what the owner named: Baff-1 (A-tail pusher, D-box wing with leading-edge spar, split flaps and flaperons), ONE:1 (flaperons, full carbon-fibre monocoque, payload fairing), ET-18 (adjustable flaps, footplate, flow diverters, Venturi-style undertray, low-drag configuration; shown only on hover, leaders draw in and labels rise). No legends, no generic captions under the stage.
+- 3D views: the Top preset looks straight down. Aircraft are shown with the wings horizontal; the car lengthwise. Camera moves tween in spherical coordinates, so no preset flips over the pole.
+- 3D loading: the poster turns into a dim greyscale ghost under a slow sheen, with a centred "Loading 3D model · NN%" chip and an orange progress hairline, so it never reads as a duplicate photo.
+- 3D materials: carbon fibre renders as a dielectric weave under a clear coat (metalness 0), not as metal: glossy on the UAVs, matte satin on ET-18 (`carbon` override in `STAGES`). The ET-18 mesh gets smooth (creased) normals. Dark-stage floor light stays subtle so the stage blends into `--ink`.
 - Mobile: the 3D model loads directly when the device and connection look capable (no Save-Data, 4G-class connection, at least 4 GB memory where reported); otherwise it waits for a tap.
 
 **Image placeholders**
@@ -65,9 +66,12 @@ No two neighbouring sections share a theme. The section counter reads `0X / 08`,
 - Email: never written in plain text in the HTML; it is stored encoded and assembled by JS, with a `name [at] domain [dot] com` fallback. (The CV PDF still contains it.)
 - 3D models: published only as XOR-obfuscated `.bin` files decoded in the browser; the raw `.glb` is not deployed and the canvas has no context menu. Anyone determined can still extract a model from a running page.
 
-**Awards section**
+**Awards (a block of the CV section)**
 - Source: `# AWARDS AND CERTIFICATIONS`, one entry per line `Title | Issuer | Date | Description | Image`. Keep the input order. Never invent a missing date or description.
-- Butter pastel, H1 `Awards`, mono tag `RECOGNITION · CERTIFICATIONS`, a hairline spec table (index, title, issuer and date in mono, description underneath). An entry with an image shows it as a small figure with corner ticks. The first row has the orange square marker.
+- Rendered like the other CV rows: index, title, issuer and date in mono, description underneath.
+
+**Footer easter egg**
+- Clicking the mega last name more than once puts it in a wind tunnel (`assets/js/tunnel.js`): orange smoke streamlines, +4° angle of attack per click about the quarter chord, a mono readout with the thin-aerofoil $C_L = 2\pi\alpha$, and a buffeting stall at 16°; the next click resets. Reduced motion keeps it static.
 
 **Software section (orange blueprint panel)**
 - Source: `# SOFTWARE`, one line per tool: `Name | What it is for | where it was used`. Project slugs become anchor links to those projects; free text (e.g. coursework) is shown as written. Tools with no stated use are listed in a final "Also" row without links. Never guess which project a tool was used in.

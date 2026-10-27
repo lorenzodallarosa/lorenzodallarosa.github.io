@@ -34,15 +34,18 @@ Other links: []
 CV file: [Lorenzo Dalla Rosa.pdf]
 
 ## About
-I am an aerospace engineer based in Pisa, specialising in computational fluid dynamics and finite element analysis. I am completing a double master's degree in Aerospace Engineering at the University of Pisa and, as an honour student, at the Sant'Anna School of Advanced Studies. I graduated summa cum laude in my bachelor's degree, in the top 1% of my class.
+I am a final-year master's student in Aerospace Engineering, dual-enrolled at the University of Pisa and, as an honour student, at the Sant'Anna School of Advanced Studies, where admission is through a national competitive examination in mathematics and physics with an acceptance rate below 5%. I completed my bachelor's degree in less than three years, with 110/110 summa cum laude, in the top 1% of my cohort.
 
-My work sits where simulation meets hardware. I build automated CFD and FEA pipelines, then validate them against wind tunnel and on-track data. As Head of Aerodynamics of E-Team Squadra Corse, I led a 13-member team to a 13.5% downforce increase and a 16% efficiency gain. I also introduced the team's first CFD/CHT battery cooling simulations, and I led the composite manufacturing of the aero package. Before that, I co-founded a fixed-wing UAV team from scratch and won first place worldwide at the IEEE UAV Challenge 2023.
+My focus is numerical methods for CFD and aerodynamics across flow regimes, from automotive aerodynamics to rarefied gases and cold plasmas for electric propulsion. Knowing the limits of a simulation matters just as much to me, so I check my results in the wind tunnel and on track.
+
+At E-Team Squadra Corse, my wind tunnel validation and cornering simulations were praised by the aerodynamics judge from Sauber F1 at Formula Student Germany 2025, and I was promoted to Head of Aerodynamics in my second year. I overhauled the team's CFD set-up, introduced its first cornering and thermal simulations, and built a coupled aero-vehicle dynamics reduced-order model to judge each design by its predicted track score. Before that, I co-founded the first fixed-wing autonomous UAV team at Sant'Anna, where a small team meant balancing aerodynamic and structural design with supply chain and sponsorships.
+
+I like owning a project from the first concept sketch through simulation to the finished part, because success is measured on track, not in CFD.
 
 ## Skills
+<!-- Software and programming languages are listed in # SOFTWARE, not here. -->
 - Domains: [Computational Fluid Dynamics, Finite Element Analysis, Conjugate Heat Transfer, Aerodynamics, Rarefied Gas and Cold Plasma Dynamics, Flight Mechanics, Composite Structures, Autonomous Flight]
 - Technical: [Statistical data analysis, Team and project management, Composite materials (structures and layups), Advanced additive manufacturing (FDM, SLM)]
-- Tools: [Star-CCM+, OpenFOAM, ANSYS (Fluent, MAPDL, Mechanical, ACP, Workbench), BetaCAE (ANSA, META), Siemens NX, Fibersim, SolidWorks, Autodesk Fusion 360, 3DExperience CATIA, ROS2, PX4, Git]
-- Programming: [Python, MATLAB, C, C++, APDL, Star-CCM+ Java macros, Bash]
 - Languages: [Italian (native), English (C2 Cambridge Advanced), French (conversational), German (basic)]
 
 # EXPERIENCE
@@ -51,39 +54,28 @@ My work sits where simulation meets hardware. I build automated CFD and FEA pipe
 Dates: [09/2025 - 09/2026]
 Location: [Pisa, Italy]
 - Led a 13-member division to a 13.5% downforce increase, a 16% efficiency gain and a 7.3% higher track score.
-- Pioneered the team's first CFD/CHT battery cooling simulations, lowering steady-state peak temperatures by 15 °C.
-- Optimised the simulation architecture, cutting standard deviation 10-fold while lowering cell count.
-- Automated volume meshing and aerodynamic map generation pipelines.
-- Developed a Reduced Order Model for vehicle dynamics to qualify aerodynamic designs based on predicted track scores.
-- Developed experimental validation through on-track pushrod extensometry and wind tunnel testing.
-- Led end-to-end composite manufacturing (mould tooling, carbon-fibre layup, curing), cutting package weight by 8%.
+- Battery cooling CFD/CHT, simulation automation, a vehicle dynamics reduced-order model and composite manufacturing.
 
 ### CFD Engineer | E-Team Squadra Corse (Formula Student)
 Dates: [10/2024 - 09/2025]
 Location: [Pisa, Italy]
-- Set up cornering simulations with a rotating circular domain in Star-CCM+, enabling more realistic modelling of airflow.
-- Independently validated CFD results against wind tunnel data: designed the test model, ran the trials and performed statistical signal analysis on time-series sensor data in Python.
-- Delivered the engineering design presentation at Formula Student Germany 2025.
+- Cornering simulations and wind tunnel validation; delivered the engineering design presentation at Formula Student Germany 2025.
 
 ### BS Thesis Researcher | SkyEye Systems
 Dates: [04/2025 - 06/2025]
 Location: [Remote]
-- Designed and evaluated the rotor aerodynamic performance of a large-scale VTOL UAV, in a bachelor's thesis collaboration with the Laboratory of Experimental Aerodynamics (University of Pisa).
-- Fully automated the simulation pipeline to generate aerodynamic maps and identify the most efficient configuration.
+- Rotor aerodynamics of a large-scale VTOL UAV, with the Laboratory of Experimental Aerodynamics (University of Pisa).
 
 ### Co-Founder, Aerodynamics Division Manager and Lead Operations | Fixed-Wing UAV Team, Caelus Sant'Anna
 Dates: [09/2023 - 09/2025]
 Location: [Pisa, Italy]
 - Co-founded the team to design and build an autonomous fixed-wing UAV from scratch for the IMechE UAS Challenge (UK).
-- Oversaw aerodynamic design, systems integration and autonomous navigation, and coordinated design and manufacturing phases to deliver on time within tight deadlines.
-- Designed the wing, fuselage and A-tail pusher configuration for a new UAV platform.
-- Implemented a parametric simulation framework that automates geometry changes, mesh generation and solver configuration, cutting turnaround time and keeping testing consistent across design variants.
+- Oversaw aerodynamic design, systems integration and autonomous navigation, coordinating design and manufacturing to tight deadlines.
 
 ### CAD and Additive Manufacturing Engineer | Autonomous Quadcopter Team, Caelus Sant'Anna
 Dates: [01/2023 - 09/2023]
 Location: [Pisa, Italy]
-- Designed and additively manufactured the structural framework for the main sensor array.
-- Secured 1st place worldwide at the IEEE UAV Challenge 2023 (USA).
+- Structural framework for the main sensor array; 1st place worldwide at the IEEE UAV Challenge 2023 (USA).
 
 # EDUCATION
 
@@ -97,12 +89,7 @@ Link: [https://www.santannapisa.it]
 Grade: []
 Thesis: []
 Highlights: Honour student on a five-year full scholarship (5% admission rate).
-- Coursework: CFD and FEM numerical methods, statistical data analysis, rarefied gas and cold plasma dynamics, autonomous flight (ROS2, PX4), microcontroller programming in C, signal processing.
-- Plasma source characterisation (in progress).
-- Air-breathing electric thruster CubeSat concept for Very Low Earth Orbit missions (in progress).
-- Critical engine speed in an engine connecting rod: analytical and FEA modelling in Ansys Mechanical.
-- Godunov-type Riemann solver in Python for hyperbolic PDEs in compressible CFD.
-- 3D transient FEA in ANSYS APDL of moving Hertzian contact loads, coupled with a Python spectral diagnostic index to detect structural failures in rail joints.
+- Coursework: CFD and FEM numerical methods, statistical data analysis, rarefied gas and cold plasma dynamics, autonomous flight, microcontroller programming, signal processing.
 
 ### Master's degree, Aerospace Engineering | University of Pisa
 Dates: [09/2022 - Exp. 11/2027]
@@ -122,9 +109,7 @@ Link: [https://www.unipi.it]
 Grade: [110/110 summa cum laude (top 1% of class, GPA 29.53/30)]
 Thesis: [Rotor aerodynamics of a large-scale VTOL UAV, with SkyEye Systems and the Laboratory of Experimental Aerodynamics]
 Highlights:
-- Coursework: fluid dynamics, continuum mechanics, aerospace systems, C/C++ programming.
-- Star-CCM+ CFD/CHT simulations of an axial compressor stage.
-- Multi-body landing gear dynamics model in MATLAB.
+- Coursework: fluid dynamics, continuum mechanics, aerospace systems, programming.
 
 # ACTIVITIES
 
@@ -157,7 +142,7 @@ Short: [ET-18]
 Kicker: [E-Team Squadra Corse]
 Type: [Competition]
 Year: [2025]
-Role: [CFD Engineer, then Head of Aerodynamics]
+Role: [Head of Aerodynamics]
 Tags: [CFD, Star-CCM+, Formula Student, Composites, CHT, Wind Tunnel]
 Tier: [big]
 Theme: [light]
@@ -166,19 +151,18 @@ Images: []
 Links: []
 Statement: [Aerodynamic development of E-Team Squadra Corse's ET-18.]
 Summary: [Aerodynamic development of E-Team Squadra Corse's ET-18, with a 13.5% downforce increase and a 16% efficiency gain, validated in the wind tunnel and on track.]
-Facts: [Downforce | +13.5% ; Efficiency | +16% ; Track score | +7.3% ; Package weight | −8% ; Design presentation | FS Germany 2025]
+Facts: [Downforce | +13.5% ; Efficiency | +16% ; Track score | +7.3% ; Package weight | −8% ; Competitions | FS Spain, FS Alpe Adria, FSATA]
 Details:
-Aerodynamic development of the E-Team Squadra Corse Formula Student car, first as CFD Engineer and then as Head of Aerodynamics (13-member division).
+Aerodynamic development of the E-Team Squadra Corse Formula Student car, first as CFD Engineer and then as Head of Aerodynamics.
 
 #### Cornering simulations
 Image: cornering-domain.jpg | Rotating circular domain for cornering simulations in Star-CCM+
-Set up cornering simulations with a rotating circular domain in Star-CCM+, enabling more realistic modelling of airflow.
+Set up cornering simulations with a rotating circular domain in Star-CCM+, enabling more realistic modelling of the airflow during the skidpad.
 
 #### Validation in the wind tunnel and on track
 Image: wind-tunnel.jpg | Wind tunnel test model
 - Independently validated CFD results against wind tunnel data: designed the test model, ran the trials and performed statistical signal analysis on time-series sensor data in Python.
 - On-track pushrod extensometry for experimental validation.
-- Result: +13.5% downforce, +16% efficiency, +7.3% track score.
 
 #### Battery cooling (CFD/CHT)
 Image: battery-cht.jpg | CFD/CHT battery cooling simulation
@@ -188,11 +172,15 @@ Pioneered the team's first CFD/CHT battery cooling simulations, lowering steady-
 Image: aero-map.jpg | Automated aerodynamic map
 - Optimised the simulation architecture, cutting standard deviation 10-fold while lowering cell count.
 - Automated volume meshing and aerodynamic map generation pipelines.
-- Developed a Reduced Order Model for vehicle dynamics to qualify aerodynamic designs based on predicted track scores.
+
+#### Reduced-order model
+Image: rom.jpg | Reduced-order model: predicted track score of each aerodynamic design
+The car's performance is a balance between downforce, aero balance and drag, so no single coefficient can rank two designs. I developed a coupled aero-vehicle dynamics Reduced Order Model that predicts the on-track score variation from simulation data, and used it to qualify each aerodynamic design and to quantify the gains of the new package.
 
 #### Composite manufacturing
 Image: composites.jpg | Composite manufacturing of the aero package
-Led end-to-end composite manufacturing (mould tooling, carbon-fibre layup, curing), cutting package weight by 8%.
+- Led end-to-end composite manufacturing (mould tooling, carbon-fibre layup, curing), cutting package weight by 8%.
+- Managed the team's transition from SolidWorks to Siemens NX, with ply-book generation in Fibersim.
 
 ### Caelus ONE:1 - Autonomous Fixed-Wing UAV
 Slug: [caelus-one]
@@ -208,23 +196,19 @@ Theme: [dark]
 Cover image: [cover.png]
 Images: []
 Links: []
-Summary: [A fully autonomous, carbon-fibre fixed-wing UAV built from scratch by a four-person student team for the IMechE UAS Challenge.]
-Facts: [Team | 4 people ; Competition | IMechE UAS Challenge (UK) ; Thrust-to-weight | 1:1 ; Autopilot | PX4]
+Summary: [A fully autonomous, carbon-fibre fixed-wing UAV built from scratch by a ten-person student team for the IMechE UAS Challenge.]
+Facts: [Team | 10 people ; Competition | IMechE UAS Challenge (UK) ; Thrust-to-weight | 1:1 ; Autopilot | PX4]
 Details:
-Design, manufacturing and testing of a fully autonomous fixed-wing UAV for the IMechE UAS Challenge (UK). Small student team (4 people).
+Design, manufacturing and testing of a fully autonomous fixed-wing UAV for the IMechE UAS Challenge (UK), by a new ten-person student team. In a small team I balanced structural and aerodynamic design with supply chain management and sponsorships, under strict deadlines where any mistake ends in a crash.
 
 #### Aerodynamic layout and payload fairing
 Image: payload-fairing.jpg | Payload and retracting fairing
-Innovative aerodynamic layout: the payload sits outside the main fuselage, with a moving fairing that retracts after the drop.
+- Innovative aerodynamic layout: the payload sits outside the main fuselage, with a moving fairing that retracts after the drop.
+- Flaperons as control surfaces.
 
-#### Carbon-fibre monocoque
-Full carbon-fibre monocoque airframe with a 1:1 thrust-to-weight ratio for STOL operations.
-
-#### Control surfaces
-Flaperons.
-
-#### Autonomy
-Fully autonomous flight with a PX4 autopilot.
+#### Carbon-fibre monocoque and autonomy
+- Full carbon-fibre monocoque airframe with a 1:1 thrust-to-weight ratio, capable of short take-off and landing.
+- Fully autonomous flight with a PX4 autopilot.
 
 ### Caelus Baff-1 - Autonomous Fixed-Wing UAV
 Slug: [caelus-baff-1]
@@ -242,27 +226,24 @@ Images: []
 Links: []
 Statement: [Second-generation IMechE UAS Challenge aircraft.]
 Summary: [Second-generation IMechE UAS Challenge aircraft: A-tail pusher, D-box composite wing and 30 minutes of continuous autonomous operation.]
-Facts: [Team | 4 people ; Competition | IMechE UAS Challenge (UK) ; Endurance | 30 min ; Autopilot | ArduPilot]
+Facts: [Team | 10 people ; Competition | IMechE UAS Challenge (UK) ; Endurance | 30 min ; Autopilot | ArduPilot]
 Details:
-Design, manufacturing and testing of the following year's fully autonomous fixed-wing UAV for the IMechE UAS Challenge. Small student team (4 people).
+Design, manufacturing and testing of the following year's fully autonomous fixed-wing UAV for the IMechE UAS Challenge, by the same ten-person team. This year I focused on aerodynamic design and stability analysis.
 
 #### A-tail pusher configuration
 - Designed the wing, fuselage and A-tail pusher configuration for a new UAV platform.
 - A-tail pusher configuration for better weight distribution and dynamics.
 - Internal payload storage for improved aerodynamics; split flaps and flaperons.
 
-#### Lightweight composite structure
+#### Composite structure and autonomy
 Image: wing-structure.jpg | D-box wing with leading-edge spar
 - Updated lightweight structure: D-box wing with a leading-edge spar.
 - Carbon-fibre and glass-fibre prepreg structure with internal antennas.
-
-#### Autonomy and endurance
-- Fully autonomous flight with ArduPilot, a pitot tube and a lidar ground-height rangefinder.
-- 30 minutes of continuous operation.
+- Fully autonomous flight with ArduPilot, a pitot tube and a lidar ground-height rangefinder, for 30 minutes of continuous operation.
 
 #### Parametric simulation framework
 Image: parametric-cfd.jpg | Parametric CFD across design variants
-Implemented a parametric simulation framework that automates geometry changes, mesh generation and solver configuration, cutting turnaround time and keeping testing consistent across design variants.
+Implemented a parametric simulation framework that automates geometry changes, mesh generation and solver configuration. It cut design iteration turnaround time, kept testing consistent across design variants and generated the aerodynamic maps needed for the stability assessment.
 
 ### Dynamics of an Insulated Rail Joint
 Slug: [rail-joint-dynamics]
@@ -415,7 +396,7 @@ Details:
 Slug: [caelus]
 Theme: [dark]
 Tags: [Autonomous UAVs, Composites, Aerodynamics]
-Summary: [Two autonomous fixed-wing UAVs designed, built and flown by a four-person student team for the IMechE UAS Challenge (UK), in 2024 and 2025.]
+Summary: [Two autonomous fixed-wing UAVs designed, built and flown by a ten-person student team for the IMechE UAS Challenge (UK), in 2024 and 2025.]
 
 # SOFTWARE
 
@@ -442,7 +423,7 @@ such as "Coursework: autonomous flight". Leave it empty and the tool is listed w
 - ANSYS Fluent | General-purpose CFD |
 - OpenFOAM | Open-source CFD |
 - ANSYS ACP | Composite layup modelling |
-- Fibersim | Composite ply design and manufacturing data |
+- Fibersim | Composite ply design and ply-book generation | et-18-aero-package
 - Autodesk Fusion 360 | CAD |
 - 3DExperience CATIA | CAD |
 - C++ |  |
@@ -455,7 +436,6 @@ such as "Coursework: autonomous flight". Leave it empty and the tool is listed w
 
 <!-- Format: - Title | Issuer | Date | Description (optional) | Image (optional, path relative to assets/img/projects/) -->
 - Academic Excellence Medal | University of Pisa | 12/2025 | Awarded to graduates with the best academic performance.
-- Mentee, LeadTheFuture | LeadTheFuture | 2025 | Selected among the few Italian STEM students admitted to this mentorship non-profit (acceptance rate below 20%).
 - 1st place worldwide, IEEE UAV Chase Challenge | IEEE, Purdue University (USA) | 2023 | CAD and additive manufacturing of the support structures for the sensing module, antennas and compute stick of the Caelus Sant'Anna autonomous quadcopter, plus battery sizing. | uav-chase-challenge/cover.png
 - Honour student, five-year full scholarship | Sant'Anna School of Advanced Studies | 2022 | Admission rate 5%.
 - Cambridge C2 Certificate in Advanced English | Cambridge | 2021

@@ -8,6 +8,7 @@
   const name = counter && counter.querySelector(".c-name");
   const sections = [...document.querySelectorAll("main > section[data-theme]")];
   const links = [...document.querySelectorAll(".bar-nav a")];
+  const mega = document.querySelector(".mega-wrap"); // the counter steps aside for the footer name
   if (!bar || !sections.length) return;
 
   const at = (y) => sections.find((s) => {
@@ -23,6 +24,7 @@
     bar.dataset.on = tone(at(bar.offsetHeight / 2));
     if (counter) {
       counter.dataset.on = tone(at(innerHeight - 28));
+      counter.classList.toggle("is-off", !!mega && mega.getBoundingClientRect().top < innerHeight - 10);
       const cur = at(innerHeight / 2) || sections[0];
       const i = sections.indexOf(cur);
       if (cur.id !== shown) {

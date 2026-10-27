@@ -8,7 +8,9 @@
      their own materials.
    - Orbit with damping, limited polar angle and zoom, idle rotation <= 2 deg/s that
      stops on interaction and respects reduced motion.
-   - Keyboard-accessible camera presets and 1px callout leaders anchored to named nodes. */
+   - Keyboard-accessible camera presets and 1px callout leaders anchored to named nodes;
+     a model can keep its callouts hidden until the stage is hovered.
+   - While the model loads, the poster turns into a dimmed ghost with a progress bar. */
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
@@ -23,12 +25,13 @@ const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
 const small = matchMedia("(max-width: 767px)");
 const ease = (t) => 1 - Math.pow(1 - t, 3);
 
-// Camera directions; every model is exported nose towards -X, +Y up.
+// Camera directions; every model is exported nose towards -X, +Y up. The top view looks
+// straight down (the tiny offset only fixes which way is up on screen).
 const VIEWS = {
   three: new THREE.Vector3(-1, 0.5, 1.05),
   side: new THREE.Vector3(0, 0.12, 1),
   front: new THREE.Vector3(-1, 0.18, 0),
-  top: new THREE.Vector3(0, 1, 0.3),
+  top: new THREE.Vector3(0, 1, 0.002),
 };
 
 let loader;
@@ -74,24 +77,27 @@ function canAutoLoad() {
   return true;
 }
 
-// Carbon fibre: a woven dielectric under a glossy clear coat, not a metal. The exported
+// Carbon fibre: a woven dielectric under a clear coat, not a metal. The exported
 // metal/roughness maps flag the weave as metallic, so metalness is forced to zero and the
-// weave reads through the roughness map and the normal map under a mirror-smooth coat.
-function tuneMaterial(mat, maxAniso) {
+// weave reads through the roughness map and the normal map under the coat. `look` lets a
+// model override the defaults, e.g. a more matte finish.
+const CARBON = { roughness: 0.75, clearcoat: 1, clearcoatRoughness: 0.03, envMapIntensity: 1.8 };
+function tuneMaterial(mat, maxAniso, look = {}) {
   if (!mat) return;
   // Sharp tiled textures at grazing angles (the ET-18 weave repeats 18 times per UV tile).
   ["map", "normalMap", "roughnessMap", "metalnessMap"].forEach((k) => {
     if (mat[k]) { mat[k].anisotropy = maxAniso; mat[k].needsUpdate = true; }
   });
   if (!mat.isMeshPhysicalMaterial || !(mat.clearcoat > 0) || !mat.normalMap) return;
+  const c = { ...CARBON, ...look };
   mat.metalness = 0;
   mat.metalnessMap = null;
-  mat.roughness = 0.75; // scales the weave's roughness map (~0.3) to a satin fibre
+  mat.roughness = c.roughness; // scales the weave's roughness map (~0.3) to a satin fibre
   mat.color.multiplyScalar(0.6);
   mat.normalScale.set(0.6, 0.6);
-  mat.clearcoat = 1;
-  mat.clearcoatRoughness = 0.03;
-  mat.envMapIntensity = 1.8; // the coat needs clear reflections to read as lacquer
+  mat.clearcoat = c.clearcoat;
+  mat.clearcoatRoughness = c.clearcoatRoughness;
+  mat.envMapIntensity = c.envMapIntensity; // a glossy coat needs clear reflections to read as lacquer
   mat.needsUpdate = true;
 }
 
@@ -149,7 +155,15 @@ export function mountStage(fig) {
   const status = document.createElement("p");
   status.className = "stage-status t-label";
   status.setAttribute("aria-live", "polite");
-  box.appendChild(status);
+  const bar = document.createElement("span");
+  bar.className = "stage-progress";
+  bar.setAttribute("aria-hidden", "true");
+  box.append(status, bar);
+  const progress = (f) => {
+    status.textContent = f == null ? "Loading 3D model" : `Loading 3D model · ${Math.round(f * 100)}%`;
+    bar.style.setProperty("--p", f == null ? 0.08 : f);
+  };
+  if (cfg.models.some((m) => m.hoverCallouts)) fig.classList.add("co-hover");
 
   function show(key) {
     api.current = key;
@@ -177,10 +191,12 @@ export function mountStage(fig) {
   const start = () => {
     if (started) return;
     started = true;
+    fig.classList.add("is-loading");
+    progress(null);
     init().catch((err) => {
       console.error(err);
       status.textContent = "3D unavailable · photo shown";
-    });
+    }).finally(() => fig.classList.remove("is-loading"));
   };
   fig.querySelector(".stage-tap").addEventListener("click", start);
   fig.addEventListener("contextmenu", (e) => e.preventDefault());
@@ -207,12 +223,15 @@ export function mountStage(fig) {
       path.setAttribute("class", `co-line tone-${c.tone}`);
       path.setAttribute("fill", "none");
       path.setAttribute("stroke-width", "1");
+      path.setAttribute("pathLength", "1"); // lets CSS draw the leader in
       const dot = document.createElementNS(svg.namespaceURI, "circle");
       dot.setAttribute("r", "2.5");
-      dot.setAttribute("class", `tone-${c.tone}`);
+      dot.setAttribute("class", `co-dot tone-${c.tone}`);
+      [path, dot].forEach((el) => el.style.setProperty("--i", i));
       svg.append(path, dot);
       const label = document.createElement("span");
       label.className = `co-label tone-${c.tone}`;
+      label.style.setProperty("--i", i);
       label.textContent = c.label;
       coLayer.appendChild(label);
       callouts.push({ c, anchor: entry.anchors[i], path, dot, label, dy: c.dy ?? (i % 2 ? 64 : -64) });
@@ -251,7 +270,8 @@ export function mountStage(fig) {
       k.path.setAttribute("points", `${x},${y} ${ex},${ey} ${lx},${ey}`);
       k.dot.setAttribute("cx", x);
       k.dot.setAttribute("cy", y);
-      k.label.className = `co-label tone-${k.c.tone} ${dir > 0 ? "right" : "left"}`;
+      k.label.classList.toggle("right", dir > 0);
+      k.label.classList.toggle("left", dir < 0);
       k.label.style.left = `${lx}px`;
       k.label.style.top = `${ey}px`;
     });
@@ -278,7 +298,7 @@ export function mountStage(fig) {
     controls.enableDamping = true;
     controls.dampingFactor = 0.08;
     controls.enablePan = false;
-    controls.minPolarAngle = Math.PI * 0.06;
+    controls.minPolarAngle = 0;
     controls.maxPolarAngle = Math.PI * 0.49;
     controls.autoRotate = !reduceMotion.matches;
     controls.autoRotateSpeed = 0.3; // 0.3 * 6 = 1.8 deg/s
@@ -319,8 +339,8 @@ export function mountStage(fig) {
   async function loadModel(key) {
     const m = byKey[key];
     const { scene } = three;
-    status.textContent = "Loading model";
-    const data = await fetchModel(m.src, (f) => { status.textContent = `Loading model · ${Math.round(f * 100)}%`; });
+    progress(null);
+    const data = await fetchModel(m.src, progress);
     const gltf = await getLoader().parseAsync(data, "");
     const root = gltf.scene;
     if (m.rotateY) root.rotation.y = THREE.MathUtils.degToRad(m.rotateY);
@@ -335,7 +355,7 @@ export function mountStage(fig) {
       if (!o.isMesh) return;
       o.castShadow = true;
       o.receiveShadow = true;
-      (Array.isArray(o.material) ? o.material : [o.material]).forEach((mt) => tuneMaterial(mt, maxAniso));
+      (Array.isArray(o.material) ? o.material : [o.material]).forEach((mt) => tuneMaterial(mt, maxAniso, m.carbon));
       // Smooth faceted exports: average normals across faces closer than the crease angle.
       if (crease && !o.material.normalMap) o.geometry = toCreasedNormals(o.geometry, crease);
     });
@@ -435,7 +455,13 @@ export function mountStage(fig) {
       controls.update();
       return;
     }
-    tween = { from: camera.position.clone(), to, t0: performance.now(), dur: 700 };
+    // Tween in spherical coordinates around the target: azimuth takes the short way round and
+    // the polar angle moves on its own, so swinging over the pole never flips the camera.
+    const a = new THREE.Spherical().setFromVector3(camera.position.clone().sub(center));
+    const b = new THREE.Spherical().setFromVector3(to.clone().sub(center));
+    let dTheta = b.theta - a.theta;
+    dTheta = Math.atan2(Math.sin(dTheta), Math.cos(dTheta));
+    tween = { a, b, dTheta, t0: performance.now(), dur: 800 };
   }
   presetBtns.forEach((b) => b.addEventListener("click", () => {
     if (!three) return;
@@ -457,17 +483,18 @@ export function mountStage(fig) {
   }
   new ResizeObserver(resize).observe(box);
 
-  const tmp = new THREE.Vector3();
+  const sph = new THREE.Spherical();
   function tick(now) {
     const { renderer, scene, camera, controls } = three;
     if (tween) {
       const t = Math.min(1, (now - tween.t0) / tween.dur);
-      const k = ease(t);
-      // Interpolate around the target, so the camera swings rather than cutting through.
-      const a = tween.from.clone().sub(center), b = tween.to.clone().sub(center);
-      const len = THREE.MathUtils.lerp(a.length(), b.length(), k);
-      tmp.copy(a.normalize()).lerp(b.normalize(), k).normalize().multiplyScalar(len);
-      camera.position.copy(center).add(tmp);
+      const k = ease(t), { a, b } = tween;
+      sph.set(
+        THREE.MathUtils.lerp(a.radius, b.radius, k),
+        Math.max(1e-4, THREE.MathUtils.lerp(a.phi, b.phi, k)),
+        a.theta + tween.dTheta * k,
+      );
+      camera.position.setFromSpherical(sph).add(center);
       if (t >= 1) tween = null;
     }
     controls.update();

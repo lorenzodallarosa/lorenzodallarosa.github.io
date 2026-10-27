@@ -17,7 +17,7 @@ content/DESIGN.md            <- design brief (look, layout, motion, 3D) the site
 tools/build_site.py          <- generator: input .md -> index.html
 index.html                   <- generated one-page site (do not edit by hand)
 assets/css/                  <- tokens.css, base.css, components.css (hand-written)
-assets/js/                   <- reveal.js, theme-nav.js, site.js, math.js, stage-core.js + stage-projects.js (3D viewers)
+assets/js/                   <- reveal.js, theme-nav.js, site.js, math.js, tunnel.js (footer easter egg), stage-core.js + stage-projects.js (3D viewers)
 assets/img/profile/          <- your photo
 assets/img/projects/         <- one sub-folder per project (cover.* is the poster and index preview)
 assets/models/               <- source .glb models (local only, gitignored) + obfuscated .bin copies the site loads
