@@ -313,7 +313,7 @@ section.bp[data-theme] { background: var(--cream); padding: 24px; }
 .contact-links li { border-bottom: 1px solid var(--rule); }
 .contact-links a { display: block; padding: 14px 0; font-size: 1.15rem; text-decoration: none; }
 .contact-links a:hover { text-decoration: underline; }
-.mega-wrap { position: relative; }
+.mega-wrap { position: relative; touch-action: manipulation; } /* no double-tap zoom: taps go to the easter egg */
 /* Sized so the whole last name fits the viewport width. */
 .contact-mega {
   color: var(--bone); margin: clamp(64px, 10vh, 120px) 0 -0.17em; padding-left: calc(var(--margin) - .04em); white-space: nowrap;
