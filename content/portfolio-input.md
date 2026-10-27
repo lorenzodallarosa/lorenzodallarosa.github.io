@@ -38,8 +38,6 @@ I am a final-year master's student in Aerospace Engineering, dual-enrolled at th
 
 My focus is numerical methods for CFD and aerodynamics, checked against the wind tunnel and the track. As Head of Aerodynamics at E-Team Squadra Corse, I overhauled the team's CFD set-up, introduced its first cornering and thermal simulations, and held the design event at Formula Student Germany 2025. Before that, I co-founded the first fixed-wing autonomous UAV team at Sant'Anna.
 
-I like owning a project from the first sketch to the finished part, because success is measured on track, not in CFD.
-
 ## Skills
 <!-- Software and programming languages are listed in # SOFTWARE, not here. -->
 - Domains: [Computational Fluid Dynamics, Finite Element Analysis, Conjugate Heat Transfer, Aerodynamics, Rarefied Gas and Cold Plasma Dynamics, Flight Mechanics, Composite Structures, Autonomous Flight]
@@ -70,10 +68,10 @@ Location: [Pisa, Italy]
 - Co-founded the team to design and build an autonomous fixed-wing UAV from scratch for the IMechE UAS Challenge (UK).
 - Oversaw aerodynamic design, systems integration and autonomous navigation, coordinating design and manufacturing to tight deadlines.
 
-### CAD and Additive Manufacturing Engineer | Autonomous Quadcopter Team, Caelus Sant'Anna
+### CAD and Additive Manufacturing | Autonomous Quadcopter Team, Caelus Sant'Anna
 Dates: [01/2023 - 09/2023]
 Location: [Pisa, Italy]
-- Structural framework for the main sensor array; 1st place worldwide at the IEEE UAV Challenge 2023 (USA).
+- Support structure for the main sensor array; 1st place worldwide at the IEEE UAV Challenge 2023 (USA).
 
 # EDUCATION
 
@@ -200,7 +198,7 @@ Cover image: [cover.png]
 Images: []
 Links: []
 Summary: [A fully autonomous, carbon-fibre fixed-wing UAV built from scratch by a ten-person student team for the IMechE UAS Challenge.]
-Facts: [Team | 10 people ; Competition | IMechE UAS Challenge (UK) ; Thrust-to-weight | 1:1 ; Autopilot | PX4]
+Facts: [Team | 10 people ; Competition | IMechE UAS Challenge (UK) ; Payload to aircraft weight | 1:1 (8 kg / 8 kg) ; Autopilot | PX4]
 Details:
 Design, manufacturing and testing of a fully autonomous fixed-wing UAV for the IMechE UAS Challenge (UK), by a new ten-person student team. In a small team I balanced structural and aerodynamic design with supply chain management and sponsorships, under strict deadlines where any mistake ends in a crash.
 
@@ -209,7 +207,7 @@ Design, manufacturing and testing of a fully autonomous fixed-wing UAV for the I
 - Flaperons as control surfaces.
 
 #### Carbon-fibre monocoque and autonomy
-- Full carbon-fibre monocoque airframe with a 1:1 thrust-to-weight ratio, capable of short take-off and landing.
+- Full carbon-fibre monocoque airframe carrying its own weight in payload: 8 kg of payload on an 8 kg aircraft, with short take-off and landing.
 - Fully autonomous flight with a PX4 autopilot.
 
 ### Caelus Baff-1 - Autonomous Fixed-Wing UAV
@@ -257,25 +255,25 @@ Cover image: [cover.png]
 Images: []
 Links: [Presentation | assets/docs/rail-joint-presentation.pdf]
 Summary: [3D transient FE model of a moving Hertzian load on an insulated rail joint, with a Python spectral index that detects end-post failure from a 360 to 330 Hz frequency shift.]
-Facts: [Frequency shift | 360 → 330 Hz ; Diagnostic index | ≈ 500 at failure]
+Facts: []
 Details:
 Exam project for *Principles of Machine Design with FEM Applications*, Sant'Anna School of Advanced Studies (Istituto di Intelligenza Meccanica).
 
 #### Problem
-An insulated rail joint keeps continuous welded rails mechanically continuous while electrically isolated for signalling circuits. A broken insulating end-post causes short circuits, which give false "clear" signals (collision risk) or false "occupied" signals (network blockage). The goal was to reconstruct the strain wave $\varepsilon_x(x,t)$ from probes at least 100 mm apart and to detect an end-post failure.
+An insulated rail joint keeps continuous welded rails mechanically continuous while electrically isolated for signalling circuits. A broken insulating end-post causes short circuits, which give false "clear" signals (collision risk) or false "occupied" signals (network blockage). The goal was to reconstruct the strain wave $\varepsilon_x(x,t)$ from strain probes and to detect the failure of the end-post.
 
 #### Model
 Image: moving-load.png | Moving Hertzian pressure on the SURF154 surface elements of the rail head (APDL)
-Image: fe-mesh.png | Finite element mesh of the insulated rail joint
-- Hertzian train load of $F_z = 150$ kN and $F_x = 30$ kN travelling at 8 m/s, on an elastically supported rail with fishplates and an insulating end-post.
-- Geometry partitioned in SpaceClaim so nodes align exactly with 22 strain probes (76.43 mm spacing). Hex-dominant mesh with 2.5 mm refinement at the load path (to resolve the 10 mm minor axis of the contact ellipse) and a coarse 16 mm swept mesh on the rail base.
+Image: fe-mesh.png | Mesh of the insulated rail joint
+- Moving Hertzian train load, vertical and longitudinal, on an elastically supported rail with fishplates and an insulating end-post.
+- Geometry partitioned in SpaceClaim so the nodes align exactly with the strain probes. Hex-dominant mesh, refined along the load path to resolve the contact ellipse, with a coarser swept mesh on the rail base.
 - Moving load scripted in APDL, since Workbench cannot apply a pressure that varies in space and time. SURF154 surface elements carry the load, with a spatial bounding-box filter to cut the computation. The elastic foundation uses COMBIN14 springs.
-- Linear transient analysis with a fixed 0.2 ms time step (2.5 kHz Nyquist limit), 25 steps across the contact patch, and HHT integration to suppress numerical noise.
+- Linear transient analysis with HHT time integration to suppress numerical noise.
 
 #### Verification
-Image: mode-shapes.png | First eight mode shapes, from 24.2 Hz to 370.4 Hz
-- Modal analysis of the first 25 modes: four semi-rigid modes, then local modes. Less than 1 Hz variation between meshes, and the damaged end-post does not shift the natural frequencies.
-- Mesh versus wavelength check: even the worst case (16 mm elements on bending waves) gives about 56 elements per wavelength, against a requirement of 4 to 6.
+Image: mode-shapes.png | First eight mode shapes
+- Modal analysis: semi-rigid modes first, then local modes. The damaged end-post does not shift the natural frequencies.
+- Successful mesh study: the natural frequencies change by less than 1 Hz between meshes.
 
 #### Results
 Image: wave-reconstruction.png | Reconstructed strain wave: undamaged, damaged and their difference
@@ -298,16 +296,16 @@ Cover image: [cover.png]
 Images: []
 Links: []
 Summary: [My bachelor's thesis at SkyEye Systems: hover CFD of the rotor of a large-scale VTOL UAV, run through an automated Star-CCM+ pipeline to select the most efficient configuration.]
-Facts: [Rotor diameter | 5000 mm ; Pitch angle | 6.42° ; Rotor speed | 600 rpm]
+Facts: []
 Details:
-Bachelor's thesis carried out with SkyEye Systems (project Vertigo), in collaboration with the Laboratory of Experimental Aerodynamics, University of Pisa. Some details are confidential.
+Bachelor's thesis carried out with SkyEye Systems (project Vertigo), in collaboration with the Laboratory of Experimental Aerodynamics, University of Pisa.
 
 #### Study
-- Hover CFD of the rotor in Star-CCM+ at 600 rpm, comparing airfoils, rotor diameters and pitch angles.
+- Hover CFD of the rotor in Star-CCM+, comparing airfoils, rotor diameters and pitch angles.
 - The simulation pipeline is fully automated and produces the thrust, torque and power maps across all configurations.
 
 #### Result
-- Selected configuration: rotor diameter of 5000 mm at 6.42° pitch, the one that meets the thrust requirement with the least power.
+- Selected the configuration that meets the thrust requirement with the least power.
 
 ### Critical Engine Speed in an Engine Connecting Rod
 Slug: [connecting-rod-critical-speed]
@@ -323,10 +321,10 @@ Links: [Project report | assets/docs/connecting-rod-report.pdf]
 Summary: [Analytical and nonlinear contact FEA prediction of the engine speed at which inertia loads open the big-end joint of a TVR 3.5 L connecting rod: 8415 rpm by FEM against 8770 rpm analytically.]
 Facts: [FEM | 8415 rpm ; Analytical | 8770 rpm ; Difference | 4.05%]
 Details:
-Machine Design course project (supervisors Prof. Francesco Frendo and Prof. Andrea Chiocca, academic year 2025/2026).
+Machine Design course project, University of Pisa (academic year 2025/2026).
 
 #### Problem
-For the 3.5 L TVR AJP6 straight-six (350 hp T350 version), find the engine speed $N_{crit}$ at which the tensile inertia load at top dead centre starts to separate the connecting rod from its big-end cap. Separation is defined as zero contact pressure at any point of the interface. The engine was chosen because its original blueprints are public, so the rod was rebuilt from original drawings. The joint has two M10×1.25 class 12.9 screws (preloaded to 75% of yield, 50.5 kN each) and two hollow dowels.
+For the 3.5 L TVR AJP6 straight-six (350 hp T350 version), find the engine speed $N_{crit}$ at which the tensile inertia load at top dead centre starts to separate the connecting rod from its big-end cap. Separation is defined as zero contact pressure at any point of the interface. The engine was chosen because its original blueprints are public, so the rod was rebuilt from original drawings.
 
 #### Analytical model
 - Planar slider-crank at constant speed, with TDC acceleration $a\simeq-R\,\omega^2(1+\lambda)$ and $\lambda=R/L=0.2737$.
@@ -335,8 +333,7 @@ For the 3.5 L TVR AJP6 straight-six (350 hp T350 version), find the engine speed
 
 #### FEM model
 Image: mesh.png | Quarter model: hex-dominant mesh with refinement at the rod-cap contact
-- Parametric CAD in Siemens NX with the WAVE geometry linker. Prepared in Ansys SpaceClaim, using a quarter model thanks to two symmetry planes, and partitions that give a conformal, mostly hexahedral mesh with 0.5 mm refinement at the rod-cap contact.
-- Crankpin support modelled as a zero-displacement 120° arc, with the truncated rod and piston replaced by a 480 g point mass.
+- Parametric CAD in Siemens NX. Prepared in Ansys SpaceClaim, using a quarter model thanks to two symmetry planes, and partitions that give a conformal, mostly hexahedral mesh with 0.5 mm refinement at the rod-cap contact.
 - Five contact pairs (frictional, $\mu=0.2$, or bonded). The bolt preload is applied in load step 1, then a MAPDL pseudo-time ramp of the rotational acceleration sweeps the engine speed in load step 2. This finds $N_{crit}$ in a single solve, using minimum contact pressure and contact status as separation criteria.
 
 #### Results
@@ -366,8 +363,10 @@ Details:
 Bachelor's coursework project at the University of Pisa.
 
 #### Simulation
-Image: velocity-rotating.jpg | Velocity in the rotating frame, 0 to 432 m/s
+Image: velocity-rotating.jpg | Velocity in the rotating frame
 - CFD and CHT simulations of an axial compressor stage in Star-CCM+.
+- Turbomachinery meshing of the blade passages, with periodic symmetry so a single passage per row represents the whole annulus.
+- Rotor and stator solved in different rotating reference frames, coupled at the interface between the rows.
 
 ### Caelus Quadcopter - IEEE UAV Chase Challenge
 Slug: [caelus-quadcopter]
@@ -375,16 +374,16 @@ Short: [Quadcopter]
 Course: [Caelus Sant'Anna, autonomous quadcopter team]
 Type: [Competition]
 Year: [2023]
-Role: [CAD and Additive Manufacturing Engineer]
+Role: [CAD and Additive Manufacturing]
 Tags: [CAD, Additive Manufacturing, Autonomous UAV]
 Tier: [small]
 Cover image: [uav-chase-challenge/cover.png]
 Images: []
 Links: []
-Summary: [Structural framework for the sensor array of the autonomous quadcopter that won 1st place worldwide at the IEEE UAV Chase Challenge 2023.]
+Summary: [Support structure for the sensor array of the autonomous quadcopter that won 1st place worldwide at the IEEE UAV Chase Challenge 2023.]
 Facts: [Result | 1st place worldwide ; Competition | IEEE UAV Chase Challenge, Purdue University (USA)]
 Details:
-- Designed and additively manufactured the structural framework for the main sensor array.
+- Designed and additively manufactured the support structure for the main sensor array.
 - CAD and additive manufacturing of the support structures for the sensing module, antennas and compute stick, plus battery sizing.
 
 
@@ -405,7 +404,8 @@ One line per tool:  - Name | What it is for | where I used it
 "Where I used it" is a comma-separated list of project slugs (they become links) and/or free text
 such as "Coursework: autonomous flight". Leave it empty and the tool is listed without projects.
 -->
-- Star-CCM+ | Multiphysics CFD: meshing, RANS, rotating regions and conjugate heat transfer | et-18-aero-package, vtol-rotor-aerodynamics, compressor-stage-cfd
+- Star-CCM+ and Java macros | Multiphysics CFD (meshing, RANS, rotating regions, conjugate heat transfer), scripted with Java macros to automate meshing, set-up and post-processing | et-18-aero-package, caelus-one, caelus-baff-1, vtol-rotor-aerodynamics, compressor-stage-cfd
+- XFLR5 | Low-speed aerofoil and wing analysis: panel method and vortex lattice | caelus-one, caelus-baff-1
 - BetaCAE ANSA | CFD pre-processing: CAD clean-up and surface meshing | et-18-aero-package
 - BetaCAE META | CFD post-processing and reporting | et-18-aero-package
 - ANSYS Mechanical / Workbench | Finite element analysis: meshing, contacts, static and transient solutions | rail-joint-dynamics, connecting-rod-critical-speed
@@ -418,7 +418,6 @@ such as "Coursework: autonomous flight". Leave it empty and the tool is listed w
 - Python | Signal processing, data analysis and numerical methods | rail-joint-dynamics, et-18-aero-package, Coursework: Godunov-type Riemann solver
 - MATLAB | Numerical modelling and dynamics | Coursework: multi-body landing gear dynamics
 - C | Microcontroller programming | Coursework: microcontroller programming
-- Star-CCM+ Java macros | Scripting Star-CCM+ to automate meshing, solver set-up and post-processing | et-18-aero-package
 - SolidWorks | CAD | et-18-aero-package
 - ANSYS Fluent | General-purpose CFD |
 - OpenFOAM | Open-source CFD |

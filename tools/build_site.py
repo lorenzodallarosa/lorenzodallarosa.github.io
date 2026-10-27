@@ -316,11 +316,22 @@ def project_facts(p: dict) -> list[tuple[str, str]]:
 
 
 def links_html(p: dict) -> str:
+    """Project links. A PDF becomes a card with a preview of its first page, when
+    assets/img/projects/<slug>/<pdf name>.jpg exists (rendered once, title area only)."""
     links = pairs(p.get("links", ""))
     if not links:
         return ""
-    items = "".join(f'<a href="{esc(u)}">{esc(l)}</a>' for l, u in links)
-    return f'<p class="proj-links t-label">{items}</p>'
+    items = []
+    for label, url in links:
+        if url.lower().endswith(".pdf"):
+            thumb = f"assets/img/projects/{p['slug']}/{Path(url).stem}.jpg"
+            prev = f'<span class="doc-thumb">{img_tag(thumb, "")}</span>' if (ROOT / thumb).is_file() else ""
+            items.append(f'<a class="doc-card" href="{esc(url)}" target="_blank" rel="noopener">{prev}'
+                         f'<span class="doc-meta"><span class="doc-label">{esc(label)}</span>'
+                         f'<span class="doc-open t-label">Open PDF ↗</span></span></a>')
+        else:
+            items.append(f'<a class="t-label" href="{esc(url)}">{esc(label)}</a>')
+    return f'<div class="proj-links">{"".join(items)}</div>'
 
 
 def tags_of(p: dict) -> list[str]:
