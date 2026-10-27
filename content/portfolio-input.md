@@ -46,6 +46,10 @@ My focus is aerodynamics and numerical methods for CFD, alongside FEM and compos
 
 # EXPERIENCE
 
+### CNC Machining | Naval defence sector supply chain (undisclosed)
+Dates: [10/2026]
+Location: []
+
 ### Head of Aerodynamics | E-Team Squadra Corse (Formula Student)
 Dates: [09/2025 - 09/2026]
 Location: [Pisa, Italy]
@@ -72,10 +76,6 @@ Location: [Pisa, Italy]
 Dates: [01/2023 - 09/2023]
 Location: [Pisa, Italy]
 - Support structure for the main sensor array; 1st place worldwide at the IEEE UAV Challenge 2023 (USA).
-
-### CNC Machining | Naval defence sector supply chain (undisclosed)
-Dates: []
-Location: []
 
 # EDUCATION
 
