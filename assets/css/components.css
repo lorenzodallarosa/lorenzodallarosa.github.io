@@ -248,6 +248,13 @@
 .has-panels .panel-close { display: inline-block; }
 .panel-close { display: none; }
 
+/* ---------- Gallery (a collapsed step under a project) ---------- */
+.gallery { margin-top: 24px; }
+.gallery-n { color: var(--mute); margin-left: 10px; }
+.gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; padding: 8px 0 28px; }
+.gallery-fig img { aspect-ratio: 3 / 4; object-fit: cover; }
+.gallery-fig.fig--wide { grid-column: auto; }
+
 /* ---------- CV ---------- */
 .cv { padding: var(--pad-y) 0; }
 .cv-top { display: grid; grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); gap: var(--gutter); align-items: end; margin-bottom: clamp(48px, 8vh, 88px); }

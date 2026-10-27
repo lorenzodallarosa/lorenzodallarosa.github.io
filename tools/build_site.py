@@ -382,6 +382,16 @@ class Page:
         list_html = f'<div class="steps">{"".join(rows)}</div>' if rows else ""
         return intro_html + list_html
 
+    # ---- photo gallery from "Images:", collapsed until opened
+    def gallery(self, p: dict) -> str:
+        shots = pairs(p.get("images", ""))
+        if not shots:
+            return ""
+        figs = "".join(figure(p["slug"], f, c, p["title"], "fig gallery-fig") for f, c in shots)
+        return (f'<details class="step gallery"><summary class="step-head"><span class="t-index">+</span>'
+                f'<span class="step-t">Gallery <span class="t-label gallery-n">{len(shots)} photos</span></span>'
+                f'<span class="step-plus" aria-hidden="true"></span></summary><div class="gallery-grid">{figs}</div></details>')
+
     # ---- 3D stage
     def stage(self, p: dict, theme: str, micro: str = "") -> str:
         slug = p["slug"]
@@ -470,7 +480,7 @@ class Page:
     {hero}
     <div class="proj-body">
       {spec_row(project_facts(p), "rise")}
-      <div class="proj-steps">{self.steps(p)}{links_html(p)}</div>
+      <div class="proj-steps">{self.steps(p)}{self.gallery(p)}{links_html(p)}</div>
     </div>"""
 
     # ---- 2. ET-18

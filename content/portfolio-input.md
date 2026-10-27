@@ -124,6 +124,7 @@ Dates: [08/2022 - Present]
 <!--
 One "###" block per project. Order here = order on the site.
 Tier: big     = full-screen section with an interactive 3D model (Theme: light or dark).
+Images: file | caption ; file | caption  -> a collapsible photo gallery after the steps.
 Tier: compact = shorter block inside its Group (no 3D).
 Tier: small   = card in the projects section after Caelus (title set by "Projects title:"); it expands when clicked.
 Group: [slug] = render inside that group's section (see # GROUPS).
@@ -154,20 +155,23 @@ Details:
 Aerodynamic development of the E-Team Squadra Corse Formula Student car, first as CFD Engineer and then as Head of Aerodynamics.
 
 #### Cornering simulations
-Image: cornering-domain.jpg | Rotating circular domain for cornering simulations in Star-CCM+
+Image: cornering-flow.jpg | Streamlines around the car in the rotating cornering domain (Star-CCM+)
 Set up cornering simulations with a rotating circular domain in Star-CCM+, enabling more realistic modelling of the airflow during the skidpad.
 
 #### Validation in the wind tunnel and on track
-Image: wind-tunnel.jpg | Wind tunnel test model
+Image: wind-tunnel-closed.jpg | Test model mounted in the wind tunnel
+Image: wind-tunnel-open.jpg | Test model open, with the pressure tap lines
+Image: wind-tunnel-cfd.jpg | The same test simulated in the wind tunnel section (Star-CCM+)
 - Independently validated CFD results against wind tunnel data: designed the test model, ran the trials and performed statistical signal analysis on time-series sensor data in Python.
 - On-track pushrod extensometry for experimental validation.
 
 #### Battery cooling (CFD/CHT)
-Image: battery-cht.jpg | CFD/CHT battery cooling simulation
+Image: battery-cht.png | Cell temperatures across a module section in the redesigned layout (CHT)
 Pioneered the team's first CFD/CHT battery cooling simulations, lowering steady-state peak temperatures by 15 °C.
 
 #### Simulation architecture and automation
-Image: aero-map.jpg | Automated aerodynamic map
+Image: aero-maps.jpg | Aero maps over front and rear ride height: CzA, CxA and aero balance
+Image: range-extraction.png | Range extraction: the on-track pitch envelope turned into a 4×4 ride-height grid of 16 CFD points
 - Optimised the simulation architecture, cutting standard deviation 10-fold while lowering cell count.
 - Automated volume meshing and aerodynamic map generation pipelines.
 
@@ -176,7 +180,7 @@ Image: rom.jpg | Reduced-order model: predicted track score of each aerodynamic 
 The car's performance is a balance between downforce, aero balance and drag, so no single coefficient can rank two designs. I developed a coupled aero-vehicle dynamics Reduced Order Model that predicts the on-track score variation from simulation data, and used it to qualify each aerodynamic design and to quantify the gains of the new package.
 
 #### Composite manufacturing
-Image: composites.jpg | Composite manufacturing of the aero package
+Image: front-wing-render.jpg | Rendering of the 2026 front wing
 - Led end-to-end composite manufacturing (mould tooling, carbon-fibre layup, curing), cutting package weight by 8%.
 - Managed the team's transition from SolidWorks to Siemens NX, with ply-book generation in Fibersim.
 
@@ -200,7 +204,6 @@ Details:
 Design, manufacturing and testing of a fully autonomous fixed-wing UAV for the IMechE UAS Challenge (UK), by a new ten-person student team. In a small team I balanced structural and aerodynamic design with supply chain management and sponsorships, under strict deadlines where any mistake ends in a crash.
 
 #### Aerodynamic layout and payload fairing
-Image: payload-fairing.jpg | Payload and retracting fairing
 - Innovative aerodynamic layout: the payload sits outside the main fuselage, with a moving fairing that retracts after the drop.
 - Flaperons as control surfaces.
 
@@ -220,7 +223,7 @@ Tier: [big]
 Group: [caelus]
 Theme: [dark]
 Cover image: [cover.png]
-Images: []
+Images: [d-box-tube.jpg | The D-box tube: the wing's leading-edge spar ; internal-structure.jpg | Semi-monocoque internal structure ; bright-night-2025.jpg | Showing Baff-1 off at Bright Night 2025 ; featherweight.jpg | It's featherweight!]
 Links: []
 Statement: [Second-generation IMechE UAS Challenge aircraft.]
 Summary: [Second-generation IMechE UAS Challenge aircraft: A-tail pusher, D-box composite wing and 30 minutes of continuous autonomous operation.]

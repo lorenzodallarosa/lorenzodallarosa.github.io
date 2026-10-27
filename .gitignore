@@ -9,3 +9,9 @@ projects/Portfolio.md
 
 # Source 3D models stay local; the site serves the obfuscated .bin copies built by tools/build_site.py
 assets/models/**/*.glb
+
+# Source files kept locally only (large or private originals)
+assets/img/projects/**/*.pptx
+assets/img/projects/**/~$*
+assets/img/projects/**/WhatsApp*
+assets/docs/cover_letter.md
