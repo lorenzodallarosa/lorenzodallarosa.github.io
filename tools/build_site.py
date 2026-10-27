@@ -587,7 +587,11 @@ class Page:
                 rows.append(("Thesis", e["thesis"]))
             facts = spec_row(rows)
             hl = f'<p>{inline(e["highlights"])}</p>' if e.get("highlights") else ""
-            bullets = "<ul>" + "".join(f"<li>{inline(b)}</li>" for b in e["bullets"]) + "</ul>" if e["bullets"] else ""
+            # "Coursework: ..." gets its own highlighted line; other bullets stay a list.
+            course = "".join(f'<p class="cv-course"><span class="t-label">Coursework</span><span>{inline(b.split(":", 1)[1].strip())}</span></p>'
+                             for b in e["bullets"] if b.startswith("Coursework:"))
+            rest = [b for b in e["bullets"] if not b.startswith("Coursework:")]
+            bullets = ("<ul>" + "".join(f"<li>{inline(b)}</li>" for b in rest) + "</ul>" if rest else "") + course
             return f"""
         <li class="cv-row rise">
           <p class="cv-dates t-label">{meta}</p>

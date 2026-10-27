@@ -34,13 +34,11 @@ Other links: []
 CV file: [Lorenzo Dalla Rosa.pdf]
 
 ## About
-I am a final-year master's student in Aerospace Engineering, dual-enrolled at the University of Pisa and, as an honour student, at the Sant'Anna School of Advanced Studies, where admission is through a national competitive examination in mathematics and physics with an acceptance rate below 5%. I completed my bachelor's degree in less than three years, with 110/110 summa cum laude, in the top 1% of my cohort.
+I am a final-year master's student in Aerospace Engineering, dual-enrolled at the University of Pisa and, as an honour student, at the Sant'Anna School of Advanced Studies (admission rate below 5%). I completed my bachelor's degree in less than three years, with 110/110 summa cum laude, in the top 1% of my cohort.
 
-My focus is numerical methods for CFD and aerodynamics across flow regimes, from automotive aerodynamics to rarefied gases and cold plasmas for electric propulsion. Knowing the limits of a simulation matters just as much to me, so I check my results in the wind tunnel and on track.
+My focus is numerical methods for CFD and aerodynamics, checked against the wind tunnel and the track. As Head of Aerodynamics at E-Team Squadra Corse, I overhauled the team's CFD set-up, introduced its first cornering and thermal simulations, and held the design event at Formula Student Germany 2025. Before that, I co-founded the first fixed-wing autonomous UAV team at Sant'Anna.
 
-At E-Team Squadra Corse, my wind tunnel validation and cornering simulations were praised by the aerodynamics judge from Sauber F1 at Formula Student Germany 2025, and I was promoted to Head of Aerodynamics in my second year. I overhauled the team's CFD set-up, introduced its first cornering and thermal simulations, and built a coupled aero-vehicle dynamics reduced-order model to judge each design by its predicted track score. Before that, I co-founded the first fixed-wing autonomous UAV team at Sant'Anna, where a small team meant balancing aerodynamic and structural design with supply chain and sponsorships.
-
-I like owning a project from the first concept sketch through simulation to the finished part, because success is measured on track, not in CFD.
+I like owning a project from the first sketch to the finished part, because success is measured on track, not in CFD.
 
 ## Skills
 <!-- Software and programming languages are listed in # SOFTWARE, not here. -->

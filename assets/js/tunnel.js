@@ -51,13 +51,16 @@
     const on = clicks > 1, stalled = alpha >= STALL;
     wrap.classList.toggle("is-tunnel", on);
     wrap.classList.toggle("is-stall", stalled);
-    word.style.setProperty("--aoa", `${stalled ? 0 : -alpha}deg`);
+    // Flow runs left to right, so the nose (left) pitches up. The drawn tilt is damped so the
+    // whole name stays on screen.
+    word.style.setProperty("--aoa", `${stalled ? 0 : alpha * 0.6}deg`);
     clearInterval(noise);
     if (on) {
       draw();
       if (stalled && !reduce) noise = setInterval(draw, 140);
       const cl = (2 * Math.PI * alpha * Math.PI / 180).toFixed(2);
-      read.innerHTML = stalled ? `α = ${alpha}° · Stall · click to reset` : `Wind tunnel · α = ${alpha}° · C<sub>L</sub> ≈ ${cl}`;
+      const a = '<span class="a">α</span>'; // keep the Greek letter lowercase inside the uppercase label
+      read.innerHTML = stalled ? `${a} = ${alpha}° · Stall · click to reset` : `Wind tunnel · ${a} = ${alpha}° · C<sub>L</sub> ≈ ${cl}`;
     } else {
       read.textContent = "";
     }

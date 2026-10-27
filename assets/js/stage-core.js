@@ -58,7 +58,8 @@ async function fetchModel(url, onProgress) {
     if (done) break;
     chunks.push(value);
     got += value.length;
-    if (total) onProgress(got / total);
+    // Content-Length can be the compressed size, so the ratio may pass 1: cap it until done.
+    if (total) onProgress(Math.min(got / total, 0.99));
   }
   const buf = new Uint8Array(got);
   let o = 0;
