@@ -171,12 +171,13 @@ Pioneered the team's first CFD/CHT battery cooling simulations, lowering steady-
 
 #### Simulation architecture and automation
 Image: aero-maps.jpg | Aero maps over front and rear ride height: CzA, CxA and aero balance
-Image: range-extraction.png | Range extraction: the on-track pitch envelope turned into a 4×4 ride-height grid of 16 CFD points
+Image: range-extraction.png | Range extraction: 4×4 roll and yaw grid of CFD points over the on-track samples, by manoeuvre
 - Optimised the simulation architecture, cutting standard deviation 10-fold while lowering cell count.
 - Automated volume meshing and aerodynamic map generation pipelines.
 
 #### Reduced-order model
-Image: rom.jpg | Reduced-order model: predicted track score of each aerodynamic design
+Image: rom-balance.png | Reduced-order model: lap time against aero balance and CzA
+Image: rom-drag.png | Reduced-order model: lap time against CzA and CxA
 The car's performance is a balance between downforce, aero balance and drag, so no single coefficient can rank two designs. I developed a coupled aero-vehicle dynamics Reduced Order Model that predicts the on-track score variation from simulation data, and used it to qualify each aerodynamic design and to quantify the gains of the new package.
 
 #### Composite manufacturing
@@ -223,7 +224,7 @@ Tier: [big]
 Group: [caelus]
 Theme: [dark]
 Cover image: [cover.png]
-Images: [d-box-tube.jpg | The D-box tube: the wing's leading-edge spar ; internal-structure.jpg | Semi-monocoque internal structure ; bright-night-2025.jpg | Showing Baff-1 off at Bright Night 2025 ; featherweight.jpg | It's featherweight!]
+Images: [d-box-tube.jpg | The D-box tube: the wing's leading-edge spar ; internal-structure.jpg | Internal structure ; bright-night-2025.jpg | Showing Baff-1 off at Bright Night 2025 ; featherweight.jpg | It's featherweight!]
 Links: []
 Statement: [Second-generation IMechE UAS Challenge aircraft.]
 Summary: [Second-generation IMechE UAS Challenge aircraft: A-tail pusher, D-box composite wing and 30 minutes of continuous autonomous operation.]
@@ -237,13 +238,11 @@ Design, manufacturing and testing of the following year's fully autonomous fixed
 - Internal payload storage for improved aerodynamics; split flaps and flaperons.
 
 #### Composite structure and autonomy
-Image: wing-structure.jpg | D-box wing with leading-edge spar
 - Updated lightweight structure: D-box wing with a leading-edge spar.
 - Carbon-fibre and glass-fibre prepreg structure with internal antennas.
 - Fully autonomous flight with ArduPilot, a pitot tube and a lidar ground-height rangefinder, for 30 minutes of continuous operation.
 
 #### Parametric simulation framework
-Image: parametric-cfd.jpg | Parametric CFD across design variants
 Implemented a parametric simulation framework that automates geometry changes, mesh generation and solver configuration. It cut design iteration turnaround time, kept testing consistent across design variants and generated the aerodynamic maps needed for the stability assessment.
 
 ### Dynamics of an Insulated Rail Joint
