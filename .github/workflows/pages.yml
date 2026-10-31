@@ -18,9 +18,33 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
           path: .
       - id: deployment
         uses: actions/deploy-pages@v4
+      # Tell Bing (and the other IndexNow engines) to re-crawl, only when published content changed.
+      # The key is public by design: it must match the file served at the site root.
+      - name: Ping IndexNow
+        env:
+          INDEXNOW_KEY: 286ee159cbb09140518b825f2e983370
+        run: |
+          if ! git diff --name-only HEAD~1 HEAD | grep -qE '^(index\.html|assets/docs/|llms\.txt)'; then
+            echo "No published content changed; skipping."; exit 0
+          fi
+          python3 - <<'EOF'
+          import json, os, re, urllib.request
+          key = os.environ["INDEXNOW_KEY"]
+          urls = re.findall(r"<loc>(.*?)</loc>", open("sitemap.xml", encoding="utf-8").read())
+          body = json.dumps({"host": "lorenzodallarosa.com", "key": key,
+                             "keyLocation": f"https://lorenzodallarosa.com/{key}.txt", "urlList": urls}).encode()
+          req = urllib.request.Request("https://api.indexnow.org/indexnow", body,
+                                       {"Content-Type": "application/json; charset=utf-8"})
+          try:
+              print("IndexNow:", urllib.request.urlopen(req, timeout=30).status, urls)
+          except Exception as e:  # a failed ping must not fail the deploy
+              print("IndexNow ping failed:", e)
+          EOF

@@ -819,8 +819,14 @@ class Page:
         title = self.d["site"].get("Site title") or pr["Name"]
         desc = self.d["site"].get("Description") or re.match(r"(.+?\.)(\s|$)", self.d["about"]).group(1)
         photo = f'{SITE_URL}assets/img/profile/{pr["Photo"]}' if pr.get("Photo") else ""
-        og_image = (f'<meta property="og:image" content="{esc(photo)}">\n'
-                    f'<meta property="og:image:alt" content="Portrait of {esc(pr["Name"])}">\n') if photo else ""
+        # Link previews use the 1200x630 card (assets/img/social-card.jpg) when it exists, else the portrait.
+        card = (ROOT / "assets/img/social-card.jpg").is_file()
+        share = f"{SITE_URL}assets/img/social-card.jpg" if card else photo
+        og_image = (f'<meta property="og:image" content="{esc(share)}">\n'
+                    + ('<meta property="og:image:width" content="1200">\n<meta property="og:image:height" content="630">\n' if card else "")
+                    + f'<meta property="og:image:alt" content="{esc(pr["Name"])}, {esc(pr.get("Role", ""))}">\n'
+                    f'<meta name="twitter:image" content="{esc(share)}">\n') if share else ""
+        twitter_card = "summary_large_image" if card else "summary"
         ld = json.dumps(self.person_ld(desc, photo), ensure_ascii=False).replace("</", "<\\/")
         katex = ""
         if self.needs_math:
@@ -847,7 +853,7 @@ class Page:
 <meta property="og:description" content="{esc(desc)}">
 <meta property="og:url" content="{SITE_URL}">
 <meta property="og:locale" content="en_GB">
-{og_image}<meta name="twitter:card" content="summary">
+{og_image}<meta name="twitter:card" content="{twitter_card}">
 <meta name="theme-color" content="#EAE4D3">
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="assets/img/favicon-96.png" type="image/png" sizes="96x96">

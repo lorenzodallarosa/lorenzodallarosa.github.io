@@ -17,6 +17,7 @@ content/DESIGN.md            <- design brief (look, layout, motion, 3D) the site
 tools/build_site.py          <- generator: input .md -> index.html
 index.html                   <- generated one-page site (do not edit by hand)
 robots.txt, sitemap.xml, llms.txt <- generated crawler files (search engines and AI assistants)
+<key>.txt                     <- IndexNow key; the deploy workflow pings Bing when content changes
 assets/css/                  <- tokens.css, base.css, components.css (hand-written)
 assets/js/                   <- reveal.js, theme-nav.js, site.js, math.js, tunnel.js (footer easter egg), stage-core.js + stage-projects.js (3D viewers)
 assets/img/profile/          <- your photo
