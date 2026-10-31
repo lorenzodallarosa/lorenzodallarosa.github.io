@@ -200,6 +200,10 @@ export function mountStage(fig) {
     }).finally(() => fig.classList.remove("is-loading"));
   };
   fig.querySelector(".stage-tap").addEventListener("click", start);
+  // Visitor stats (GoatCounter): count the first time someone actually handles this model.
+  fig.addEventListener("pointerdown", () => {
+    window.goatcounter?.count?.({ path: `3d-${cfg.models[0].key}`, title: "3D model handled", event: true });
+  }, { once: true });
   fig.addEventListener("contextmenu", (e) => e.preventDefault());
   if (!small.matches || canAutoLoad()) {
     const near = new IntersectionObserver((es) => {

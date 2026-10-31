@@ -328,7 +328,7 @@ def links_html(p: dict) -> str:
         if url.lower().endswith(".pdf"):
             thumb = f"assets/img/projects/{p['slug']}/{Path(url).stem}.jpg"
             prev = f'<span class="doc-thumb">{img_tag(thumb, "")}</span>' if (ROOT / thumb).is_file() else ""
-            items.append(f'<a class="doc-card" href="{esc(url)}" target="_blank" rel="noopener">{prev}'
+            items.append(f'<a class="doc-card" href="{esc(url)}" target="_blank" rel="noopener" data-goatcounter-click="pdf-{esc(Path(url).stem)}">{prev}'
                          f'<span class="doc-meta"><span class="doc-label">{esc(label)}</span>'
                          f'<span class="doc-open t-label">Open PDF ↗</span></span></a>')
         else:
@@ -630,7 +630,7 @@ class Page:
         edu_done = [e for e in d["education"] if e not in edu_now]
         about = md(d["about"])
         cv_file = pr.get("CV file", "")
-        cv_link = (f'<a class="btn" href="assets/docs/{esc(cv_file)}" download>Download CV · PDF</a>'
+        cv_link = (f'<a class="btn" href="assets/docs/{esc(cv_file)}" download data-goatcounter-click="cv-download">Download CV · PDF</a>'
                    if cv_file and (ROOT / "assets/docs" / cv_file).is_file() else "")
         def skill(k: str, vals: list[str]) -> str:
             if k == "Languages":
@@ -742,12 +742,15 @@ class Page:
         user, _, domain = pr.get("Email", "").partition("@")
         name, _, tld = domain.rpartition(".")
         fallback = f"{user} [at] {name} [dot] {tld}"
-        mail = (f'<a class="btn btn--primary js-mail" data-u="{b64r(user)}" data-d="{b64r(domain)}" href="#contact">'
+        mail = (f'<a class="btn btn--primary js-mail" data-u="{b64r(user)}" data-d="{b64r(domain)}" href="#contact" data-goatcounter-click="email">'
                 f'<span class="js-mail-t">{esc(fallback)}</span></a>') if user else ""
         links = [("LinkedIn", pr.get("LinkedIn", "")), ("GitHub", pr.get("GitHub", ""))] + pairs(pr.get("Other links", ""))
         if pr.get("CV file"):
             links.append(("CV · PDF", f"assets/docs/{pr['CV file']}"))
-        link_html = "".join(f'<li><a href="{esc(u)}" rel="noopener">{esc(l)}</a></li>' for l, u in links if u)
+        def click_name(label: str) -> str:
+            return "cv-download-contact" if label.startswith("CV") else "link-" + re.sub(r"[^a-z0-9]+", "-", label.lower()).strip("-")
+        link_html = "".join(f'<li><a href="{esc(u)}" rel="noopener" data-goatcounter-click="{click_name(l)}">{esc(l)}</a></li>'
+                            for l, u in links if u)
         last = pr["Name"].partition(" ")[2]
         return f"""
 <section id="contact" class="contact" data-theme="dark" data-name="Contact">
@@ -868,6 +871,7 @@ class Page:
 <link rel="stylesheet" href="assets/css/components.css">
 {katex}
 <script type="importmap">{importmap}</script>
+<script data-goatcounter="https://lorenzodallarosa.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
