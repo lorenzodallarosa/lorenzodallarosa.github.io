@@ -15,7 +15,8 @@ HOW TO FILL THIS FILE
 
 # SITE
 
-Site title: [Lorenzo Dalla Rosa - Aerospace Engineer]
+Site title: [Lorenzo Dalla Rosa - Aerospace Engineer | CFD, FEA, Composites]
+Description: [Lorenzo Dalla Rosa, aerospace engineer in Pisa: CFD, FEA and composites. Head of Aerodynamics at E-Team Squadra Corse (Formula Student) and co-founder of the Caelus Sant'Anna UAV team.]
 Tag line: [CFD · FEA · Composites]
 Greeting: [Ciao!]
 Projects title: [More projects]

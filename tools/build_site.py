@@ -3,8 +3,8 @@
 
 Usage:  python tools/build_site.py
 
-Standard library only. Writes index.html and the obfuscated 3D model files
-(assets/models/<slug>/<slug>.bin). The CSS and JS in assets/ are hand-written and
+Standard library only. Writes index.html, the crawler files (robots.txt, sitemap.xml,
+llms.txt) and the obfuscated 3D model files (assets/models/<slug>/<slug>.bin). The CSS and JS in assets/ are hand-written and
 never touched here. Re-run it after any edit to the input file.
 """
 from __future__ import annotations
@@ -766,6 +766,48 @@ class Page:
 </section>"""
 
     # ---- page shell
+    # ---- crawler-facing data: schema.org ProfilePage/Person (JSON-LD) and llms.txt
+    def person_ld(self, desc: str, photo: str) -> dict:
+        pr, d = self.d["profile"], self.d
+        orgs = list(dict.fromkeys(e["org"] for e in d["education"] if e.get("org")))
+        city, _, country = pr.get("Location", "").partition(",")
+        person = {
+            "@type": "Person", "name": pr["Name"], "url": SITE_URL,
+            "jobTitle": "Aerospace Engineer", "description": desc,
+            "sameAs": [u for u in (pr.get("LinkedIn"), pr.get("GitHub")) if u],
+            "alumniOf": [{"@type": "CollegeOrUniversity", "name": o} for o in orgs],
+            "knowsAbout": d["skills"].get("Domains", []),
+            "knowsLanguage": [re.sub(r"\s*\(.*\)$", "", v) for v in d["skills"].get("Languages", [])],
+        }
+        if photo:
+            person["image"] = photo
+        if city:
+            person["address"] = {"@type": "PostalAddress", "addressLocality": city.strip(), "addressCountry": country.strip()}
+        return {"@context": "https://schema.org", "@type": "ProfilePage", "url": SITE_URL,
+                "dateModified": _dt.date.today().isoformat(), "mainEntity": person}
+
+    def llms(self) -> str:
+        pr, d = self.d["profile"], self.d
+
+        def plain(t: str) -> str:
+            return re.sub(r"\*\*|\$", "", t)
+
+        def line(e: dict) -> str:
+            return f"- {e['title']}, {e['org']}" + (f" ({e['dates']})" if e.get("dates") else "")
+
+        out = [f"# {pr['Name']}", "", f"> {pr.get('Role', '')}, {pr.get('Location', '')}. {d['site'].get('Tag line', '')}.",
+               "", plain(d["about"]), "", "## Links", "", f"- [Portfolio]({SITE_URL})"]
+        out += [f"- [{k}]({pr[k]})" for k in ("LinkedIn", "GitHub") if pr.get(k)]
+        if pr.get("CV file"):
+            out.append(f"- [CV (PDF)]({SITE_URL}assets/docs/{pr['CV file'].replace(' ', '%20')})")
+        out += ["", "## Projects", ""]
+        out += [f"- [{p['title']}]({SITE_URL}#{p['slug']})" + (f": {plain(p['summary'])}" if p.get("summary") else "")
+                for p in d["projects"] if p.get("tier")]
+        out += ["", "## Experience", "", *map(line, d["experience"])]
+        out += ["", "## Education", "", *map(line, d["education"])]
+        out += ["", "## Software", "", ", ".join(t["name"] for t in d["software"]), ""]
+        return "\n".join(out)
+
     def build(self) -> str:
         order = [("intro", "top", "Intro"), ("et18", "et-18-aero-package", "ET-18"), ("caelus", "caelus", "Caelus"),
                  ("smaller", "more-projects", self.d["site"].get("Projects title") or "Projects"), ("cv", "cv", "CV"),
@@ -775,7 +817,11 @@ class Page:
         nav_html = '<li><a href="#cv">CV</a></li><li><a href="#contact">Contact</a></li>'
         pr = self.d["profile"]
         title = self.d["site"].get("Site title") or pr["Name"]
-        desc = re.match(r"(.+?\.)(\s|$)", self.d["about"]).group(1)
+        desc = self.d["site"].get("Description") or re.match(r"(.+?\.)(\s|$)", self.d["about"]).group(1)
+        photo = f'{SITE_URL}assets/img/profile/{pr["Photo"]}' if pr.get("Photo") else ""
+        og_image = (f'<meta property="og:image" content="{esc(photo)}">\n'
+                    f'<meta property="og:image:alt" content="Portrait of {esc(pr["Name"])}">\n') if photo else ""
+        ld = json.dumps(self.person_ld(desc, photo), ensure_ascii=False).replace("</", "<\\/")
         katex = ""
         if self.needs_math:
             katex = (f'<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@{KATEX_VERSION}/dist/katex.min.css">\n'
@@ -792,13 +838,22 @@ class Page:
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{esc(title)}</title>
 <meta name="description" content="{esc(desc)}">
+<meta name="author" content="{esc(pr['Name'])}">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
 <link rel="canonical" href="{SITE_URL}">
-<meta property="og:type" content="website">
+<meta property="og:type" content="profile">
+<meta property="og:site_name" content="{esc(pr['Name'])}">
 <meta property="og:title" content="{esc(title)}">
 <meta property="og:description" content="{esc(desc)}">
 <meta property="og:url" content="{SITE_URL}">
+<meta property="og:locale" content="en_GB">
+{og_image}<meta name="twitter:card" content="summary">
 <meta name="theme-color" content="#EAE4D3">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23EAE4D3'/%3E%3Crect x='5' y='5' width='6' height='6' fill='%23F0541E'/%3E%3C/svg%3E">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/img/favicon-96.png" type="image/png" sizes="96x96">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<link rel="alternate" type="text/markdown" href="llms.txt" title="Plain-text summary for AI assistants">
+<script type="application/ld+json">{ld}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,200..800&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
@@ -837,9 +892,22 @@ class Page:
 def main() -> int:
     data = parse(INPUT)
     obfuscate_models()
-    page = Page(data).build()
+    site = Page(data)
+    page = site.build()
     OUTPUT.write_text(page, encoding="utf-8", newline="\n")
     print(f"wrote {OUTPUT.relative_to(ROOT)} ({len(page) // 1024} KB)")
+    # Crawlers: search engines and AI assistants are all welcome; the 3D model files are not content.
+    (ROOT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nDisallow: /assets/models/\n\nSitemap: {SITE_URL}sitemap.xml\n",
+                                     encoding="utf-8", newline="\n")
+    today = _dt.date.today().isoformat()
+    pages = [("", today)] + [(f"assets/docs/{f.name}", _dt.date.fromtimestamp(f.stat().st_mtime).isoformat())
+                             for f in sorted((ROOT / "assets/docs").glob("*.pdf"))]
+    urls = "".join(f"  <url><loc>{esc(SITE_URL + u.replace(' ', '%20'))}</loc><lastmod>{d}</lastmod></url>\n" for u, d in pages)
+    (ROOT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n'
+                                      f'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{urls}</urlset>\n',
+                                      encoding="utf-8", newline="\n")
+    (ROOT / "llms.txt").write_text(site.llms(), encoding="utf-8", newline="\n")
+    print("wrote robots.txt, sitemap.xml, llms.txt")
     if PENDING:
         print("image placeholders (drop these files in assets/img/projects/):")
         for f in dict.fromkeys(PENDING):

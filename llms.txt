@@ -1,0 +1,44 @@
+# Lorenzo Dalla Rosa
+
+> Aerospace Engineer, MSc, Pisa, Italy. CFD · FEA · Composites.
+
+I am a final-year master's student in Aerospace Engineering, dual-enrolled at the University of Pisa and, as an honour student, at the Sant'Anna School of Advanced Studies (admission rate below 5%). I completed my bachelor's degree in less than three years, with 110/110 summa cum laude, in the top 1% of my cohort.
+
+My focus is aerodynamics and numerical methods for CFD, alongside FEM and composite structures, with results checked in the wind tunnel and on track. As Head of Aerodynamics at E-Team Squadra Corse, I overhauled the team's CFD set-up, introduced its first cornering and thermal simulations, and held the design event at Formula Student Germany 2025. Before that, I co-founded the first fixed-wing autonomous UAV team at Sant'Anna.
+
+## Links
+
+- [Portfolio](https://lorenzodallarosa.com/)
+- [LinkedIn](https://www.linkedin.com/in/lorenzo-dalla-rosa)
+- [GitHub](https://github.com/lorenzodallarosa)
+- [CV (PDF)](https://lorenzodallarosa.com/assets/docs/Lorenzo%20Dalla%20Rosa.pdf)
+
+## Projects
+
+- [E-Team Squadra Corse ET-18](https://lorenzodallarosa.com/#et-18-aero-package): Aerodynamic development of E-Team Squadra Corse's ET-18, with a 13.5% downforce increase and a 16% efficiency gain, validated in the wind tunnel and on track.
+- [Caelus ONE:1 - Autonomous Fixed-Wing UAV](https://lorenzodallarosa.com/#caelus-one): A fully autonomous, carbon-fibre fixed-wing UAV built from scratch by a ten-person student team for the IMechE UAS Challenge.
+- [Caelus Baff-1 - Autonomous Fixed-Wing UAV](https://lorenzodallarosa.com/#caelus-baff-1): Second-generation IMechE UAS Challenge aircraft: A-tail pusher, D-box composite wing and 30 minutes of continuous autonomous operation.
+- [Dynamics of an Insulated Rail Joint](https://lorenzodallarosa.com/#rail-joint-dynamics): 3D transient FE model of a moving Hertzian load on an insulated rail joint, with a Python spectral index that detects end-post failure from a 360 to 330 Hz frequency shift.
+- [Aerodynamics of a VTOL Rotor](https://lorenzodallarosa.com/#vtol-rotor-aerodynamics): My bachelor's thesis at SkyEye Systems: hover CFD of the rotor of a large-scale VTOL UAV, run through an automated Star-CCM+ pipeline to select the most efficient configuration.
+- [Critical Engine Speed in an Engine Connecting Rod](https://lorenzodallarosa.com/#connecting-rod-critical-speed): Analytical and nonlinear contact FEA prediction of the engine speed at which inertia loads open the big-end joint of a TVR 3.5 L connecting rod: 8415 rpm by FEM against 8770 rpm analytically.
+- [CFD/CHT Analysis of a Compressor Stage](https://lorenzodallarosa.com/#compressor-stage-cfd): Star-CCM+ CFD and conjugate heat transfer simulations of an axial compressor stage.
+- [Caelus Quadcopter - IEEE UAV Chase Challenge](https://lorenzodallarosa.com/#caelus-quadcopter): Support structure for the sensor array of the autonomous quadcopter that won 1st place worldwide at the IEEE UAV Chase Challenge 2023.
+
+## Experience
+
+- CNC Machining, Naval defence sector supply chain (undisclosed) (10/2026)
+- Head of Aerodynamics, E-Team Squadra Corse (Formula Student) (09/2025 - 09/2026)
+- CFD Engineer, E-Team Squadra Corse (Formula Student) (10/2024 - 09/2025)
+- BS Thesis Researcher, SkyEye Systems (04/2025 - 06/2025)
+- Co-Founder, Aerodynamics Division Manager and Lead Operations, Fixed-Wing UAV Team, Caelus Sant'Anna (09/2023 - 09/2025)
+- CAD and Additive Manufacturing, Autonomous Quadcopter Team, Caelus Sant'Anna (01/2023 - 09/2023)
+
+## Education
+
+- Master's degree, Aerospace Engineering - Analytical and Computational Methods for Engineering, Sant'Anna School of Advanced Studies (09/2022 - Exp. 11/2027)
+- Master's degree, Aerospace Engineering, University of Pisa (09/2022 - Exp. 11/2027)
+- Bachelor's degree, Aerospace Engineering, University of Pisa (09/2022 - 07/2025)
+
+## Software
+
+Star-CCM+ and Java macros, XFLR5, BetaCAE ANSA, BetaCAE META, ANSYS Mechanical / Workbench, ANSYS MAPDL / APDL, Ansys SpaceClaim, Siemens NX, PX4, ArduPilot, ROS2, Python, MATLAB, C, SolidWorks, ANSYS Fluent, OpenFOAM, ANSYS ACP, Fibersim, Autodesk Fusion 360 and CAM, 3DExperience CATIA, C++, Git, Bash
