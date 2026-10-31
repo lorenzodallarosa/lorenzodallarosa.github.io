@@ -28,7 +28,7 @@ The design brief for the one-page portfolio of Lorenzo Dalla Rosa (CFD and FEA e
 **Content rules**
 - Every piece of copy comes from `content/portfolio-input.md`. Never invent credentials, metrics, logos, dates **or decorative figures** (no generated line drawings, aerofoils or illustrations standing in for real work). An empty `[]` field is omitted from the page.
 - Language is English (British spelling, as written in the input file). Text is used as written.
-- The portrait is shown greyscale (CSS filter), never in colour.
+- The portrait is shown in full colour (the owner asked for it; it was greyscale before).
 - Markdown in the input file (bold, italic, bullet lists, `$...$` equations) must render; KaTeX loads from jsDelivr only when equations are present.
 - Missing images render as labelled placeholders (see "Image placeholders"), never as invented content.
 
@@ -37,7 +37,7 @@ The design brief for the one-page portfolio of Lorenzo Dalla Rosa (CFD and FEA e
 | # | Section | Theme | Source |
 |---|---|---|---|
 | 0 | Top bar | Cream, inverts over dark | `Name`; links: `CV`, `Contact` only. No year in the sub-line |
-| 1 | Intro | Cream | `Tag line` (CFD · FEA · Composites) above the name, `Greeting` (Ciao!), `Name`, `Role`, `Location`, institutions linked to their `Link:`, greyscale portrait. No work index, no figure |
+| 1 | Intro | Cream | `Tag line` (CFD · FEA · Composites) above the name, `Greeting` (Ciao!), `Name`, `Role`, `Location`, institutions linked to their `Link:`, colour portrait. No work index, no figure |
 | 2 | ET-18 | Light, `--paper` family | `et-18-aero-package`: kicker "E-Team Squadra Corse" above the H1 "ET-18", the car photo as the hero image, then the 3D stage, then the numbered steps |
 | 3 | Caelus Sant'Anna | Dark | Group `caelus`: group header, then ONE:1 and Baff-1, each with its own hero, 3D stage and steps |
 | 4 | More projects (`Projects title`) | Sage pastel | `Tier: small` projects as cards that expand into a full-width panel with figures (the quadcopter is the last card) |
@@ -273,7 +273,7 @@ Use 4–6 of these, consistently, never all at once:
 - **Dimension lines:** thin lines with end ticks and a mono measurement label (`Ø 24 mm`, `n = 1,000`) around figures.
 - **Callout leaders:** a short line from a point on the 3D model to a mono label, colour-coded by meaning.
 - **Hardware-style micro text:** tiny mono strings in corners (`REV. B`, `SHEET 03/09`, coordinates). Keep them truthful or lightly witty.
-- **Greyscale portrait** on a cream panel. No colour photos of the owner.
+- **Colour portrait** on a cream panel.
 - **Legend chips** under figures: small colour squares with mono labels.
 - **A tiny human moment** per page, in a caption or footer. Warmth keeps precision from going sterile.
 

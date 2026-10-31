@@ -93,7 +93,7 @@
 .intro-loc { color: var(--mute); line-height: 1.9; margin-top: 28px; }
 .intro-loc .sq { margin-right: 6px; }
 .intro-portrait { grid-column: 9 / span 4; margin: 0; }
-.portrait { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 30%; filter: grayscale(1) contrast(1.05); }
+.portrait { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 30%; }
 
 /* ---------- Big projects ---------- */
 .proj--big, .proj--group { padding: var(--pad-y) 0; }
