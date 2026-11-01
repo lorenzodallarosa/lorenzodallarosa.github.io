@@ -65,7 +65,7 @@ Location: [Pisa, Italy]
 ### BS Thesis Researcher | SkyEye Systems
 Dates: [04/2025 - 06/2025]
 Location: [Remote]
-- Rotor aerodynamics of a large-scale VTOL UAV, with the Laboratory of Experimental Aerodynamics (University of Pisa).
+- Bachelor's thesis carried out at SkyEye Systems: CFD of the rotor of a large-scale VTOL UAV, in collaboration with the Laboratory of Experimental Aerodynamics (University of Pisa).
 
 ### Co-Founder, Aerodynamics Division Manager and Lead Operations | Fixed-Wing UAV Team, Caelus Sant'Anna
 Dates: [09/2023 - 09/2025]
@@ -186,7 +186,7 @@ The car's performance is a balance between downforce, aero balance and drag, so 
 #### Composite manufacturing
 Image: front-wing-render.jpg | Rendering of the 2026 front wing
 - Led end-to-end composite manufacturing (mould tooling, carbon-fibre layup, curing), cutting package weight by 8%.
-- Managed the team's transition from SolidWorks to Siemens NX, with ply-book generation in Fibersim.
+- Managed the aerodynamics division's transition from SolidWorks to Siemens NX, and set up ply-book generation in Fibersim.
 
 ### Caelus ONE:1 - Autonomous Fixed-Wing UAV
 Slug: [caelus-one]
@@ -209,11 +209,9 @@ Design, manufacturing and testing of a fully autonomous fixed-wing UAV for the I
 
 #### Aerodynamic layout and payload fairing
 - Innovative aerodynamic layout: the payload sits outside the main fuselage, with a moving fairing that retracts after the drop.
-- Flaperons as control surfaces.
 
-#### Carbon-fibre monocoque and autonomy
-- Full carbon-fibre monocoque airframe carrying its own weight in payload: 8 kg of payload on an 8 kg aircraft, with short take-off and landing.
-- Fully autonomous flight with a PX4 autopilot.
+#### Carbon-fibre monocoque
+- Full carbon-fibre monocoque: an 8 kg aircraft that carries 8 kg of payload, with short take-off and landing.
 
 ### Caelus Baff-1 - Autonomous Fixed-Wing UAV
 Slug: [caelus-baff-1]
@@ -268,6 +266,7 @@ Exam project for *Principles of Machine Design with FEM Applications*, Sant'Anna
 An insulated rail joint keeps continuous welded rails mechanically continuous while electrically isolated for signalling circuits. A broken insulating end-post causes short circuits, which give false "clear" signals (collision risk) or false "occupied" signals (network blockage). The goal was to reconstruct the strain wave $\varepsilon_x(x,t)$ from strain probes and to detect the failure of the end-post.
 
 #### Model
+Image: analytical-model.png | Analytical model: the rail as a beam on an elastic foundation under a moving load, with three stiffness zones at the joint
 Image: moving-load.png | Moving Hertzian pressure on the SURF154 surface elements of the rail head (APDL)
 Image: fe-mesh.png | Mesh of the insulated rail joint
 - Moving Hertzian train load, vertical and longitudinal, on an elastically supported rail with fishplates and an insulating end-post.
@@ -287,7 +286,7 @@ Image: spectrograms.png | Spectrograms at the fishplate end: undamaged, damaged 
 Image: fingerprint.png | Spectral fingerprint in the diagnostic band
 - Wave reconstruction by cubic spline interpolation in Python. The undamaged and damaged cases differ by about $\pm200\,\mu\varepsilon$, confined to the fishplate region ($\pm0.25$ m), where the damaged joint opens and closes like a compliant connection.
 - Welch power spectral density shows the low-frequency modes unaffected, and a clear shift from **360 Hz to 330 Hz** caused by the lost local stiffness. The shift survives normalisation by the load spectrum.
-- A diagnostic index over the 310 to 380 Hz band returns about **500** for complete failure ($DI \gg 1$ means failure), and lower values would indicate partial damage.
+- A diagnostic index integrates the ratio of the measured to the undamaged strain spectrum over the 310 to 380 Hz band. Values far above 1 flag a broken end-post and lower values partial damage; the band was chosen with a sensitivity analysis on its centre and width.
 
 ### Aerodynamics of a VTOL Rotor
 Slug: [vtol-rotor-aerodynamics]
