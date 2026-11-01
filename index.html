@@ -27,15 +27,611 @@
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 <link rel="alternate" type="text/markdown" href="llms.txt" title="Plain-text summary for AI assistants">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "ProfilePage", "url": "https://lorenzodallarosa.com/", "dateModified": "2026-11-01", "mainEntity": {"@type": "Person", "name": "Lorenzo Dalla Rosa", "url": "https://lorenzodallarosa.com/", "jobTitle": "Aerospace Engineer", "description": "Lorenzo Dalla Rosa, aerospace engineer: Aerodynamics, CFD, FEA and composites. Head of Aerodynamics at E-Team Squadra Corse (Formula Student) and co-founder of the Caelus Sant'Anna UAV team.", "sameAs": ["https://www.linkedin.com/in/lorenzo-dalla-rosa", "https://github.com/lorenzodallarosa"], "alumniOf": [{"@type": "CollegeOrUniversity", "name": "Sant'Anna School of Advanced Studies"}, {"@type": "CollegeOrUniversity", "name": "University of Pisa"}], "knowsAbout": ["Computational Fluid Dynamics", "Finite Element Analysis", "Conjugate Heat Transfer", "Aerodynamics", "Rarefied Gas and Cold Plasma Dynamics", "Flight Mechanics", "Composite Structures", "Autonomous Flight"], "knowsLanguage": ["Italian", "English", "French", "German"], "image": "https://lorenzodallarosa.com/assets/img/profile/profile.jpeg", "address": {"@type": "PostalAddress", "addressLocality": "Pisa", "addressCountry": "Italy"}}}</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,200..800&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
-<link rel="stylesheet" href="assets/css/tokens.css">
-<link rel="stylesheet" href="assets/css/base.css">
-<link rel="stylesheet" href="assets/css/components.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
-<script defer src="assets/js/math.js"></script>
+<link rel="preload" href="assets/fonts/bricolage-grotesque-200-800-latin.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+/* Self-hosted Google Fonts (SIL Open Font License): Bricolage Grotesque (variable weight and
+   optical size) and IBM Plex Mono 400/500, latin and latin-ext only. Fetched once from
+   fonts.googleapis.com; served from this site so no third-party request blocks the page. */
+@font-face {
+  font-family: 'Bricolage Grotesque';
+  font-style: normal;
+  font-weight: 200 800;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(assets/fonts/bricolage-grotesque-200-800-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Bricolage Grotesque';
+  font-style: normal;
+  font-weight: 200 800;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(assets/fonts/bricolage-grotesque-200-800-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(assets/fonts/ibm-plex-mono-400-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(assets/fonts/ibm-plex-mono-400-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(assets/fonts/ibm-plex-mono-500-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(assets/fonts/ibm-plex-mono-500-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Design tokens (content/DESIGN.md sections 3, 4, 5 and 8). */
+:root {
+  /* Paper (light sections) */
+  --cream:        #EAE4D3;
+  --cream-deep:   #DDD5BF;
+  --paper:        #F6F2E8;
+
+  /* Ink (dark sections + text) */
+  --ink:          #1B1B19;
+  --ink-soft:     #2A2A27;
+  --ink-mute:     #6E6A5F;
+  --bone:         #EDE7D6;
+  --bone-mute:    #9B968A;
+
+  /* The one loud colour */
+  --orange:       #F0541E;
+  --orange-deep:  #D8430F;
+
+  /* Pastels */
+  --sage:         #C7D1B6;
+  --powder:       #BCD0D6;
+  --butter:       #EBD98F;
+  --blush:        #E8C6B8;
+
+  /* Lines */
+  --rule-light:   rgba(27,27,25,.18);
+  --rule-dark:    rgba(237,231,214,.18);
+
+  /* Muted text on light/pastel grounds. --ink-mute is ~4.2:1 on cream, so small
+     text uses this slightly deeper step of the same hue to clear 4.5:1. */
+  --ink-mute-text: #58554C;
+
+  /* Type */
+  --font-display: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+  --font-body:    "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+  --font-mono:    "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --fs-mega:   clamp(8rem, 24vw, 26rem);
+  --fs-h1:     clamp(4rem, 11vw, 11rem);
+  --fs-h2:     clamp(1.75rem, 3vw, 2.75rem);
+  --fs-lead:   1.25rem;
+  --fs-body:   1.0625rem;
+  --fs-label:  0.72rem;
+  --fs-cap:    0.75rem;
+  --fs-index:  0.7rem;
+
+  /* Layout */
+  --margin:    clamp(20px, 4vw, 72px);
+  --gutter:    24px;
+  --maxw:      1440px;
+  --pad-y:     clamp(96px, 14vh, 200px);
+  --bar-h:     68px;
+
+  /* Motion */
+  --ease:      cubic-bezier(.2,.7,.2,1);
+  --t-fast:    250ms;
+  --t-reveal:  600ms;
+}
+
+/* Per-section themes: components read --bg / --fg / --mute / --rule / --surface. */
+[data-theme="light"]  { --bg: var(--cream);  --fg: var(--ink);  --mute: var(--ink-mute-text); --rule: var(--rule-light); --surface: var(--paper);      --hatch: var(--cream-deep); }
+[data-theme="paper"]  { --bg: var(--paper);  --fg: var(--ink);  --mute: var(--ink-mute-text); --rule: var(--rule-light); --surface: var(--cream);      --hatch: var(--cream-deep); }
+[data-theme="dark"]   { --bg: var(--ink);    --fg: var(--bone); --mute: var(--bone-mute);     --rule: var(--rule-dark);  --surface: var(--ink-soft);   --hatch: var(--ink-soft); }
+[data-theme="sage"]   { --bg: var(--sage);   --fg: var(--ink);  --mute: #46493E;              --rule: var(--rule-light); --surface: var(--paper);      --hatch: var(--cream-deep); }
+[data-theme="butter"] { --bg: var(--butter); --fg: var(--ink);  --mute: #4E4734;              --rule: var(--rule-light); --surface: var(--paper);      --hatch: var(--cream-deep); }
+[data-theme="orange"] { --bg: var(--orange); --fg: var(--ink);  --mute: var(--ink);           --rule: rgba(234,228,211,.75); --surface: transparent; --hatch: var(--orange-deep); }
+
+/* Reset, type scale, layout primitives, motion primitives. */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-padding-top: var(--bar-h); }
+body {
+  margin: 0;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: var(--fs-body);
+  line-height: 1.55;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+img, svg, canvas { display: block; max-width: 100%; }
+h1, h2, h3, h4, p, ul, ol, figure, dl, dd { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+strong { font-weight: 500; }
+table { border-collapse: collapse; width: 100%; }
+
+section[data-theme], footer[data-theme] { background: var(--bg); color: var(--fg); position: relative; }
+
+.wrap {
+  width: 100%;
+  max-width: calc(var(--maxw) + 2 * var(--margin));
+  margin: 0 auto;
+  padding: 0 var(--margin);
+}
+
+/* Type roles */
+.t-mega  { font-family: var(--font-display); font-weight: 800; font-size: var(--fs-mega); letter-spacing: -0.05em; line-height: .8; }
+.t-h1    { font-family: var(--font-display); font-weight: 800; font-size: var(--fs-h1); letter-spacing: -0.045em; line-height: .88; font-variation-settings: "opsz" 96; }
+.t-h2    { font-family: var(--font-body); font-weight: 300; font-size: var(--fs-h2); letter-spacing: -0.015em; line-height: 1.15; }
+.t-lead  { font-weight: 300; font-size: var(--fs-lead); line-height: 1.45; }
+.t-label { font-family: var(--font-mono); font-weight: 500; font-size: var(--fs-label); letter-spacing: .12em; text-transform: uppercase; line-height: 1.3; }
+.t-cap   { font-weight: 300; font-size: var(--fs-cap); line-height: 1.4; color: var(--mute); max-width: 45ch; }
+.t-index { font-family: var(--font-mono); font-weight: 400; font-size: var(--fs-index); letter-spacing: .05em; line-height: 1; color: var(--mute); }
+.prose   { max-width: 62ch; }
+.prose p + p { margin-top: 1em; }
+
+/* Links: 1px underline offset 4px, thickens on hover. No colour change. */
+a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; transition: text-decoration-thickness var(--t-fast) var(--ease); }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; }
+
+.skip {
+  position: absolute; left: var(--margin); top: -100px; z-index: 100;
+  background: var(--ink); color: var(--bone); padding: 10px 14px;
+  font-family: var(--font-mono); font-size: .8rem; text-decoration: none;
+}
+.skip:focus { top: 10px; }
+
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Orange square marker */
+.sq { display: inline-block; width: 6px; height: 6px; background: var(--orange); flex: none; }
+
+/* ---------- Motion primitives (section 8) ---------- */
+/* Mask-line rise: .mask > .mask-in. JS adds .is-in once at ~20% visibility. */
+.rv .mask { display: block; overflow: hidden; padding-bottom: .06em; margin-bottom: -.06em; }
+.rv .mask > .mask-in { display: block; transform: translateY(105%); transition: transform 700ms var(--ease); transition-delay: calc(var(--i, 0) * 60ms); }
+.rv .is-in .mask > .mask-in, .rv .mask.is-in > .mask-in { transform: none; }
+
+/* Body blocks: fade and rise 8px. */
+.rv .rise { opacity: 0; transform: translateY(8px); transition: opacity 600ms var(--ease), transform 600ms var(--ease); }
+.rv .rise.is-in { opacity: 1; transform: none; }
+
+/* Rules draw left to right. */
+.rv .draw { transform: scaleX(0); transform-origin: left; transition: transform 600ms var(--ease); }
+.rv .draw.is-in { transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .rv .mask > .mask-in, .rv .rise, .rv .draw { transform: none !important; opacity: 1 !important; transition: none !important; }
+  * { scroll-behavior: auto !important; }
+}
+
+/* Components (content/DESIGN.md sections 0, 5, 6, 7, 9 and 12). */
+
+/* ---------- Top bar ---------- */
+.bar {
+  position: fixed; inset: 0 0 auto; z-index: 70; height: var(--bar-h);
+  background: rgba(234,228,211,.85); color: var(--ink);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--rule-light);
+  transition: background-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
+}
+.bar[data-on="dark"] { background: rgba(27,27,25,.85); color: var(--bone); border-color: var(--rule-dark); }
+.bar-in { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.wm { display: flex; flex-direction: column; gap: 3px; text-decoration: none; }
+.wm-name { font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; letter-spacing: -0.01em; text-transform: uppercase; line-height: 1; }
+.wm-sub { font-size: .62rem; opacity: .8; }
+.bar-nav ul { display: flex; gap: 28px; }
+.bar-nav a { font-size: .95rem; font-weight: 300; text-decoration-color: transparent; }
+.bar-nav a:hover, .bar-nav a[aria-current="true"] { text-decoration-color: currentColor; }
+.bar-menu { display: none; font-size: .95rem; font-weight: 300; text-decoration: underline; text-underline-offset: 4px; }
+
+.menu { position: fixed; inset: 0; z-index: 60; background: var(--cream); color: var(--ink); padding: calc(var(--bar-h) + 40px) var(--margin) 40px; }
+.menu ul { display: flex; flex-direction: column; gap: 8px; }
+.menu a { font-family: var(--font-display); font-weight: 800; font-size: clamp(3rem, 14vw, 5rem); letter-spacing: -0.04em; line-height: 1; text-decoration: none; }
+
+/* ---------- Section counter ---------- */
+.counter {
+  position: fixed; left: var(--margin); bottom: 20px; z-index: 40;
+  display: flex; align-items: center; gap: 8px; color: var(--ink);
+  transition: color var(--t-fast) var(--ease); pointer-events: none;
+}
+.counter[data-on="dark"] { color: var(--bone); }
+.counter.is-off { opacity: 0; }
+.counter { transition: color var(--t-fast) var(--ease), opacity var(--t-fast) var(--ease); }
+.c-num { display: inline-block; overflow: hidden; }
+.c-num.swap { animation: cswap 150ms var(--ease); }
+@keyframes cswap { from { transform: translateY(60%); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* ---------- Shared bits ---------- */
+.tick { position: absolute; width: 12px; height: 12px; border: 0 solid var(--fg); opacity: .6; pointer-events: none; z-index: 3; }
+.tick.tl { top: 0; left: 0; border-top-width: 1px; border-left-width: 1px; }
+.tick.tr { top: 0; right: 0; border-top-width: 1px; border-right-width: 1px; }
+.tick.bl { bottom: 0; left: 0; border-bottom-width: 1px; border-left-width: 1px; }
+.tick.br { bottom: 0; right: 0; border-bottom-width: 1px; border-right-width: 1px; }
+
+.ph {
+  position: relative; display: grid; place-items: center; width: 100%; padding: 16px; text-align: center;
+  background-color: var(--hatch);
+  background-image: repeating-linear-gradient(45deg, rgba(127,127,120,.08) 0 1px, transparent 1px 10px);
+  outline: 1px dashed var(--rule); outline-offset: -1px; color: var(--mute);
+}
+
+.fig { margin: 0; }
+.fig-frame { position: relative; }
+.fig-frame img { width: 100%; height: auto; }
+.fig figcaption { margin-top: 10px; }
+.sq { vertical-align: 1px; }
+
+.crumb { color: var(--mute); margin-bottom: 24px; }
+.proj-no { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.proj-tags { color: var(--mute); margin-left: 14px; }
+.proj-title { margin: 24px 0 28px; }
+.proj-kicker { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.4rem, 2.6vw, 2.4rem); letter-spacing: -0.02em; line-height: 1; margin-top: 28px; }
+.proj-kicker + .proj-title { margin-top: 8px; }
+.proj-statement { max-width: 24ch; }
+.proj-links { display: flex; gap: 24px; flex-wrap: wrap; margin-top: 28px; }
+.doc-card {
+  display: flex; align-items: stretch; width: min(100%, 440px); min-height: 120px; text-decoration: none;
+  border: 2px solid var(--fg); background: var(--bg); transition: background-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
+}
+.doc-thumb { flex: none; width: 48%; border-right: 2px solid var(--fg); background: #fff; overflow: hidden; }
+.doc-thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top left; transition: transform 400ms var(--ease); }
+.doc-meta { display: flex; flex-direction: column; justify-content: space-between; gap: 12px; padding: 14px 16px; }
+.doc-label { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; letter-spacing: -0.01em; line-height: 1.1; }
+.doc-open { align-self: flex-start; padding: 7px 10px; background: var(--orange); color: var(--ink); }
+.doc-card:hover { background: var(--orange); color: var(--ink); }
+.doc-card:hover .doc-open { background: var(--ink); color: var(--orange); }
+.doc-card:hover .doc-thumb img { transform: scale(1.04); }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 10px; padding: 14px 20px; border: 1px solid currentColor;
+  font-family: var(--font-mono); font-weight: 500; font-size: .78rem; letter-spacing: .12em; text-transform: uppercase;
+  text-decoration: none; transition: background-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
+}
+.btn:hover { background: var(--orange); color: var(--ink); border-color: var(--orange); }
+
+/* ---------- Intro ---------- */
+.intro { padding: calc(var(--bar-h) + clamp(40px, 8vh, 112px)) 0 var(--pad-y); }
+.intro-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gutter); align-items: end; }
+.intro-text { grid-column: 1 / span 8; display: flex; flex-direction: column; }
+.intro-tag { margin-bottom: clamp(20px, 3vh, 32px); }
+.intro-greet { font-family: var(--font-display); font-weight: 300; font-size: clamp(2.25rem, 5vw, 4.5rem); letter-spacing: -0.03em; line-height: 1; margin-bottom: .1em; }
+.intro-role { margin-top: clamp(28px, 4vh, 44px); }
+.intro-loc { color: var(--mute); line-height: 1.9; margin-top: 28px; }
+.intro-loc .sq { margin-right: 6px; }
+.intro-portrait { grid-column: 9 / span 4; margin: 0; }
+.portrait { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 30%; }
+
+/* ---------- Big projects ---------- */
+.proj--big, .proj--group { padding: var(--pad-y) 0; }
+.proj[data-theme="paper"] { border-top: 1px solid var(--rule-light); }
+.hero { display: grid; grid-template-columns: minmax(0, 38fr) minmax(0, 62fr); gap: var(--gutter); align-items: start; }
+.hero--flip { grid-template-columns: minmax(0, 62fr) minmax(0, 38fr); }
+.hero--flip > .proj-head { order: 2; }
+.proj-head { position: relative; z-index: 4; padding-top: 8px; }
+.proj-head .proj-title { font-size: clamp(4rem, 9vw, 9.5rem); pointer-events: none; white-space: nowrap; }
+.hero-photo { margin-right: calc(-1 * var(--margin)); }
+.hero-photo img { max-height: 92svh; object-fit: cover; }
+
+.stage-band { margin: clamp(48px, 9vh, 104px) calc(-1 * var(--margin)) 0; }
+.stage-band .stage-box { height: clamp(460px, 80svh, 900px); }
+
+.stage { position: relative; margin: 0 calc(-1 * var(--margin)) 0 0; }
+.hero--flip .stage { order: -1; margin: 0 0 0 calc(-1 * var(--margin)); }
+.stage-band .stage { margin: 0; }
+.stage-box { position: relative; height: clamp(440px, 78svh, 880px); overflow: hidden; }
+.stage--dark .stage-box { background: var(--ink); }
+.stage-poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 500ms var(--ease), filter 500ms var(--ease); }
+/* Loading: the poster becomes a dim ghost under a slow sheen, with a progress hairline. */
+.stage.is-loading .stage-poster { opacity: .16; filter: grayscale(1) blur(2px); }
+.stage.is-loading .stage-box::after {
+  content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background: linear-gradient(100deg, transparent 35%, color-mix(in srgb, var(--fg) 8%, transparent) 50%, transparent 65%) 0 0 / 300% 100%;
+  animation: sheen 1.8s linear infinite;
+}
+@keyframes sheen { from { background-position: 100% 0; } to { background-position: -50% 0; } }
+.stage-progress {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 2px; z-index: 3; background: var(--orange);
+  transform-origin: left; transform: scaleX(var(--p, 0)); opacity: 0;
+  transition: transform 250ms var(--ease), opacity 400ms var(--ease);
+}
+.stage.is-loading .stage-progress { opacity: 1; }
+.stage.is-loading .stage-status { top: 50%; right: auto; left: 50%; transform: translate(-50%, -50%); color: var(--fg); padding: 9px 14px; background: color-mix(in srgb, var(--bg) 85%, transparent); border: 1px solid var(--rule); }
+.stage--dark .stage-poster { object-fit: contain; padding: 6%; }
+.stage.is-live .stage-poster { visibility: hidden; }
+.stage-gl { position: absolute; inset: 0; }
+.stage-gl canvas { width: 100% !important; height: 100% !important; outline: none; cursor: grab; }
+.stage-gl canvas:active { cursor: grabbing; }
+.stage-callouts { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
+.stage-callouts svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.co-line { fill: none !important; }
+.co-label { position: absolute; white-space: nowrap; font-family: var(--font-mono); font-weight: 500; font-size: var(--fs-label); letter-spacing: .12em; text-transform: uppercase; }
+.co-label.left { transform: translate(-100%, -50%); padding-right: 6px; }
+.co-label.right { transform: translate(0, -50%); padding-left: 6px; }
+/* Hover-only callouts: leaders draw out from the part, then the labels rise in. */
+@media (hover: hover) {
+  .stage.co-hover .co-line { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 450ms var(--ease) calc(var(--i) * 70ms); }
+  .stage.co-hover .co-dot { opacity: 0; transition: opacity 250ms var(--ease) calc(var(--i) * 70ms); }
+  .stage.co-hover .co-label { opacity: 0; translate: 0 6px; transition: opacity 300ms var(--ease) calc(var(--i) * 70ms + 200ms), translate 400ms var(--ease) calc(var(--i) * 70ms + 200ms); }
+  .stage.co-hover .stage-box:hover .co-line { stroke-dashoffset: 0; }
+  .stage.co-hover .stage-box:hover .co-dot { opacity: 1; }
+  .stage.co-hover .stage-box:hover .co-label { opacity: 1; translate: 0 0; }
+}
+.tone-orange { color: var(--orange); stroke: var(--orange); fill: var(--orange); }
+.tone-bone   { color: var(--bone);   stroke: var(--bone);   fill: var(--bone); }
+.tone-powder { color: var(--powder); stroke: var(--powder); fill: var(--powder); }
+.tone-ink    { color: var(--ink);    stroke: var(--ink);    fill: var(--ink); }
+.stage-micro { position: absolute; top: 18px; left: 22px; z-index: 3; color: var(--mute); }
+.stage-status { position: absolute; top: 18px; right: 22px; z-index: 3; color: var(--mute); }
+.stage-hint { position: absolute; left: 50%; top: 18px; transform: translateX(-50%); z-index: 3; color: var(--mute); opacity: 0; transition: opacity 400ms var(--ease); pointer-events: none; }
+.stage.is-live .stage-hint { opacity: 1; }
+.stage.is-live.is-touched .stage-hint { opacity: 0; }
+.stage-tap {
+  display: none; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 4;
+  padding: 12px 18px; border: 1px solid currentColor; color: var(--bone); background: rgba(27,27,25,.6);
+}
+.stage-ui { position: absolute; left: 22px; right: 22px; bottom: 18px; z-index: 3; display: flex; justify-content: flex-end; }
+.presets { display: flex; visibility: hidden; }
+.stage.is-live .presets { visibility: visible; }
+.presets button {
+  padding: 8px 12px; border: 1px solid var(--rule); margin-left: -1px; color: var(--fg);
+  background: color-mix(in srgb, var(--bg) 70%, transparent);
+  transition: background-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
+}
+.presets button:hover { border-color: var(--fg); position: relative; }
+.presets button.is-on { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+
+/* Body under the hero: spec row, intro, steps */
+.proj-body { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 40px var(--gutter); margin-top: clamp(56px, 9vh, 112px); align-items: start; }
+.proj-body > .specs { grid-column: 1 / span 4; position: sticky; top: calc(var(--bar-h) + 24px); }
+.proj-steps { grid-column: 6 / span 7; }
+.proj-intro { margin-bottom: 36px; max-width: 52ch; }
+
+.specs { display: flex; flex-direction: column; border-top: 1px solid var(--rule); }
+.spec { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 11px 0; border-bottom: 1px solid var(--rule); }
+.spec dt { color: var(--mute); flex: none; }
+.spec dd { font-family: var(--font-mono); font-size: .85rem; text-align: right; }
+
+/* Steps: numbered rows that expand on click */
+.steps { border-top: 1px solid var(--rule); }
+.step { position: relative; border-bottom: 1px solid var(--rule); }
+.step-head {
+  display: grid; grid-template-columns: 48px minmax(0, 1fr) 24px; align-items: baseline; gap: 0;
+  padding: 22px 0; cursor: pointer; list-style: none;
+  font-family: var(--font-display); font-weight: 600; font-size: clamp(1.2rem, 1.9vw, 1.6rem); letter-spacing: -0.015em; line-height: 1.2;
+}
+.step-head::-webkit-details-marker { display: none; }
+.step-head::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px; background: var(--orange);
+  transform: scaleX(0); transform-origin: left; transition: transform 300ms var(--ease);
+}
+.step:hover > .step-head::after, .step[open] > .step-head::after { transform: none; }
+.step-plus { position: relative; width: 14px; height: 14px; justify-self: end; align-self: center; }
+.step-plus::before, .step-plus::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: currentColor; transition: transform var(--t-fast) var(--ease); }
+.step-plus::after { transform: rotate(90deg); }
+.step[open] .step-plus::after { transform: rotate(0deg); }
+.step-body { padding: 0 0 32px 48px; }
+.step-body .prose { font-size: 1.0625rem; }
+.step-figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; margin-top: 24px; }
+.step-figs .fig:only-child { grid-column: 1 / -1; max-width: 680px; }
+.step-figs .ph { aspect-ratio: 16 / 9 !important; }
+.step-figs .fig--wide { grid-column: 1 / -1; max-width: none; }
+.step--flat .step-head { cursor: default; grid-template-columns: 48px minmax(0, 1fr); }
+.step--flat .step-head::after { display: none; }
+
+.prose ul { margin: 12px 0; }
+.prose li { position: relative; padding-left: 20px; margin: 8px 0; }
+.prose li::before { content: ""; position: absolute; left: 0; top: .68em; width: 6px; height: 6px; background: var(--mute); }
+.prose p + p, .prose p + ul, .prose ul + p { margin-top: 1em; }
+
+/* ---------- Caelus group ---------- */
+.group-head { padding-bottom: clamp(48px, 8vh, 96px); }
+.compact {
+  display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 48px; align-items: start;
+  padding: clamp(40px, 6vh, 72px) 0; border-top: 1px solid var(--rule);
+}
+.compact-title { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.5rem, 5vw, 4.5rem); letter-spacing: -0.04em; line-height: .95; margin: 20px 0 20px; display: flex; align-items: baseline; gap: 18px; flex-wrap: wrap; }
+.compact-year { color: var(--mute); }
+.compact .t-lead { max-width: 46ch; margin-bottom: 24px; }
+.compact .specs { margin-bottom: 24px; max-width: 520px; }
+.compact-fig .fig-frame { background: var(--paper); }
+.compact-fig img { mix-blend-mode: multiply; }
+.sub-proj { padding: clamp(64px, 10vh, 128px) 0 clamp(24px, 4vh, 48px); border-top: 1px solid var(--rule); min-height: 100svh; }
+
+/* ---------- Smaller projects ---------- */
+.smaller { padding: var(--pad-y) 0; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--gutter); }
+.card { display: flex; flex-direction: column; border-top: 1px solid var(--fg); }
+.card-btn { display: flex; flex-direction: column; gap: 12px; text-align: left; padding: 16px 0 18px; flex: 1; }
+.card-btn .fig-frame { aspect-ratio: 4 / 3; overflow: hidden; background: var(--paper); }
+.card-btn .fig-frame img { width: 100%; height: 100%; object-fit: cover; transition: transform 500ms var(--ease); }
+.card-btn:hover .fig-frame img { transform: scale(1.03); }
+.card-btn .ph { height: 100%; }
+.card-title { font-family: var(--font-display); font-weight: 700; font-size: 1.35rem; letter-spacing: -0.02em; line-height: 1.1; }
+.card-course { color: var(--mute); line-height: 1.5; }
+.card-sum { font-size: .95rem; line-height: 1.5; }
+.card-more { margin-top: auto; padding-top: 6px; display: inline-flex; align-items: center; gap: 8px; text-decoration: underline; text-underline-offset: 4px; }
+.card-btn[aria-expanded="true"] .card-more { text-decoration-thickness: 2px; }
+.card-btn[aria-expanded="true"] .card-more::before { content: ""; width: 6px; height: 6px; background: var(--orange); }
+.card-btn[aria-expanded="true"] { box-shadow: inset 0 3px 0 var(--orange); }
+.card-specs { font-size: .9em; }
+.panels { margin-top: clamp(40px, 6vh, 72px); }
+.panel { position: relative; display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 40px var(--gutter); padding: clamp(36px, 5vh, 56px) 0; border-top: 2px solid var(--fg); scroll-margin-top: calc(var(--bar-h) + 16px); }
+.panel[hidden] { display: none; }
+.panel + .panel { margin-top: 24px; }
+.anchor { position: absolute; top: calc(-1 * var(--bar-h) - 16px); }
+.panel-head { position: sticky; top: calc(var(--bar-h) + 24px); align-self: start; display: flex; flex-direction: column; gap: 18px; }
+.panel-title { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.8rem, 3vw, 2.75rem); letter-spacing: -0.03em; line-height: 1; }
+.panel-course { color: var(--mute); font-family: var(--font-mono); font-size: .8rem; line-height: 1.5; }
+.panel-close { align-self: flex-start; text-decoration: underline; text-underline-offset: 4px; }
+.has-panels .panel-close { display: inline-block; }
+.panel-close { display: none; }
+
+/* ---------- Gallery (a collapsed step under a project) ---------- */
+.gallery { margin-top: 24px; }
+.gallery-n { color: var(--mute); margin-left: 10px; }
+.gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; padding: 8px 0 28px; }
+.gallery-fig img { aspect-ratio: 3 / 4; object-fit: cover; }
+.gallery-fig.fig--wide { grid-column: auto; }
+
+/* ---------- CV ---------- */
+.cv { padding: var(--pad-y) 0; }
+.cv-top { display: grid; grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); gap: var(--gutter); align-items: end; margin-bottom: clamp(48px, 8vh, 88px); }
+.cv-about { font-size: 1.125rem; max-width: 62ch; }
+.cv-actions { justify-self: end; }
+.cv-card { background: var(--paper); padding: clamp(28px, 4vw, 64px); }
+.cv-block + .cv-block { margin-top: clamp(32px, 5vh, 56px); }
+.cv-h { display: flex; align-items: center; gap: 10px; padding-bottom: 14px; border-bottom: 1px solid var(--fg); }
+.cv-row { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 9fr); gap: var(--gutter); padding: 16px 0; border-bottom: 1px solid var(--rule); }
+.cv-dates { color: var(--mute); padding-top: 4px; }
+.cv-title { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; letter-spacing: -0.015em; line-height: 1.2; }
+.cv-org { margin: 2px 0 6px; color: var(--mute); }
+.cv-main .prose li { padding-top: 2px; }
+.cv-main .specs { max-width: 560px; margin: 6px 0 8px; }
+.cv-main .prose { max-width: 70ch; }
+.cv-course { display: flex; gap: 12px; align-items: baseline; max-width: 70ch; margin-top: 8px; padding: 8px 12px; border-left: 2px solid var(--orange); background: color-mix(in srgb, var(--fg) 4%, transparent); }
+.cv-course .t-label { flex: none; color: var(--fg); }
+.cv-course span:last-child { font-size: .95rem; }
+.skills { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 28px var(--gutter); padding-top: 22px; }
+.skill h4 { color: var(--mute); margin-bottom: 10px; }
+.skill li { padding: 4px 0; border-bottom: 1px solid var(--rule); font-size: .95rem; }
+.lang { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 7px 0; border-bottom: 1px solid var(--rule); }
+.lang dt { font-family: var(--font-display); font-weight: 600; font-size: 1rem; }
+.lang dd { color: var(--mute); text-align: right; }
+
+/* ---------- Awards (a block of the CV) ---------- */
+.aw-list { border-top: 0; }
+.aw-row { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: var(--gutter); padding: 22px 0; border-bottom: 1px solid var(--rule); align-items: start; }
+.aw-row .t-index { display: flex; align-items: center; gap: 8px; padding-top: 8px; }
+.aw-title { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.25rem, 2vw, 1.5rem); letter-spacing: -0.02em; line-height: 1.15; }
+.aw-meta { color: var(--mute); margin: 6px 0; }
+.aw-desc { max-width: 62ch; font-weight: 300; }
+.aw-fig { width: 200px; margin: 0; }
+.aw-fig .fig-frame { background: var(--paper); }
+.aw-fig img { mix-blend-mode: multiply; }
+.aw-fig figcaption { margin-top: 8px; }
+.cv-card .aw-row { grid-template-columns: minmax(0, 3fr) minmax(0, 9fr); padding: 16px 0; }
+.cv-card .aw-row .t-index { padding-top: 4px; }
+.cv-card .aw-title { font-weight: 700; font-size: 1.15rem; letter-spacing: -0.015em; }
+.cv-card .aw-fig { display: none; }
+
+/* ---------- Software (orange blueprint panel) ---------- */
+section.bp[data-theme] { background: var(--cream); padding: 24px; }
+.bp-sheet { background: var(--orange); color: var(--ink); padding: clamp(40px, 7vh, 96px) 0 28px; font-family: var(--font-mono); }
+.bp-top { display: flex; justify-content: space-between; padding-bottom: 12px; border-bottom: 1px solid var(--rule); }
+.bp-title { font-family: var(--font-mono); font-weight: 500; font-size: 2rem; text-transform: uppercase; letter-spacing: .04em; line-height: 1.1; margin: 40px 0 40px; }
+.bp-table { font-size: .82rem; line-height: 1.5; border: 1px solid var(--rule); }
+.bp-table th, .bp-table td { border: 1px solid var(--rule); padding: 12px 16px; text-align: left; vertical-align: top; font-weight: 400; }
+.bp-table thead th { font-size: var(--fs-label); letter-spacing: .12em; text-transform: uppercase; font-weight: 500; }
+.bp-table tbody th { font-weight: 500; font-size: .9rem; white-space: nowrap; }
+.bp-n { width: 1%; white-space: nowrap; }
+.bp-uses { display: flex; flex-wrap: wrap; gap: 4px 16px; }
+.bp-also th, .bp-also td { border-top-width: 2px; }
+.bp-bar { display: flex; justify-content: space-between; padding-top: 12px; margin-top: 48px; border-top: 1px solid var(--ink); }
+
+/* ---------- Contact ---------- */
+.contact { padding: var(--pad-y) 0 0; overflow: hidden; }
+.contact-grid { display: grid; grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); gap: var(--gutter); align-items: end; margin-top: 28px; }
+.contact-title { margin-bottom: 36px; }
+.contact .btn--primary { color: var(--bone); }
+.contact .btn--primary:hover { color: var(--ink); }
+.contact-links { display: flex; flex-direction: column; gap: 4px; border-top: 1px solid var(--rule); }
+.contact-links li { border-bottom: 1px solid var(--rule); }
+.contact-links a { display: block; padding: 14px 0; font-size: 1.15rem; text-decoration: none; }
+.contact-links a:hover { text-decoration: underline; }
+.mega-wrap { position: relative; touch-action: manipulation; } /* no double-tap zoom: taps go to the easter egg */
+/* Sized so the whole last name fits the viewport width. */
+.contact-mega {
+  color: var(--bone); margin: clamp(64px, 10vh, 120px) 0 -0.17em; padding-left: calc(var(--margin) - .04em); white-space: nowrap;
+  font-size: min(var(--fs-mega), calc((100vw - 2 * var(--margin)) / 4.6));
+  cursor: default; user-select: none; -webkit-user-select: none;
+  transform-origin: 40% 60%; transform: rotate(var(--aoa, 0deg)); transition: transform 700ms cubic-bezier(.3, 1.35, .5, 1);
+}
+/* Easter egg (assets/js/tunnel.js): wind tunnel streamlines, angle of attack and stall. */
+.tunnel { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0; transition: opacity 400ms var(--ease); }
+.is-tunnel .tunnel { opacity: 1; }
+.tunnel path { fill: none; stroke: var(--orange); stroke-width: 1.5; stroke-linecap: round; vector-effect: non-scaling-stroke; stroke-dasharray: 2 10; }
+.is-tunnel .tunnel path { animation: flow 1.1s linear infinite; } /* only while the tunnel is on */
+@keyframes flow { to { stroke-dashoffset: -48; } }
+.tunnel-read { position: absolute; top: -2.2em; right: var(--margin); color: var(--orange); }
+.tunnel-read .a { text-transform: none; font-size: 1.15em; }
+.is-stall .contact-mega { transform: translateY(5%) rotate(2deg); animation: buffet 120ms linear infinite; }
+@keyframes buffet { 50% { translate: 1px 2px; } }
+@media (prefers-reduced-motion: reduce) {
+  .tunnel path, .is-stall .contact-mega { animation: none; }
+}
+.contact-legal { position: relative; background: var(--ink); border-top: 1px solid var(--rule); color: var(--mute); }
+.contact-legal .wrap { display: flex; justify-content: space-between; padding-top: 16px; padding-bottom: 22px; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1199px) {
+  .hero, .hero--flip { grid-template-columns: minmax(0, 1fr); }
+  .hero--flip > .proj-head { order: 0; }
+  .stage, .hero--flip .stage { order: 2; margin: 24px calc(-1 * var(--margin)) 0; }
+  .hero-photo { margin: 24px calc(-1 * var(--margin)) 0; }
+  .proj-statement { max-width: 30ch; }
+  .proj-body > .specs { grid-column: 1 / -1; position: static; }
+  .proj-steps { grid-column: 1 / -1; }
+  .panel { grid-template-columns: minmax(0, 1fr); }
+  .panel-head { position: static; }
+  .intro-text { grid-column: 1 / span 7; }
+  .intro-portrait { grid-column: 8 / span 5; }
+}
+
+@media (max-width: 767px) {
+  :root { --margin: 20px; --bar-h: 60px; }
+  .bar-nav { display: none; }
+  .bar-menu { display: block; }
+  .counter { display: none; }
+  .intro-text, .intro-portrait { grid-column: 1 / -1; }
+  .intro-portrait { max-width: 320px; margin-top: 40px; }
+  .proj-head .proj-title { white-space: normal; }
+  .stage-box, .stage-band .stage-box { height: 72svh; }
+  .stage-tap { display: block; }
+  .stage.is-live .stage-tap { display: none; }
+  .stage-hint, .stage-callouts { display: none; }
+  .stage-ui { left: 14px; right: 14px; }
+  .step-body { padding-left: 0; }
+  .compact { grid-template-columns: minmax(0, 1fr); }
+  .cv-top { grid-template-columns: minmax(0, 1fr); }
+  .cv-actions { justify-self: start; }
+  .cv-row { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .aw-row, .cv-card .aw-row { grid-template-columns: 36px minmax(0, 1fr); }
+  .aw-fig { grid-column: 2; }
+  .contact-grid { grid-template-columns: minmax(0, 1fr); }
+  section.bp[data-theme] { padding: 12px; }
+  .bp-table thead { display: none; }
+  .bp-table, .bp-table tbody, .bp-table tr, .bp-table th, .bp-table td { display: block; }
+  .bp-table tr { border-bottom: 1px solid var(--rule); padding: 10px 0; }
+  .bp-table th, .bp-table td { border: 0; padding: 4px 14px; }
+  .bp-table tbody th { white-space: normal; }
+  .bp-uses { display: flex; }
+}
+
+</style>
 <script type="importmap">{"imports": {"three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}</script>
 <script data-goatcounter="https://lorenzodallarosa.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </head>
@@ -62,7 +658,7 @@
       <p class="t-h2 intro-role rise">Aerospace Engineer, MSc</p>
       <p class="t-label intro-loc rise"><span class="sq"></span> Pisa, Italy<br><a href="https://www.santannapisa.it" rel="noopener">Sant&#x27;Anna School of Advanced Studies</a> / <a href="https://www.unipi.it" rel="noopener">University of Pisa</a></p>
     </div>
-    <figure class="intro-portrait rise"><div class="fig-frame"><img src="assets/img/profile/profile.jpeg" alt="Portrait of Lorenzo Dalla Rosa" width="640" height="640" class="portrait"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div></figure>
+    <figure class="intro-portrait rise"><div class="fig-frame"><img src="assets/img/profile/profile.jpeg" srcset="assets/img/opt/profile/profile-480.webp 480w, assets/img/opt/profile/profile-640.webp 640w" sizes="(max-width: 767px) 100vw, 34vw" alt="Portrait of Lorenzo Dalla Rosa" width="640" height="640" fetchpriority="high" class="portrait"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div></figure>
   </div>
 </section>
 
@@ -75,10 +671,10 @@
         <p class="proj-kicker">E-Team Squadra Corse</p>
         <h2 class="t-h1 proj-title" aria-label="E-Team Squadra Corse ET-18"><span class="mask"><span class="mask-in" style="--i:0">ET-18</span></span></h2>
         <p class="t-h2 proj-statement rise">Aerodynamic development of E-Team Squadra Corse&#x27;s ET-18.</p>
-      </div><figure class="fig hero-photo"><div class="fig-frame"><img src="assets/img/projects/et-18-aero-package/cover.jpg" alt="E-Team Squadra Corse ET-18" width="1440" height="1800" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div></figure></div><div class="stage-band">
+      </div><figure class="fig hero-photo"><div class="fig-frame"><img src="assets/img/projects/et-18-aero-package/cover.jpg" srcset="assets/img/opt/projects/et-18-aero-package/cover-480.webp 480w, assets/img/opt/projects/et-18-aero-package/cover-960.webp 960w, assets/img/opt/projects/et-18-aero-package/cover-1440.webp 1440w" sizes="(max-width: 767px) 100vw, 66vw" alt="E-Team Squadra Corse ET-18" width="1440" height="1800" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div></figure></div><div class="stage-band">
       <figure class="stage stage--paper" data-stage aria-label="E-Team Squadra Corse ET-18: interactive 3D model, drag to rotate">
         <div class="stage-box">
-          <img src="assets/img/projects/et-18-aero-package/cover.jpg" alt="E-Team Squadra Corse ET-18" width="1440" height="1800" class="stage-poster">
+          <img src="assets/img/projects/et-18-aero-package/cover.jpg" srcset="assets/img/opt/projects/et-18-aero-package/cover-480.webp 480w, assets/img/opt/projects/et-18-aero-package/cover-960.webp 960w, assets/img/opt/projects/et-18-aero-package/cover-1440.webp 1440w" sizes="100vw" alt="E-Team Squadra Corse ET-18" width="1440" height="1800" loading="lazy" decoding="async" class="stage-poster">
           <div class="stage-gl" aria-hidden="true"></div>
           <div class="stage-callouts" aria-hidden="true"></div>
           <span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span>
@@ -98,7 +694,7 @@
       </figure></div>
     <div class="proj-body">
       <dl class="specs rise"><div class="spec"><dt class="t-label">Role</dt><dd>Head of Aerodynamics</dd></div><div class="spec"><dt class="t-label">Year</dt><dd>2025</dd></div><div class="spec"><dt class="t-label">Downforce</dt><dd>+13.5%</dd></div><div class="spec"><dt class="t-label">Efficiency</dt><dd>+16%</dd></div><div class="spec"><dt class="t-label">Track score</dt><dd>+7.3%</dd></div><div class="spec"><dt class="t-label">Package weight</dt><dd>−8%</dd></div><div class="spec"><dt class="t-label">Competitions</dt><dd>FS Spain, FS Alpe Adria, FSATA</dd></div></dl>
-      <div class="proj-steps"><div class="prose proj-intro t-lead"><p>Aerodynamic development of the E-Team Squadra Corse Formula Student car, first as CFD Engineer and then as Head of Aerodynamics.</p></div><div class="steps"><details class="step"><summary class="step-head"><span class="t-index">01</span><span class="step-t">Cornering simulations</span><span class="step-plus" aria-hidden="true"></span></summary><div class="step-body"><div class="prose"><p>Set up cornering simulations with a rotating circular domain in Star-CCM+, enabling more realistic modelling of the airflow during the skidpad.</p></div><div class="step-figs"><figure class="fig"><div class="fig-frame"><img src="assets/img/projects/et-18-aero-package/cornering-flow.jpg" alt="Streamlines around the car in the rotating cornering domain (Star-CCM+)" width="1600" height="900" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Streamlines around the car in the rotating cornering domain (Star-CCM+)</figcaption></figure></div></div></details><details class="step"><summary class="step-head"><span class="t-index">02</span><span class="step-t">Validation in the wind tunnel and on track</span><span class="step-plus" aria-hidden="true"></span></summary><div class="step-body"><div class="prose"><ul><li>Independently validated CFD results against wind tunnel data: designed the test model, ran the trials and performed statistical signal analysis on time-series sensor data in Python.</li><li>On-track pushrod extensometry for experimental validation.</li></ul></div><div class="step-figs"><figure class="fig"><div class="fig-frame"><img src="assets/img/projects/et-18-aero-package/wind-tunnel-closed.jpg" alt="Test model mounted in the wind tunnel" width="1050" height="1400" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Test model mounted in the wind tunnel</figcaption></figure><figure class="fig"><div class="fig-frame"><img src="assets/img/projects/et-18-aero-package/wind-tunnel-open.jpg" alt="Test model open, with the pressure tap lines" width="1050" height="1400" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Test model open, with the pressure tap lines</figcaption></figure><figure class="fig fig--wide"><div class="fig-frame"><img src="assets/img/projects/et-18-aero-package/wind-tunnel-cfd.jpg" alt="The same test simulated in the wind tunnel section (Star-CCM+)" width="1458" height="696" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">The same test simulated in the wind tunnel section (Star-CCM+)</figcaption></figure></div></div></details><details class="step"><summary class="step-head"><span class="t-index">03</span><span class="step-t">Battery cooling (CFD/CHT)</span><span class="step-plus" aria-hidden="true"></span></summary><div class="step-body"><div class="prose"><p>Pioneered the team&#x27;s first CFD/CHT battery cooling simulations, lowering steady-state peak temperatures by 15 °C.</p></div><div class="step-figs"><figure class="fig"><div class="fig-frame"><img src="assets/img/projects/et-18-aero-package/battery-cht.png" alt="Cell temperatures across a module section in the redesigned layout (CHT)" width="711" height="378" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Cell temperatures across a module section in the redesigned layout (CHT)</figcaption></figure></div></div></details><details class="step"><summary class="step-head"><span class="t-index">04</span><span class="step-t">Simulation architecture and automation</span><span class="step-plus" aria-hidden="true"></span></summary><div class="step-body"><div class="prose"><ul><li>Optimised the simulation architecture, cutting standard deviation 10-fold while lowering cell count.</li><li>Automated volume meshing and aerodynamic map generation pipelines.</li></ul></div><div class="step-figs"><figure class="fig fig--wide"><div class="fig-frame"><img src="assets/img/projects/et-18-aero-package/aero-maps.jpg" alt="Aero maps over front and rear ride height: CzA, CxA and aero balance" width="2400" height="622" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Aero maps over front and rear ride height: CzA, CxA and aero balance</figcaption></figure><figure class="fig"><div class="fig-frame"><img src="assets/img/projects/et-18-aero-package/range-extraction.png" alt="Range extraction: 4×4 roll and yaw grid of CFD points over the on-track samples, by manoeuvre" width="885" height="691" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Range extraction: 4×4 roll and yaw grid of CFD points over the on-track samples, by manoeuvre</figcaption></figure></div></div></details><details class="step"><summary class="step-head"><span class="t-index">05</span><span class="step-t">Reduced-order model</span><span class="step-plus" aria-hidden="true"></span></summary><div class="step-body"><div class="prose"><p>The car&#x27;s performance is a balance between downforce, aero balance and drag, so no single coefficient can rank two designs. I developed a coupled aero-vehicle dynamics Reduced Order Model that predicts the on-track score variation from simulation data, and used it to qualify each aerodynamic design and to quantify the gains of the new package.</p></div><div class="step-figs"><figure class="fig"><div class="fig-frame"><img src="assets/img/projects/et-18-aero-package/rom-balance.png" alt="Reduced-order model: lap time against aero balance and CzA" width="915" height="830" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Reduced-order model: lap time against aero balance and CzA</figcaption></figure><figure class="fig"><div class="fig-frame"><img src="assets/img/projects/et-18-aero-package/rom-drag.png" alt="Reduced-order model: lap time against CzA and CxA" width="841" height="795" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Reduced-order model: lap time against CzA and CxA</figcaption></figure></div></div></details><details class="step"><summary class="step-head"><span class="t-index">06</span><span class="step-t">Composite manufacturing</span><span class="step-plus" aria-hidden="true"></span></summary><div class="step-body"><div class="prose"><ul><li>Led end-to-end composite manufacturing (mould tooling, carbon-fibre layup, curing), cutting package weight by 8%.</li><li>Managed the aerodynamics division&#x27;s transition from SolidWorks to Siemens NX, and set up ply-book generation in Fibersim.</li></ul></div><div class="step-figs"><figure class="fig"><div class="fig-frame"><img src="assets/img/projects/et-18-aero-package/front-wing-render.jpg" alt="Rendering of the 2026 front wing" width="1434" height="981" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Rendering of the 2026 front wing</figcaption></figure></div></div></details></div></div>
+      <div class="proj-steps"><div class="prose proj-intro t-lead"><p>Aerodynamic development of the E-Team Squadra Corse Formula Student car, first as CFD Engineer and then as Head of Aerodynamics.</p></div><div class="steps"><details class="step"><summary class="step-head"><span class="t-index">01</span><span class="step-t">Cornering simulations</span><span class="step-plus" aria-hidden="true"></span></summary><div class="step-body"><div class="prose"><p>Set up cornering simulations with a rotating circular domain in Star-CCM+, enabling more realistic modelling of the airflow during the skidpad.</p></div><div class="step-figs"><figure class="fig"><div class="fig-frame"><img src="assets/img/projects/et-18-aero-package/cornering-flow.jpg" srcset="assets/img/opt/projects/et-18-aero-package/cornering-flow-480.webp 480w, assets/img/opt/projects/et-18-aero-package/cornering-flow-960.webp 960w, assets/img/opt/projects/et-18-aero-package/cornering-flow-1600.webp 1600w" sizes="(max-width: 767px) 100vw, 50vw" alt="Streamlines around the car in the rotating cornering domain (Star-CCM+)" width="1600" height="900" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Streamlines around the car in the rotating cornering domain (Star-CCM+)</figcaption></figure></div></div></details><details class="step"><summary class="step-head"><span class="t-index">02</span><span class="step-t">Validation in the wind tunnel and on track</span><span class="step-plus" aria-hidden="true"></span></summary><div class="step-body"><div class="prose"><ul><li>Independently validated CFD results against wind tunnel data: designed the test model, ran the trials and performed statistical signal analysis on time-series sensor data in Python.</li><li>On-track pushrod extensometry for experimental validation.</li></ul></div><div class="step-figs"><figure class="fig"><div class="fig-frame"><img src="assets/img/projects/et-18-aero-package/wind-tunnel-closed.jpg" srcset="assets/img/opt/projects/et-18-aero-package/wind-tunnel-closed-480.webp 480w, assets/img/opt/projects/et-18-aero-package/wind-tunnel-closed-960.webp 960w, assets/img/opt/projects/et-18-aero-package/wind-tunnel-closed-1050.webp 1050w" sizes="(max-width: 767px) 100vw, 50vw" alt="Test model mounted in the wind tunnel" width="1050" height="1400" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Test model mounted in the wind tunnel</figcaption></figure><figure class="fig"><div class="fig-frame"><img src="assets/img/projects/et-18-aero-package/wind-tunnel-open.jpg" srcset="assets/img/opt/projects/et-18-aero-package/wind-tunnel-open-480.webp 480w, assets/img/opt/projects/et-18-aero-package/wind-tunnel-open-960.webp 960w, assets/img/opt/projects/et-18-aero-package/wind-tunnel-open-1050.webp 1050w" sizes="(max-width: 767px) 100vw, 50vw" alt="Test model open, with the pressure tap lines" width="1050" height="1400" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Test model open, with the pressure tap lines</figcaption></figure><figure class="fig fig--wide"><div class="fig-frame"><img src="assets/img/projects/et-18-aero-package/wind-tunnel-cfd.jpg" srcset="assets/img/opt/projects/et-18-aero-package/wind-tunnel-cfd-480.webp 480w, assets/img/opt/projects/et-18-aero-package/wind-tunnel-cfd-960.webp 960w, assets/img/opt/projects/et-18-aero-package/wind-tunnel-cfd-1458.webp 1458w" sizes="(max-width: 767px) 100vw, 66vw" alt="The same test simulated in the wind tunnel section (Star-CCM+)" width="1458" height="696" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">The same test simulated in the wind tunnel section (Star-CCM+)</figcaption></figure></div></div></details><details class="step"><summary class="step-head"><span class="t-index">03</span><span class="step-t">Battery cooling (CFD/CHT)</span><span class="step-plus" aria-hidden="true"></span></summary><div class="step-body"><div class="prose"><p>Pioneered the team&#x27;s first CFD/CHT battery cooling simulations, lowering steady-state peak temperatures by 15 °C.</p></div><div class="step-figs"><figure class="fig"><div class="fig-frame"><img src="assets/img/projects/et-18-aero-package/battery-cht.png" srcset="assets/img/opt/projects/et-18-aero-package/battery-cht-480.webp 480w, assets/img/opt/projects/et-18-aero-package/battery-cht-711.webp 711w" sizes="(max-width: 767px) 100vw, 50vw" alt="Cell temperatures across a module section in the redesigned layout (CHT)" width="711" height="378" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Cell temperatures across a module section in the redesigned layout (CHT)</figcaption></figure></div></div></details><details class="step"><summary class="step-head"><span class="t-index">04</span><span class="step-t">Simulation architecture and automation</span><span class="step-plus" aria-hidden="true"></span></summary><div class="step-body"><div class="prose"><ul><li>Optimised the simulation architecture, cutting standard deviation 10-fold while lowering cell count.</li><li>Automated volume meshing and aerodynamic map generation pipelines.</li></ul></div><div class="step-figs"><figure class="fig fig--wide"><div class="fig-frame"><img src="assets/img/projects/et-18-aero-package/aero-maps.jpg" srcset="assets/img/opt/projects/et-18-aero-package/aero-maps-480.webp 480w, assets/img/opt/projects/et-18-aero-package/aero-maps-960.webp 960w, assets/img/opt/projects/et-18-aero-package/aero-maps-1600.webp 1600w" sizes="(max-width: 767px) 100vw, 66vw" alt="Aero maps over front and rear ride height: CzA, CxA and aero balance" width="2400" height="622" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Aero maps over front and rear ride height: CzA, CxA and aero balance</figcaption></figure><figure class="fig"><div class="fig-frame"><img src="assets/img/projects/et-18-aero-package/range-extraction.png" srcset="assets/img/opt/projects/et-18-aero-package/range-extraction-480.webp 480w, assets/img/opt/projects/et-18-aero-package/range-extraction-885.webp 885w" sizes="(max-width: 767px) 100vw, 50vw" alt="Range extraction: 4×4 roll and yaw grid of CFD points over the on-track samples, by manoeuvre" width="885" height="691" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Range extraction: 4×4 roll and yaw grid of CFD points over the on-track samples, by manoeuvre</figcaption></figure></div></div></details><details class="step"><summary class="step-head"><span class="t-index">05</span><span class="step-t">Reduced-order model</span><span class="step-plus" aria-hidden="true"></span></summary><div class="step-body"><div class="prose"><p>The car&#x27;s performance is a balance between downforce, aero balance and drag, so no single coefficient can rank two designs. I developed a coupled aero-vehicle dynamics Reduced Order Model that predicts the on-track score variation from simulation data, and used it to qualify each aerodynamic design and to quantify the gains of the new package.</p></div><div class="step-figs"><figure class="fig"><div class="fig-frame"><img src="assets/img/projects/et-18-aero-package/rom-balance.png" srcset="assets/img/opt/projects/et-18-aero-package/rom-balance-480.webp 480w, assets/img/opt/projects/et-18-aero-package/rom-balance-915.webp 915w" sizes="(max-width: 767px) 100vw, 50vw" alt="Reduced-order model: lap time against aero balance and CzA" width="915" height="830" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Reduced-order model: lap time against aero balance and CzA</figcaption></figure><figure class="fig"><div class="fig-frame"><img src="assets/img/projects/et-18-aero-package/rom-drag.png" srcset="assets/img/opt/projects/et-18-aero-package/rom-drag-480.webp 480w, assets/img/opt/projects/et-18-aero-package/rom-drag-841.webp 841w" sizes="(max-width: 767px) 100vw, 50vw" alt="Reduced-order model: lap time against CzA and CxA" width="841" height="795" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Reduced-order model: lap time against CzA and CxA</figcaption></figure></div></div></details><details class="step"><summary class="step-head"><span class="t-index">06</span><span class="step-t">Composite manufacturing</span><span class="step-plus" aria-hidden="true"></span></summary><div class="step-body"><div class="prose"><ul><li>Led end-to-end composite manufacturing (mould tooling, carbon-fibre layup, curing), cutting package weight by 8%.</li><li>Managed the aerodynamics division&#x27;s transition from SolidWorks to Siemens NX, and set up ply-book generation in Fibersim.</li></ul></div><div class="step-figs"><figure class="fig"><div class="fig-frame"><img src="assets/img/projects/et-18-aero-package/front-wing-render.jpg" srcset="assets/img/opt/projects/et-18-aero-package/front-wing-render-480.webp 480w, assets/img/opt/projects/et-18-aero-package/front-wing-render-960.webp 960w, assets/img/opt/projects/et-18-aero-package/front-wing-render-1434.webp 1434w" sizes="(max-width: 767px) 100vw, 50vw" alt="Rendering of the 2026 front wing" width="1434" height="981" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Rendering of the 2026 front wing</figcaption></figure></div></div></details></div></div>
     </div>
   </div>
 </section>
@@ -124,7 +720,7 @@
       </div>
       <figure class="stage stage--dark" data-stage aria-label="Caelus ONE:1 - Autonomous Fixed-Wing UAV: interactive 3D model, drag to rotate">
         <div class="stage-box">
-          <img src="assets/img/projects/caelus-one/cover.png" alt="Caelus ONE:1 - Autonomous Fixed-Wing UAV" width="2194" height="763" class="stage-poster">
+          <img src="assets/img/projects/caelus-one/cover.png" srcset="assets/img/opt/projects/caelus-one/cover-480.webp 480w, assets/img/opt/projects/caelus-one/cover-960.webp 960w, assets/img/opt/projects/caelus-one/cover-1600.webp 1600w" sizes="100vw" alt="Caelus ONE:1 - Autonomous Fixed-Wing UAV" width="2194" height="763" loading="lazy" decoding="async" class="stage-poster">
           <div class="stage-gl" aria-hidden="true"></div>
           <div class="stage-callouts" aria-hidden="true"></div>
           <span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span>
@@ -159,7 +755,7 @@
       </div>
       <figure class="stage stage--dark" data-stage aria-label="Caelus Baff-1 - Autonomous Fixed-Wing UAV: interactive 3D model, drag to rotate">
         <div class="stage-box">
-          <img src="assets/img/projects/caelus-baff-1/cover.png" alt="Caelus Baff-1 - Autonomous Fixed-Wing UAV" width="2024" height="1024" class="stage-poster">
+          <img src="assets/img/projects/caelus-baff-1/cover.png" srcset="assets/img/opt/projects/caelus-baff-1/cover-480.webp 480w, assets/img/opt/projects/caelus-baff-1/cover-960.webp 960w, assets/img/opt/projects/caelus-baff-1/cover-1600.webp 1600w" sizes="100vw" alt="Caelus Baff-1 - Autonomous Fixed-Wing UAV" width="2024" height="1024" loading="lazy" decoding="async" class="stage-poster">
           <div class="stage-gl" aria-hidden="true"></div>
           <div class="stage-callouts" aria-hidden="true"></div>
           <span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span>
@@ -179,7 +775,7 @@
       </figure></div>
     <div class="proj-body">
       <dl class="specs rise"><div class="spec"><dt class="t-label">Role</dt><dd>Head of Aerodynamics</dd></div><div class="spec"><dt class="t-label">Year</dt><dd>2025</dd></div><div class="spec"><dt class="t-label">Team</dt><dd>10 people</dd></div><div class="spec"><dt class="t-label">Competition</dt><dd>IMechE UAS Challenge (UK)</dd></div><div class="spec"><dt class="t-label">Endurance</dt><dd>30 min</dd></div><div class="spec"><dt class="t-label">Autopilot</dt><dd>ArduPilot</dd></div></dl>
-      <div class="proj-steps"><div class="prose proj-intro t-lead"><p>Design, manufacturing and testing of the following year&#x27;s fully autonomous fixed-wing UAV for the IMechE UAS Challenge, by the same ten-person team. This year I focused on aerodynamic design and stability analysis.</p></div><div class="steps"><details class="step"><summary class="step-head"><span class="t-index">01</span><span class="step-t">A-tail pusher configuration</span><span class="step-plus" aria-hidden="true"></span></summary><div class="step-body"><div class="prose"><ul><li>Designed the wing, fuselage and A-tail pusher configuration for a new UAV platform.</li><li>A-tail pusher configuration for better weight distribution and dynamics.</li><li>Internal payload storage for improved aerodynamics; split flaps and flaperons.</li></ul></div></div></details><details class="step"><summary class="step-head"><span class="t-index">02</span><span class="step-t">Composite structure and autonomy</span><span class="step-plus" aria-hidden="true"></span></summary><div class="step-body"><div class="prose"><ul><li>Updated lightweight structure: D-box wing with a leading-edge spar.</li><li>Carbon-fibre and glass-fibre prepreg structure with internal antennas.</li><li>Fully autonomous flight with ArduPilot, a pitot tube and a lidar ground-height rangefinder, for 30 minutes of continuous operation.</li></ul></div></div></details><details class="step"><summary class="step-head"><span class="t-index">03</span><span class="step-t">Parametric simulation framework</span><span class="step-plus" aria-hidden="true"></span></summary><div class="step-body"><div class="prose"><p>Implemented a parametric simulation framework that automates geometry changes, mesh generation and solver configuration. It cut design iteration turnaround time, kept testing consistent across design variants and generated the aerodynamic maps needed for the stability assessment.</p></div></div></details></div><details class="step gallery"><summary class="step-head"><span class="t-index">+</span><span class="step-t">Gallery <span class="t-label gallery-n">4 photos</span></span><span class="step-plus" aria-hidden="true"></span></summary><div class="gallery-grid"><figure class="fig gallery-fig"><div class="fig-frame"><img src="assets/img/projects/caelus-baff-1/d-box-tube.jpg" alt="The D-box tube: the wing&#x27;s leading-edge spar" width="787" height="1400" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">The D-box tube: the wing&#x27;s leading-edge spar</figcaption></figure><figure class="fig gallery-fig"><div class="fig-frame"><img src="assets/img/projects/caelus-baff-1/internal-structure.jpg" alt="Internal structure" width="1050" height="1400" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Internal structure</figcaption></figure><figure class="fig gallery-fig"><div class="fig-frame"><img src="assets/img/projects/caelus-baff-1/bright-night-2025.jpg" alt="Showing Baff-1 off at Bright Night 2025" width="1050" height="1400" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Showing Baff-1 off at Bright Night 2025</figcaption></figure><figure class="fig gallery-fig"><div class="fig-frame"><img src="assets/img/projects/caelus-baff-1/featherweight.jpg" alt="It&#x27;s featherweight!" width="1050" height="1400" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">It&#x27;s featherweight!</figcaption></figure></div></details></div>
+      <div class="proj-steps"><div class="prose proj-intro t-lead"><p>Design, manufacturing and testing of the following year&#x27;s fully autonomous fixed-wing UAV for the IMechE UAS Challenge, by the same ten-person team. This year I focused on aerodynamic design and stability analysis.</p></div><div class="steps"><details class="step"><summary class="step-head"><span class="t-index">01</span><span class="step-t">A-tail pusher configuration</span><span class="step-plus" aria-hidden="true"></span></summary><div class="step-body"><div class="prose"><ul><li>Designed the wing, fuselage and A-tail pusher configuration for a new UAV platform.</li><li>A-tail pusher configuration for better weight distribution and dynamics.</li><li>Internal payload storage for improved aerodynamics; split flaps and flaperons.</li></ul></div></div></details><details class="step"><summary class="step-head"><span class="t-index">02</span><span class="step-t">Composite structure and autonomy</span><span class="step-plus" aria-hidden="true"></span></summary><div class="step-body"><div class="prose"><ul><li>Updated lightweight structure: D-box wing with a leading-edge spar.</li><li>Carbon-fibre and glass-fibre prepreg structure with internal antennas.</li><li>Fully autonomous flight with ArduPilot, a pitot tube and a lidar ground-height rangefinder, for 30 minutes of continuous operation.</li></ul></div></div></details><details class="step"><summary class="step-head"><span class="t-index">03</span><span class="step-t">Parametric simulation framework</span><span class="step-plus" aria-hidden="true"></span></summary><div class="step-body"><div class="prose"><p>Implemented a parametric simulation framework that automates geometry changes, mesh generation and solver configuration. It cut design iteration turnaround time, kept testing consistent across design variants and generated the aerodynamic maps needed for the stability assessment.</p></div></div></details></div><details class="step gallery"><summary class="step-head"><span class="t-index">+</span><span class="step-t">Gallery <span class="t-label gallery-n">4 photos</span></span><span class="step-plus" aria-hidden="true"></span></summary><div class="gallery-grid"><figure class="fig gallery-fig"><div class="fig-frame"><img src="assets/img/projects/caelus-baff-1/d-box-tube.jpg" srcset="assets/img/opt/projects/caelus-baff-1/d-box-tube-480.webp 480w, assets/img/opt/projects/caelus-baff-1/d-box-tube-787.webp 787w" sizes="(max-width: 767px) 100vw, 33vw" alt="The D-box tube: the wing&#x27;s leading-edge spar" width="787" height="1400" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">The D-box tube: the wing&#x27;s leading-edge spar</figcaption></figure><figure class="fig gallery-fig"><div class="fig-frame"><img src="assets/img/projects/caelus-baff-1/internal-structure.jpg" srcset="assets/img/opt/projects/caelus-baff-1/internal-structure-480.webp 480w, assets/img/opt/projects/caelus-baff-1/internal-structure-960.webp 960w, assets/img/opt/projects/caelus-baff-1/internal-structure-1050.webp 1050w" sizes="(max-width: 767px) 100vw, 33vw" alt="Internal structure" width="1050" height="1400" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Internal structure</figcaption></figure><figure class="fig gallery-fig"><div class="fig-frame"><img src="assets/img/projects/caelus-baff-1/bright-night-2025.jpg" srcset="assets/img/opt/projects/caelus-baff-1/bright-night-2025-480.webp 480w, assets/img/opt/projects/caelus-baff-1/bright-night-2025-960.webp 960w, assets/img/opt/projects/caelus-baff-1/bright-night-2025-1050.webp 1050w" sizes="(max-width: 767px) 100vw, 33vw" alt="Showing Baff-1 off at Bright Night 2025" width="1050" height="1400" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Showing Baff-1 off at Bright Night 2025</figcaption></figure><figure class="fig gallery-fig"><div class="fig-frame"><img src="assets/img/projects/caelus-baff-1/featherweight.jpg" srcset="assets/img/opt/projects/caelus-baff-1/featherweight-480.webp 480w, assets/img/opt/projects/caelus-baff-1/featherweight-960.webp 960w, assets/img/opt/projects/caelus-baff-1/featherweight-1050.webp 1050w" sizes="(max-width: 767px) 100vw, 33vw" alt="It&#x27;s featherweight!" width="1050" height="1400" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">It&#x27;s featherweight!</figcaption></figure></div></details></div>
     </div>
     </article>
   </div>
@@ -193,7 +789,7 @@
     <ul class="cards">
       <li class="card rise">
         <button class="card-btn" type="button" aria-expanded="false" aria-controls="panel-rail-joint-dynamics" data-panel="rail-joint-dynamics">
-          <figure class="fig card-fig fig--wide"><div class="fig-frame"><img src="assets/img/projects/rail-joint-dynamics/cover.png" alt="Dynamics of an Insulated Rail Joint" width="815" height="426" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div></figure>
+          <figure class="fig card-fig fig--wide"><div class="fig-frame"><img src="assets/img/projects/rail-joint-dynamics/cover.png" srcset="assets/img/opt/projects/rail-joint-dynamics/cover-480.webp 480w, assets/img/opt/projects/rail-joint-dynamics/cover-815.webp 815w" sizes="(max-width: 767px) 100vw, 33vw" alt="Dynamics of an Insulated Rail Joint" width="815" height="426" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div></figure>
           <span class="t-index">01</span>
           <span class="card-title">Dynamics of an Insulated Rail Joint</span>
           <span class="card-course t-label">Principles of Machine Design with FEM Applications, Sant&#x27;Anna School of Advanced Studies</span>
@@ -204,7 +800,7 @@
       </li>
       <li class="card rise">
         <button class="card-btn" type="button" aria-expanded="false" aria-controls="panel-vtol-rotor-aerodynamics" data-panel="vtol-rotor-aerodynamics">
-          <figure class="fig card-fig"><div class="fig-frame"><img src="assets/img/projects/vtol-rotor-aerodynamics/cover.png" alt="Aerodynamics of a VTOL Rotor" width="659" height="572" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div></figure>
+          <figure class="fig card-fig"><div class="fig-frame"><img src="assets/img/projects/vtol-rotor-aerodynamics/cover.png" srcset="assets/img/opt/projects/vtol-rotor-aerodynamics/cover-480.webp 480w, assets/img/opt/projects/vtol-rotor-aerodynamics/cover-659.webp 659w" sizes="(max-width: 767px) 100vw, 33vw" alt="Aerodynamics of a VTOL Rotor" width="659" height="572" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div></figure>
           <span class="t-index">02</span>
           <span class="card-title">Aerodynamics of a VTOL Rotor</span>
           <span class="card-course t-label">Bachelor&#x27;s thesis at SkyEye Systems, with the Laboratory of Experimental Aerodynamics, University of Pisa</span>
@@ -215,7 +811,7 @@
       </li>
       <li class="card rise">
         <button class="card-btn" type="button" aria-expanded="false" aria-controls="panel-connecting-rod-critical-speed" data-panel="connecting-rod-critical-speed">
-          <figure class="fig card-fig fig--wide"><div class="fig-frame"><img src="assets/img/projects/connecting-rod-critical-speed/von-mises.png" alt="Critical Engine Speed in an Engine Connecting Rod" width="856" height="321" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div></figure>
+          <figure class="fig card-fig fig--wide"><div class="fig-frame"><img src="assets/img/projects/connecting-rod-critical-speed/von-mises.png" srcset="assets/img/opt/projects/connecting-rod-critical-speed/von-mises-480.webp 480w, assets/img/opt/projects/connecting-rod-critical-speed/von-mises-856.webp 856w" sizes="(max-width: 767px) 100vw, 33vw" alt="Critical Engine Speed in an Engine Connecting Rod" width="856" height="321" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div></figure>
           <span class="t-index">03</span>
           <span class="card-title">Critical Engine Speed in an Engine Connecting Rod</span>
           <span class="card-course t-label">Machine Design, University of Pisa</span>
@@ -226,7 +822,7 @@
       </li>
       <li class="card rise">
         <button class="card-btn" type="button" aria-expanded="false" aria-controls="panel-compressor-stage-cfd" data-panel="compressor-stage-cfd">
-          <figure class="fig card-fig"><div class="fig-frame"><img src="assets/img/projects/compressor-stage-cfd/cover.jpg" alt="CFD/CHT Analysis of a Compressor Stage" width="2048" height="1250" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div></figure>
+          <figure class="fig card-fig"><div class="fig-frame"><img src="assets/img/projects/compressor-stage-cfd/cover.jpg" srcset="assets/img/opt/projects/compressor-stage-cfd/cover-480.webp 480w, assets/img/opt/projects/compressor-stage-cfd/cover-960.webp 960w, assets/img/opt/projects/compressor-stage-cfd/cover-1600.webp 1600w" sizes="(max-width: 767px) 100vw, 33vw" alt="CFD/CHT Analysis of a Compressor Stage" width="2048" height="1250" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div></figure>
           <span class="t-index">04</span>
           <span class="card-title">CFD/CHT Analysis of a Compressor Stage</span>
           <span class="card-course t-label">Aircraft Propulsion, University of Pisa</span>
@@ -237,7 +833,7 @@
       </li>
       <li class="card rise">
         <button class="card-btn" type="button" aria-expanded="false" aria-controls="panel-caelus-quadcopter" data-panel="caelus-quadcopter">
-          <figure class="fig card-fig"><div class="fig-frame"><img src="assets/img/projects/uav-chase-challenge/cover.png" alt="Caelus Quadcopter - IEEE UAV Chase Challenge" width="527" height="583" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div></figure>
+          <figure class="fig card-fig"><div class="fig-frame"><img src="assets/img/projects/uav-chase-challenge/cover.png" srcset="assets/img/opt/projects/uav-chase-challenge/cover-480.webp 480w, assets/img/opt/projects/uav-chase-challenge/cover-527.webp 527w" sizes="(max-width: 767px) 100vw, 33vw" alt="Caelus Quadcopter - IEEE UAV Chase Challenge" width="527" height="583" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div></figure>
           <span class="t-index">05</span>
           <span class="card-title">Caelus Quadcopter - IEEE UAV Chase Challenge</span>
           <span class="card-course t-label">Caelus Sant&#x27;Anna, autonomous quadcopter team</span>
@@ -255,10 +851,10 @@
         <p class="panel-course">Principles of Machine Design with FEM Applications, Sant&#x27;Anna School of Advanced Studies</p>
         <p class="t-lead">3D transient FE model of a moving Hertzian load on an insulated rail joint, with a Python spectral index that detects end-post failure from a 360 to 330 Hz frequency shift.</p>
         <dl class="specs "><div class="spec"><dt class="t-label">Role</dt><dd>Candidate, exam project</dd></div></dl>
-        <div class="proj-links"><a class="doc-card" href="assets/docs/rail-joint-presentation.pdf" target="_blank" rel="noopener" data-goatcounter-click="pdf-rail-joint-presentation"><span class="doc-thumb"><img src="assets/img/projects/rail-joint-dynamics/rail-joint-presentation.jpg" alt="" width="934" height="262" loading="lazy" decoding="async"></span><span class="doc-meta"><span class="doc-label">Presentation</span><span class="doc-open t-label">Open PDF ↗</span></span></a></div>
+        <div class="proj-links"><a class="doc-card" href="assets/docs/rail-joint-presentation.pdf" target="_blank" rel="noopener" data-goatcounter-click="pdf-rail-joint-presentation"><span class="doc-thumb"><img src="assets/img/projects/rail-joint-dynamics/rail-joint-presentation.jpg" srcset="assets/img/opt/projects/rail-joint-dynamics/rail-joint-presentation-480.webp 480w, assets/img/opt/projects/rail-joint-dynamics/rail-joint-presentation-934.webp 934w" sizes="(max-width: 767px) 50vw, 20vw" alt="" width="934" height="262" loading="lazy" decoding="async"></span><span class="doc-meta"><span class="doc-label">Presentation</span><span class="doc-open t-label">Open PDF ↗</span></span></a></div>
         <button class="panel-close t-label" type="button" data-close>Close</button>
       </div>
-      <div class="panel-body"><div class="prose proj-intro t-lead"><p>Exam project for <em>Principles of Machine Design with FEM Applications</em>, Sant&#x27;Anna School of Advanced Studies (Istituto di Intelligenza Meccanica).</p></div><div class="steps"><details class="step"><summary class="step-head"><span class="t-index">01</span><span class="step-t">Problem</span><span class="step-plus" aria-hidden="true"></span></summary><div class="step-body"><div class="prose"><p>An insulated rail joint keeps continuous welded rails mechanically continuous while electrically isolated for signalling circuits. A broken insulating end-post causes short circuits, which give false &quot;clear&quot; signals (collision risk) or false &quot;occupied&quot; signals (network blockage). The goal was to reconstruct the strain wave <span class="math">\varepsilon_x(x,t)</span> from strain probes and to detect the failure of the end-post.</p></div></div></details><details class="step"><summary class="step-head"><span class="t-index">02</span><span class="step-t">Model</span><span class="step-plus" aria-hidden="true"></span></summary><div class="step-body"><div class="prose"><ul><li>Moving Hertzian train load, vertical and longitudinal, on an elastically supported rail with fishplates and an insulating end-post.</li><li>Geometry partitioned in SpaceClaim so the nodes align exactly with the strain probes. Hex-dominant mesh, refined along the load path to resolve the contact ellipse, with a coarser swept mesh on the rail base.</li><li>Moving load scripted in APDL, since Workbench cannot apply a pressure that varies in space and time. SURF154 surface elements carry the load, with a spatial bounding-box filter to cut the computation. The elastic foundation uses COMBIN14 springs.</li><li>Linear transient analysis with HHT time integration to suppress numerical noise.</li></ul></div><div class="step-figs"><figure class="fig"><div class="fig-frame"><img src="assets/img/projects/rail-joint-dynamics/analytical-model.png" alt="Analytical model: the rail as a beam on an elastic foundation under a moving load, with three stiffness zones at the joint" width="1238" height="924" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Analytical model: the rail as a beam on an elastic foundation under a moving load, with three stiffness zones at the joint</figcaption></figure><figure class="fig"><div class="fig-frame"><img src="assets/img/projects/rail-joint-dynamics/moving-load.png" alt="Moving Hertzian pressure on the SURF154 surface elements of the rail head (APDL)" width="947" height="860" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Moving Hertzian pressure on the SURF154 surface elements of the rail head (APDL)</figcaption></figure><figure class="fig fig--wide"><div class="fig-frame"><img src="assets/img/projects/rail-joint-dynamics/fe-mesh.png" alt="Mesh of the insulated rail joint" width="1784" height="191" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Mesh of the insulated rail joint</figcaption></figure></div></div></details><details class="step"><summary class="step-head"><span class="t-index">03</span><span class="step-t">Verification</span><span class="step-plus" aria-hidden="true"></span></summary><div class="step-body"><div class="prose"><ul><li>Modal analysis: semi-rigid modes first, then local modes. The damaged end-post does not shift the natural frequencies.</li><li>Successful mesh study: the natural frequencies change by less than 1 Hz between meshes.</li></ul></div><div class="step-figs"><figure class="fig fig--wide"><div class="fig-frame"><img src="assets/img/projects/rail-joint-dynamics/mode-shapes.png" alt="First eight mode shapes" width="1600" height="599" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">First eight mode shapes</figcaption></figure></div></div></details><details class="step"><summary class="step-head"><span class="t-index">04</span><span class="step-t">Results</span><span class="step-plus" aria-hidden="true"></span></summary><div class="step-body"><div class="prose"><ul><li>Wave reconstruction by cubic spline interpolation in Python. The undamaged and damaged cases differ by about <span class="math">\pm200\,\mu\varepsilon</span>, confined to the fishplate region (<span class="math">\pm0.25</span> m), where the damaged joint opens and closes like a compliant connection.</li><li>Welch power spectral density shows the low-frequency modes unaffected, and a clear shift from <strong>360 Hz to 330 Hz</strong> caused by the lost local stiffness. The shift survives normalisation by the load spectrum.</li><li>A diagnostic index integrates the ratio of the measured to the undamaged strain spectrum over the 310 to 380 Hz band. Values far above 1 flag a broken end-post and lower values partial damage; the band was chosen with a sensitivity analysis on its centre and width.</li></ul></div><div class="step-figs"><figure class="fig fig--wide"><div class="fig-frame"><img src="assets/img/projects/rail-joint-dynamics/wave-reconstruction.png" alt="Reconstructed strain wave: undamaged, damaged and their difference" width="1600" height="316" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Reconstructed strain wave: undamaged, damaged and their difference</figcaption></figure><figure class="fig fig--wide"><div class="fig-frame"><img src="assets/img/projects/rail-joint-dynamics/psd.png" alt="Welch power spectral density, undamaged and damaged" width="1140" height="560" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Welch power spectral density, undamaged and damaged</figcaption></figure><figure class="fig fig--wide"><div class="fig-frame"><img src="assets/img/projects/rail-joint-dynamics/spectrograms.png" alt="Spectrograms at the fishplate end: undamaged, damaged and their difference" width="1599" height="331" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Spectrograms at the fishplate end: undamaged, damaged and their difference</figcaption></figure><figure class="fig fig--wide"><div class="fig-frame"><img src="assets/img/projects/rail-joint-dynamics/fingerprint.png" alt="Spectral fingerprint in the diagnostic band" width="1186" height="569" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Spectral fingerprint in the diagnostic band</figcaption></figure></div></div></details></div></div>
+      <div class="panel-body"><div class="prose proj-intro t-lead"><p>Exam project for <em>Principles of Machine Design with FEM Applications</em>, Sant&#x27;Anna School of Advanced Studies (Istituto di Intelligenza Meccanica).</p></div><div class="steps"><details class="step"><summary class="step-head"><span class="t-index">01</span><span class="step-t">Problem</span><span class="step-plus" aria-hidden="true"></span></summary><div class="step-body"><div class="prose"><p>An insulated rail joint keeps continuous welded rails mechanically continuous while electrically isolated for signalling circuits. A broken insulating end-post causes short circuits, which give false &quot;clear&quot; signals (collision risk) or false &quot;occupied&quot; signals (network blockage). The goal was to reconstruct the strain wave <span class="math">\varepsilon_x(x,t)</span> from strain probes and to detect the failure of the end-post.</p></div></div></details><details class="step"><summary class="step-head"><span class="t-index">02</span><span class="step-t">Model</span><span class="step-plus" aria-hidden="true"></span></summary><div class="step-body"><div class="prose"><ul><li>Moving Hertzian train load, vertical and longitudinal, on an elastically supported rail with fishplates and an insulating end-post.</li><li>Geometry partitioned in SpaceClaim so the nodes align exactly with the strain probes. Hex-dominant mesh, refined along the load path to resolve the contact ellipse, with a coarser swept mesh on the rail base.</li><li>Moving load scripted in APDL, since Workbench cannot apply a pressure that varies in space and time. SURF154 surface elements carry the load, with a spatial bounding-box filter to cut the computation. The elastic foundation uses COMBIN14 springs.</li><li>Linear transient analysis with HHT time integration to suppress numerical noise.</li></ul></div><div class="step-figs"><figure class="fig"><div class="fig-frame"><img src="assets/img/projects/rail-joint-dynamics/analytical-model.png" srcset="assets/img/opt/projects/rail-joint-dynamics/analytical-model-480.webp 480w, assets/img/opt/projects/rail-joint-dynamics/analytical-model-960.webp 960w, assets/img/opt/projects/rail-joint-dynamics/analytical-model-1238.webp 1238w" sizes="(max-width: 767px) 100vw, 50vw" alt="Analytical model: the rail as a beam on an elastic foundation under a moving load, with three stiffness zones at the joint" width="1238" height="924" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Analytical model: the rail as a beam on an elastic foundation under a moving load, with three stiffness zones at the joint</figcaption></figure><figure class="fig"><div class="fig-frame"><img src="assets/img/projects/rail-joint-dynamics/moving-load.png" srcset="assets/img/opt/projects/rail-joint-dynamics/moving-load-480.webp 480w, assets/img/opt/projects/rail-joint-dynamics/moving-load-947.webp 947w" sizes="(max-width: 767px) 100vw, 50vw" alt="Moving Hertzian pressure on the SURF154 surface elements of the rail head (APDL)" width="947" height="860" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Moving Hertzian pressure on the SURF154 surface elements of the rail head (APDL)</figcaption></figure><figure class="fig fig--wide"><div class="fig-frame"><img src="assets/img/projects/rail-joint-dynamics/fe-mesh.png" srcset="assets/img/opt/projects/rail-joint-dynamics/fe-mesh-480.webp 480w, assets/img/opt/projects/rail-joint-dynamics/fe-mesh-960.webp 960w, assets/img/opt/projects/rail-joint-dynamics/fe-mesh-1600.webp 1600w" sizes="(max-width: 767px) 100vw, 66vw" alt="Mesh of the insulated rail joint" width="1784" height="191" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Mesh of the insulated rail joint</figcaption></figure></div></div></details><details class="step"><summary class="step-head"><span class="t-index">03</span><span class="step-t">Verification</span><span class="step-plus" aria-hidden="true"></span></summary><div class="step-body"><div class="prose"><ul><li>Modal analysis: semi-rigid modes first, then local modes. The damaged end-post does not shift the natural frequencies.</li><li>Successful mesh study: the natural frequencies change by less than 1 Hz between meshes.</li></ul></div><div class="step-figs"><figure class="fig fig--wide"><div class="fig-frame"><img src="assets/img/projects/rail-joint-dynamics/mode-shapes.png" srcset="assets/img/opt/projects/rail-joint-dynamics/mode-shapes-480.webp 480w, assets/img/opt/projects/rail-joint-dynamics/mode-shapes-960.webp 960w, assets/img/opt/projects/rail-joint-dynamics/mode-shapes-1600.webp 1600w" sizes="(max-width: 767px) 100vw, 66vw" alt="First eight mode shapes" width="1600" height="599" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">First eight mode shapes</figcaption></figure></div></div></details><details class="step"><summary class="step-head"><span class="t-index">04</span><span class="step-t">Results</span><span class="step-plus" aria-hidden="true"></span></summary><div class="step-body"><div class="prose"><ul><li>Wave reconstruction by cubic spline interpolation in Python. The undamaged and damaged cases differ by about <span class="math">\pm200\,\mu\varepsilon</span>, confined to the fishplate region (<span class="math">\pm0.25</span> m), where the damaged joint opens and closes like a compliant connection.</li><li>Welch power spectral density shows the low-frequency modes unaffected, and a clear shift from <strong>360 Hz to 330 Hz</strong> caused by the lost local stiffness. The shift survives normalisation by the load spectrum.</li><li>A diagnostic index integrates the ratio of the measured to the undamaged strain spectrum over the 310 to 380 Hz band. Values far above 1 flag a broken end-post and lower values partial damage; the band was chosen with a sensitivity analysis on its centre and width.</li></ul></div><div class="step-figs"><figure class="fig fig--wide"><div class="fig-frame"><img src="assets/img/projects/rail-joint-dynamics/wave-reconstruction.png" srcset="assets/img/opt/projects/rail-joint-dynamics/wave-reconstruction-480.webp 480w, assets/img/opt/projects/rail-joint-dynamics/wave-reconstruction-960.webp 960w, assets/img/opt/projects/rail-joint-dynamics/wave-reconstruction-1600.webp 1600w" sizes="(max-width: 767px) 100vw, 66vw" alt="Reconstructed strain wave: undamaged, damaged and their difference" width="1600" height="316" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Reconstructed strain wave: undamaged, damaged and their difference</figcaption></figure><figure class="fig fig--wide"><div class="fig-frame"><img src="assets/img/projects/rail-joint-dynamics/psd.png" srcset="assets/img/opt/projects/rail-joint-dynamics/psd-480.webp 480w, assets/img/opt/projects/rail-joint-dynamics/psd-960.webp 960w, assets/img/opt/projects/rail-joint-dynamics/psd-1140.webp 1140w" sizes="(max-width: 767px) 100vw, 66vw" alt="Welch power spectral density, undamaged and damaged" width="1140" height="560" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Welch power spectral density, undamaged and damaged</figcaption></figure><figure class="fig fig--wide"><div class="fig-frame"><img src="assets/img/projects/rail-joint-dynamics/spectrograms.png" srcset="assets/img/opt/projects/rail-joint-dynamics/spectrograms-480.webp 480w, assets/img/opt/projects/rail-joint-dynamics/spectrograms-960.webp 960w, assets/img/opt/projects/rail-joint-dynamics/spectrograms-1599.webp 1599w" sizes="(max-width: 767px) 100vw, 66vw" alt="Spectrograms at the fishplate end: undamaged, damaged and their difference" width="1599" height="331" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Spectrograms at the fishplate end: undamaged, damaged and their difference</figcaption></figure><figure class="fig fig--wide"><div class="fig-frame"><img src="assets/img/projects/rail-joint-dynamics/fingerprint.png" srcset="assets/img/opt/projects/rail-joint-dynamics/fingerprint-480.webp 480w, assets/img/opt/projects/rail-joint-dynamics/fingerprint-960.webp 960w, assets/img/opt/projects/rail-joint-dynamics/fingerprint-1186.webp 1186w" sizes="(max-width: 767px) 100vw, 66vw" alt="Spectral fingerprint in the diagnostic band" width="1186" height="569" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Spectral fingerprint in the diagnostic band</figcaption></figure></div></div></details></div></div>
     </article>
     <article class="panel" id="panel-vtol-rotor-aerodynamics" data-slug="vtol-rotor-aerodynamics" aria-labelledby="h-vtol-rotor-aerodynamics">
       <span id="vtol-rotor-aerodynamics" class="anchor"></span>
@@ -281,10 +877,10 @@
         <p class="panel-course">Machine Design, University of Pisa</p>
         <p class="t-lead">Analytical and nonlinear contact FEA prediction of the engine speed at which inertia loads open the big-end joint of a TVR 3.5 L connecting rod: 8415 rpm by FEM against 8770 rpm analytically.</p>
         <dl class="specs "><div class="spec"><dt class="t-label">Role</dt><dd>Project author</dd></div><div class="spec"><dt class="t-label">Year</dt><dd>2026</dd></div><div class="spec"><dt class="t-label">FEM</dt><dd>8415 rpm</dd></div><div class="spec"><dt class="t-label">Analytical</dt><dd>8770 rpm</dd></div><div class="spec"><dt class="t-label">Difference</dt><dd>4.05%</dd></div></dl>
-        <div class="proj-links"><a class="doc-card" href="assets/docs/connecting-rod-report.pdf" target="_blank" rel="noopener" data-goatcounter-click="pdf-connecting-rod-report"><span class="doc-thumb"><img src="assets/img/projects/connecting-rod-critical-speed/connecting-rod-report.jpg" alt="" width="579" height="294" loading="lazy" decoding="async"></span><span class="doc-meta"><span class="doc-label">Project report</span><span class="doc-open t-label">Open PDF ↗</span></span></a></div>
+        <div class="proj-links"><a class="doc-card" href="assets/docs/connecting-rod-report.pdf" target="_blank" rel="noopener" data-goatcounter-click="pdf-connecting-rod-report"><span class="doc-thumb"><img src="assets/img/projects/connecting-rod-critical-speed/connecting-rod-report.jpg" srcset="assets/img/opt/projects/connecting-rod-critical-speed/connecting-rod-report-480.webp 480w, assets/img/opt/projects/connecting-rod-critical-speed/connecting-rod-report-579.webp 579w" sizes="(max-width: 767px) 50vw, 20vw" alt="" width="579" height="294" loading="lazy" decoding="async"></span><span class="doc-meta"><span class="doc-label">Project report</span><span class="doc-open t-label">Open PDF ↗</span></span></a></div>
         <button class="panel-close t-label" type="button" data-close>Close</button>
       </div>
-      <div class="panel-body"><div class="prose proj-intro t-lead"><p>Machine Design course project, University of Pisa (academic year 2025/2026).</p></div><div class="steps"><details class="step"><summary class="step-head"><span class="t-index">01</span><span class="step-t">Problem</span><span class="step-plus" aria-hidden="true"></span></summary><div class="step-body"><div class="prose"><p>For the 3.5 L TVR AJP6 straight-six (350 hp T350 version), find the engine speed <span class="math">N_{crit}</span> at which the tensile inertia load at top dead centre starts to separate the connecting rod from its big-end cap. Separation is defined as zero contact pressure at any point of the interface. The engine was chosen because its original blueprints are public, so the rod was rebuilt from original drawings.</p></div></div></details><details class="step"><summary class="step-head"><span class="t-index">02</span><span class="step-t">Analytical model</span><span class="step-plus" aria-hidden="true"></span></summary><div class="step-body"><div class="prose"><ul><li>Planar slider-crank at constant speed, with TDC acceleration <span class="math">a\simeq-R\,\omega^2(1+\lambda)</span> and <span class="math">\lambda=R/L=0.2737</span>.</li><li>Equivalent reciprocating mass of 600 g. Lever effect on the bolts (<span class="math">c=7</span> mm, <span class="math">e=33.5</span> mm), plus clamped-section and screw stiffnesses of 863 and 420 kN/mm, so the screws carry a fraction <span class="math">\xi=0.327</span> of the external load.</li><li>Separation occurs when the clamping force reaches zero: <span class="math">N_{crit}\simeq8770</span> rpm.</li></ul></div></div></details><details class="step"><summary class="step-head"><span class="t-index">03</span><span class="step-t">FEM model</span><span class="step-plus" aria-hidden="true"></span></summary><div class="step-body"><div class="prose"><ul><li>Parametric CAD in Siemens NX. Prepared in Ansys SpaceClaim, using a quarter model thanks to two symmetry planes, and partitions that give a conformal, mostly hexahedral mesh with 0.5 mm refinement at the rod-cap contact.</li><li>Five contact pairs (frictional, <span class="math">\mu=0.2</span>, or bonded). The bolt preload is applied in load step 1, then a MAPDL pseudo-time ramp of the rotational acceleration sweeps the engine speed in load step 2. This finds <span class="math">N_{crit}</span> in a single solve, using minimum contact pressure and contact status as separation criteria.</li></ul></div><div class="step-figs"><figure class="fig fig--wide"><div class="fig-frame"><img src="assets/img/projects/connecting-rod-critical-speed/mesh.png" alt="Quarter model: hex-dominant mesh with refinement at the rod-cap contact" width="1129" height="401" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Quarter model: hex-dominant mesh with refinement at the rod-cap contact</figcaption></figure></div></div></details><details class="step"><summary class="step-head"><span class="t-index">04</span><span class="step-t">Results</span><span class="step-plus" aria-hidden="true"></span></summary><div class="step-body"><div class="prose"><ul><li><span class="math">N_{crit,FEM}\simeq</span> <strong>8415 rpm</strong>, which is <strong>4.05%</strong> from the analytical value.</li><li>The constant-eccentricity assumption is confirmed, since the deformation is 0.06 mm against <span class="math">e=33.5</span> mm. Neglecting the dowel is also justified: it carries about 0.75 kN, or 2.9% of the inertia load.</li><li>Mesh independence demonstrated over four global refinements (150%, 100%, 80%, 60%) by solving the whole RPM ramp for each.</li><li>Future work: dowel interference fit, detailed threads and bearing, full engine cycle, and the crankshaft and crankpin contact.</li></ul></div><div class="step-figs"><figure class="fig"><div class="fig-frame"><img src="assets/img/projects/connecting-rod-critical-speed/rpm-sweep.png" alt="Minimum contact pressure and gap across the RPM ramp: sticking, sliding, separation" width="734" height="486" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Minimum contact pressure and gap across the RPM ramp: sticking, sliding, separation</figcaption></figure><figure class="fig fig--wide"><div class="fig-frame"><img src="assets/img/projects/connecting-rod-critical-speed/contact-pressure.png" alt="Contact pressure after preload, before opening and at gapping (MPa)" width="1229" height="371" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Contact pressure after preload, before opening and at gapping (MPa)</figcaption></figure><figure class="fig fig--wide"><div class="fig-frame"><img src="assets/img/projects/connecting-rod-critical-speed/von-mises.png" alt="Equivalent von Mises stress (MPa)" width="856" height="321" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Equivalent von Mises stress (MPa)</figcaption></figure><figure class="fig fig--wide"><div class="fig-frame"><img src="assets/img/projects/connecting-rod-critical-speed/deformation.png" alt="Directional deformation at the onset of gapping (mm)" width="1229" height="457" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Directional deformation at the onset of gapping (mm)</figcaption></figure></div></div></details></div></div>
+      <div class="panel-body"><div class="prose proj-intro t-lead"><p>Machine Design course project, University of Pisa (academic year 2025/2026).</p></div><div class="steps"><details class="step"><summary class="step-head"><span class="t-index">01</span><span class="step-t">Problem</span><span class="step-plus" aria-hidden="true"></span></summary><div class="step-body"><div class="prose"><p>For the 3.5 L TVR AJP6 straight-six (350 hp T350 version), find the engine speed <span class="math">N_{crit}</span> at which the tensile inertia load at top dead centre starts to separate the connecting rod from its big-end cap. Separation is defined as zero contact pressure at any point of the interface. The engine was chosen because its original blueprints are public, so the rod was rebuilt from original drawings.</p></div></div></details><details class="step"><summary class="step-head"><span class="t-index">02</span><span class="step-t">Analytical model</span><span class="step-plus" aria-hidden="true"></span></summary><div class="step-body"><div class="prose"><ul><li>Planar slider-crank at constant speed, with TDC acceleration <span class="math">a\simeq-R\,\omega^2(1+\lambda)</span> and <span class="math">\lambda=R/L=0.2737</span>.</li><li>Equivalent reciprocating mass of 600 g. Lever effect on the bolts (<span class="math">c=7</span> mm, <span class="math">e=33.5</span> mm), plus clamped-section and screw stiffnesses of 863 and 420 kN/mm, so the screws carry a fraction <span class="math">\xi=0.327</span> of the external load.</li><li>Separation occurs when the clamping force reaches zero: <span class="math">N_{crit}\simeq8770</span> rpm.</li></ul></div></div></details><details class="step"><summary class="step-head"><span class="t-index">03</span><span class="step-t">FEM model</span><span class="step-plus" aria-hidden="true"></span></summary><div class="step-body"><div class="prose"><ul><li>Parametric CAD in Siemens NX. Prepared in Ansys SpaceClaim, using a quarter model thanks to two symmetry planes, and partitions that give a conformal, mostly hexahedral mesh with 0.5 mm refinement at the rod-cap contact.</li><li>Five contact pairs (frictional, <span class="math">\mu=0.2</span>, or bonded). The bolt preload is applied in load step 1, then a MAPDL pseudo-time ramp of the rotational acceleration sweeps the engine speed in load step 2. This finds <span class="math">N_{crit}</span> in a single solve, using minimum contact pressure and contact status as separation criteria.</li></ul></div><div class="step-figs"><figure class="fig fig--wide"><div class="fig-frame"><img src="assets/img/projects/connecting-rod-critical-speed/mesh.png" srcset="assets/img/opt/projects/connecting-rod-critical-speed/mesh-480.webp 480w, assets/img/opt/projects/connecting-rod-critical-speed/mesh-960.webp 960w, assets/img/opt/projects/connecting-rod-critical-speed/mesh-1129.webp 1129w" sizes="(max-width: 767px) 100vw, 66vw" alt="Quarter model: hex-dominant mesh with refinement at the rod-cap contact" width="1129" height="401" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Quarter model: hex-dominant mesh with refinement at the rod-cap contact</figcaption></figure></div></div></details><details class="step"><summary class="step-head"><span class="t-index">04</span><span class="step-t">Results</span><span class="step-plus" aria-hidden="true"></span></summary><div class="step-body"><div class="prose"><ul><li><span class="math">N_{crit,FEM}\simeq</span> <strong>8415 rpm</strong>, which is <strong>4.05%</strong> from the analytical value.</li><li>The constant-eccentricity assumption is confirmed, since the deformation is 0.06 mm against <span class="math">e=33.5</span> mm. Neglecting the dowel is also justified: it carries about 0.75 kN, or 2.9% of the inertia load.</li><li>Mesh independence demonstrated over four global refinements (150%, 100%, 80%, 60%) by solving the whole RPM ramp for each.</li><li>Future work: dowel interference fit, detailed threads and bearing, full engine cycle, and the crankshaft and crankpin contact.</li></ul></div><div class="step-figs"><figure class="fig"><div class="fig-frame"><img src="assets/img/projects/connecting-rod-critical-speed/rpm-sweep.png" srcset="assets/img/opt/projects/connecting-rod-critical-speed/rpm-sweep-480.webp 480w, assets/img/opt/projects/connecting-rod-critical-speed/rpm-sweep-734.webp 734w" sizes="(max-width: 767px) 100vw, 50vw" alt="Minimum contact pressure and gap across the RPM ramp: sticking, sliding, separation" width="734" height="486" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Minimum contact pressure and gap across the RPM ramp: sticking, sliding, separation</figcaption></figure><figure class="fig fig--wide"><div class="fig-frame"><img src="assets/img/projects/connecting-rod-critical-speed/contact-pressure.png" srcset="assets/img/opt/projects/connecting-rod-critical-speed/contact-pressure-480.webp 480w, assets/img/opt/projects/connecting-rod-critical-speed/contact-pressure-960.webp 960w, assets/img/opt/projects/connecting-rod-critical-speed/contact-pressure-1229.webp 1229w" sizes="(max-width: 767px) 100vw, 66vw" alt="Contact pressure after preload, before opening and at gapping (MPa)" width="1229" height="371" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Contact pressure after preload, before opening and at gapping (MPa)</figcaption></figure><figure class="fig fig--wide"><div class="fig-frame"><img src="assets/img/projects/connecting-rod-critical-speed/von-mises.png" srcset="assets/img/opt/projects/connecting-rod-critical-speed/von-mises-480.webp 480w, assets/img/opt/projects/connecting-rod-critical-speed/von-mises-856.webp 856w" sizes="(max-width: 767px) 100vw, 66vw" alt="Equivalent von Mises stress (MPa)" width="856" height="321" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Equivalent von Mises stress (MPa)</figcaption></figure><figure class="fig fig--wide"><div class="fig-frame"><img src="assets/img/projects/connecting-rod-critical-speed/deformation.png" srcset="assets/img/opt/projects/connecting-rod-critical-speed/deformation-480.webp 480w, assets/img/opt/projects/connecting-rod-critical-speed/deformation-960.webp 960w, assets/img/opt/projects/connecting-rod-critical-speed/deformation-1229.webp 1229w" sizes="(max-width: 767px) 100vw, 66vw" alt="Directional deformation at the onset of gapping (mm)" width="1229" height="457" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Directional deformation at the onset of gapping (mm)</figcaption></figure></div></div></details></div></div>
     </article>
     <article class="panel" id="panel-compressor-stage-cfd" data-slug="compressor-stage-cfd" aria-labelledby="h-compressor-stage-cfd">
       <span id="compressor-stage-cfd" class="anchor"></span>
@@ -297,7 +893,7 @@
         
         <button class="panel-close t-label" type="button" data-close>Close</button>
       </div>
-      <div class="panel-body"><div class="prose proj-intro t-lead"><p>Bachelor&#x27;s coursework project at the University of Pisa.</p></div><div class="steps"><details class="step"><summary class="step-head"><span class="t-index">01</span><span class="step-t">Simulation</span><span class="step-plus" aria-hidden="true"></span></summary><div class="step-body"><div class="prose"><ul><li>CFD and CHT simulations of an axial compressor stage in Star-CCM+.</li><li>Turbomachinery meshing of the blade passages, with periodic symmetry so a single passage per row represents the whole annulus.</li><li>Rotor and stator solved in different rotating reference frames, coupled at the interface between the rows.</li></ul></div><div class="step-figs"><figure class="fig"><div class="fig-frame"><img src="assets/img/projects/compressor-stage-cfd/velocity-rotating.jpg" alt="Velocity in the rotating frame" width="2048" height="2048" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Velocity in the rotating frame</figcaption></figure></div></div></details></div></div>
+      <div class="panel-body"><div class="prose proj-intro t-lead"><p>Bachelor&#x27;s coursework project at the University of Pisa.</p></div><div class="steps"><details class="step"><summary class="step-head"><span class="t-index">01</span><span class="step-t">Simulation</span><span class="step-plus" aria-hidden="true"></span></summary><div class="step-body"><div class="prose"><ul><li>CFD and CHT simulations of an axial compressor stage in Star-CCM+.</li><li>Turbomachinery meshing of the blade passages, with periodic symmetry so a single passage per row represents the whole annulus.</li><li>Rotor and stator solved in different rotating reference frames, coupled at the interface between the rows.</li></ul></div><div class="step-figs"><figure class="fig"><div class="fig-frame"><img src="assets/img/projects/compressor-stage-cfd/velocity-rotating.jpg" srcset="assets/img/opt/projects/compressor-stage-cfd/velocity-rotating-480.webp 480w, assets/img/opt/projects/compressor-stage-cfd/velocity-rotating-960.webp 960w, assets/img/opt/projects/compressor-stage-cfd/velocity-rotating-1600.webp 1600w" sizes="(max-width: 767px) 100vw, 50vw" alt="Velocity in the rotating frame" width="2048" height="2048" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">Velocity in the rotating frame</figcaption></figure></div></div></details></div></div>
     </article>
     <article class="panel" id="panel-caelus-quadcopter" data-slug="caelus-quadcopter" aria-labelledby="h-caelus-quadcopter">
       <span id="caelus-quadcopter" class="anchor"></span>
@@ -438,7 +1034,7 @@
       <li class="aw-row rise">
         <span class="t-index">02</span>
         <div class="aw-main"><h4 class="aw-title">1st place worldwide, IEEE UAV Chase Challenge</h4><p class="t-label aw-meta">IEEE, Purdue University (USA) · 2023</p><p class="aw-desc">CAD and additive manufacturing of the support structures for the sensing module, antennas and compute stick of the Caelus Sant&#x27;Anna autonomous quadcopter, plus battery sizing.</p></div>
-        <figure class="aw-fig"><div class="fig-frame"><img src="assets/img/projects/uav-chase-challenge/cover.png" alt="1st place worldwide, IEEE UAV Chase Challenge" width="527" height="583" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">1st place worldwide, IEEE UAV Chase Challenge</figcaption></figure>
+        <figure class="aw-fig"><div class="fig-frame"><img src="assets/img/projects/uav-chase-challenge/cover.png" srcset="assets/img/opt/projects/uav-chase-challenge/cover-480.webp 480w, assets/img/opt/projects/uav-chase-challenge/cover-527.webp 527w" sizes="(max-width: 767px) 50vw, 25vw" alt="1st place worldwide, IEEE UAV Chase Challenge" width="527" height="583" loading="lazy" decoding="async"><span class="tick tl"></span><span class="tick tr"></span><span class="tick bl"></span><span class="tick br"></span></div><figcaption class="t-cap">1st place worldwide, IEEE UAV Chase Challenge</figcaption></figure>
       </li>
       <li class="aw-row rise">
         <span class="t-index">03</span>
@@ -486,10 +1082,259 @@
 </section>
 </main>
 <div class="counter t-label" aria-hidden="true" data-on="light"><span class="sq"></span><span class="c-num">01</span><span>/ 07 —</span><span class="c-name">Intro</span></div>
-<script src="assets/js/reveal.js" defer></script>
-<script src="assets/js/theme-nav.js" defer></script>
-<script src="assets/js/site.js" defer></script>
-<script src="assets/js/tunnel.js" defer></script>
+<script>
+/* Reveals (mask-line rise, fade-rise, rule draw). DESIGN.md section 8: once per element,
+   nothing animates on page load, and prefers-reduced-motion shows everything immediately. */
+(() => {
+  const root = document.documentElement;
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const targets = [...document.querySelectorAll(".mask, .rise, .draw")];
+  if (reduce || !("IntersectionObserver" in window)) return;
+
+  // Whatever is on screen at load is simply there: mark it before enabling transitions.
+  // Measure everything first, then write, so the layout is computed only once.
+  const vh = innerHeight;
+  const onScreen = targets.filter((el) => {
+    const r = el.getBoundingClientRect();
+    return r.top < vh && r.bottom > 0;
+  });
+  onScreen.forEach((el) => el.classList.add("is-in"));
+  root.classList.add("rv");
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) {
+        e.target.classList.add("is-in");
+        io.unobserve(e.target);
+      }
+    });
+  }, { rootMargin: "0px 0px -12% 0px" });
+  targets.filter((el) => !el.classList.contains("is-in")).forEach((el) => io.observe(el));
+
+  // Content inside a panel or step that opens later must not stay hidden.
+  document.addEventListener("toggle", (e) => {
+    e.target.querySelectorAll?.(".rise, .mask").forEach((el) => el.classList.add("is-in"));
+  }, true);
+})();
+
+/* Top bar inversion over dark sections, the running section counter, the active
+   nav link and the mobile menu. Everything is derived from the current scroll
+   position, so scrolling back reverses it exactly. */
+(() => {
+  const bar = document.querySelector(".bar");
+  const counter = document.querySelector(".counter");
+  const num = counter && counter.querySelector(".c-num");
+  const name = counter && counter.querySelector(".c-name");
+  const sections = [...document.querySelectorAll("main > section[data-theme]")];
+  const links = [...document.querySelectorAll(".bar-nav a")];
+  const mega = document.querySelector(".mega-wrap"); // the counter steps aside for the footer name
+  if (!bar || !sections.length) return;
+
+  const at = (y) => sections.find((s) => {
+    const r = s.getBoundingClientRect();
+    return r.top <= y && r.bottom > y;
+  });
+  const tone = (s) => (s && s.dataset.theme === "dark" ? "dark" : "light");
+
+  let shown = "";
+  let queued = false;
+  const update = () => {
+    queued = false;
+    bar.dataset.on = tone(at(bar.offsetHeight / 2));
+    if (counter) {
+      counter.dataset.on = tone(at(innerHeight - 28));
+      counter.classList.toggle("is-off", !!mega && mega.getBoundingClientRect().top < innerHeight - 10);
+      const cur = at(innerHeight / 2) || sections[0];
+      const i = sections.indexOf(cur);
+      if (cur.id !== shown) {
+        shown = cur.id;
+        num.textContent = String(i + 1).padStart(2, "0");
+        name.textContent = cur.dataset.name || "";
+        num.classList.remove("swap");
+        void num.offsetWidth;
+        num.classList.add("swap");
+      }
+      links.forEach((a) => {
+        const id = a.getAttribute("href").slice(1);
+        const on = id === cur.id || (id === "work" && cur.id === "top" && scrollY > 200);
+        a.toggleAttribute("aria-current", on);
+        if (on) a.setAttribute("aria-current", "true");
+      });
+    }
+  };
+  addEventListener("scroll", () => { if (!queued) { queued = true; requestAnimationFrame(update); } }, { passive: true });
+  addEventListener("resize", update);
+  update();
+
+  // Mobile menu: plain text "Menu" opening a full-screen cream overlay.
+  const btn = document.querySelector(".bar-menu");
+  const menu = document.getElementById("menu");
+  if (!btn || !menu) return;
+  const set = (open) => {
+    menu.hidden = !open;
+    btn.setAttribute("aria-expanded", String(open));
+    btn.textContent = open ? "Close" : "Menu";
+    document.body.style.overflow = open ? "hidden" : "";
+    if (open) bar.dataset.on = "light";
+    else update();
+  };
+  btn.addEventListener("click", () => set(menu.hidden));
+  menu.addEventListener("click", (e) => { if (e.target.closest("a")) set(false); });
+  addEventListener("keydown", (e) => { if (e.key === "Escape" && !menu.hidden) { set(false); btn.focus(); } });
+})();
+
+/* Small page behaviours: the obfuscated email link and the smaller-project panels. */
+(() => {
+  // Email: stored reversed and base64-encoded in data attributes, assembled on load.
+  const dec = (s) => atob(s).split("").reverse().join("");
+  document.querySelectorAll(".js-mail").forEach((a) => {
+    try {
+      const addr = `${dec(a.dataset.u)}@${dec(a.dataset.d)}`;
+      a.href = `mailto:${addr}`;
+      a.querySelector(".js-mail-t").textContent = addr;
+    } catch {
+      /* keep the "name [at] domain [dot] com" fallback */
+    }
+  });
+
+  // Smaller projects: one card opens its full-width panel; the others close.
+  const buttons = [...document.querySelectorAll(".card-btn")];
+  const panels = [...document.querySelectorAll(".panel")];
+  if (!buttons.length) return;
+  document.documentElement.classList.add("has-panels");
+
+  const open = (slug, scroll) => {
+    panels.forEach((p) => { p.hidden = p.dataset.slug !== slug; });
+    buttons.forEach((b) => b.setAttribute("aria-expanded", String(b.dataset.panel === slug)));
+    const panel = panels.find((p) => p.dataset.slug === slug);
+    if (panel && scroll) panel.scrollIntoView({ block: "start" });
+  };
+  const closeAll = () => open(null, false);
+
+  panels.forEach((p) => { p.hidden = true; });
+  buttons.forEach((b) => b.addEventListener("click", () => {
+    if (b.getAttribute("aria-expanded") === "true") closeAll();
+    else open(b.dataset.panel, true);
+  }));
+  panels.forEach((p) => p.querySelector("[data-close]").addEventListener("click", () => {
+    const btn = buttons.find((b) => b.dataset.panel === p.dataset.slug);
+    closeAll();
+    if (btn) { btn.focus(); btn.scrollIntoView({ block: "center" }); }
+  }));
+
+  // Links to a small project (e.g. from the Software panel) open its panel.
+  const fromHash = () => {
+    const slug = decodeURIComponent(location.hash.slice(1));
+    if (panels.some((p) => p.dataset.slug === slug)) open(slug, true);
+  };
+  addEventListener("hashchange", fromHash);
+  fromHash();
+})();
+
+/* Easter egg: click the big last name in the footer more than once and it goes into a wind
+   tunnel. Each click raises the angle of attack by 4 deg (pitching about the quarter chord),
+   smoke streamlines bend over it and the readout gives the thin-aerofoil lift, C_L = 2 pi alpha.
+   Past 12 deg the flow separates and the word stalls; one more click resets the tunnel. */
+(() => {
+  const word = document.querySelector(".contact-mega");
+  const wrap = word && word.parentElement;
+  if (!wrap) return;
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const NS = "http://www.w3.org/2000/svg";
+  const W = 1000, H = 300, LINES = 9, STALL = 16;
+
+  const svg = document.createElementNS(NS, "svg");
+  svg.setAttribute("class", "tunnel");
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.setAttribute("preserveAspectRatio", "none");
+  svg.setAttribute("aria-hidden", "true");
+  const paths = Array.from({ length: LINES }, (_, i) => {
+    const p = document.createElementNS(NS, "path");
+    p.style.animationDelay = `${-i * 0.37}s`;
+    svg.appendChild(p);
+    return p;
+  });
+  const read = document.createElement("p");
+  read.className = "tunnel-read t-label";
+  read.setAttribute("aria-live", "polite");
+  wrap.append(svg, read);
+
+  let clicks = 0, alpha = 0, noise = null;
+
+  // Streamline at height y0: upwash ahead of the word, deflection over it, downwash behind.
+  function line(y0, a, turbulent) {
+    const k = a / STALL;
+    const near = Math.exp(-Math.pow((y0 - H * 0.45) / (H * 0.45), 2)); // lines close to the word bend most
+    let d = "";
+    for (let x = 0; x <= W; x += 20) {
+      let y = y0 - 120 * k * near * Math.exp(-Math.pow((x - 380) / 260, 2)) + 60 * k * near / (1 + Math.exp(-(x - 760) / 70));
+      if (turbulent && x > 330 && y0 < H * 0.75) y += (Math.random() - 0.5) * 46 * near * ((x - 330) / (W - 330));
+      d += `${x ? "L" : "M"}${x},${y.toFixed(1)}`;
+    }
+    return d;
+  }
+  function draw() {
+    const stalled = alpha >= STALL;
+    paths.forEach((p, i) => p.setAttribute("d", line(20 + (i * (H - 40)) / (LINES - 1), stalled ? 10 : alpha, stalled)));
+  }
+
+  function set(n) {
+    clicks = n;
+    alpha = Math.min(STALL, Math.max(0, (clicks - 1) * 4));
+    const on = clicks > 1, stalled = alpha >= STALL;
+    wrap.classList.toggle("is-tunnel", on);
+    wrap.classList.toggle("is-stall", stalled);
+    // Flow runs left to right, so the nose (left) pitches up. The drawn tilt is damped so the
+    // whole name stays on screen.
+    word.style.setProperty("--aoa", `${stalled ? 0 : alpha * 0.6}deg`);
+    clearInterval(noise);
+    if (on) {
+      draw();
+      if (stalled && !reduce) noise = setInterval(draw, 140);
+      const cl = (2 * Math.PI * alpha * Math.PI / 180).toFixed(2);
+      const a = '<span class="a">α<\/span>'; // keep the Greek letter lowercase inside the uppercase label
+      read.innerHTML = stalled ? `${a} = ${alpha}° · Stall · click to reset` : `Wind tunnel · ${a} = ${alpha}° · C<sub>L<\/sub> ≈ ${cl}`;
+    } else {
+      read.textContent = "";
+    }
+  }
+
+  word.addEventListener("click", () => set(alpha >= STALL ? 0 : clicks + 1));
+})();
+
+/* Renders the $...$ equations marked by the generator as <span class="math">. KaTeX is
+   fetched only when an equation is about to scroll into view. */
+(() => {
+  const all = [...document.querySelectorAll(".math")];
+  if (!all.length) return;
+  const BASE = "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/";
+  let ready;
+  const katexReady = () => (ready ??= new Promise((ok, fail) => {
+    const css = document.createElement("link");
+    css.rel = "stylesheet";
+    css.href = BASE + "katex.min.css";
+    const js = document.createElement("script");
+    js.src = BASE + "katex.min.js";
+    js.onload = ok;
+    js.onerror = fail;
+    document.head.append(css, js);
+  }));
+  const render = (els) => katexReady().then(() => els.forEach((el) => {
+    if (el.dataset.done) return;
+    el.dataset.done = "1";
+    katex.render(el.textContent, el, { throwOnError: false, output: "html" });
+  })).catch(() => {});
+
+  // Equations inside closed steps or hidden panels have no box, so they only intersect
+  // once their step or panel is opened.
+  const io = new IntersectionObserver((es) => {
+    const vis = es.filter((e) => e.isIntersecting).map((e) => e.target);
+    vis.forEach((el) => io.unobserve(el));
+    if (vis.length) render(vis);
+  }, { rootMargin: "200px 0px" });
+  all.forEach((el) => io.observe(el));
+})();
+
+</script>
 <script type="module" src="assets/js/stage-projects.js"></script>
 </body>
 </html>

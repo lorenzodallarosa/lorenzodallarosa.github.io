@@ -18,8 +18,10 @@ tools/build_site.py          <- generator: input .md -> index.html
 index.html                   <- generated one-page site (do not edit by hand)
 robots.txt, sitemap.xml, llms.txt <- generated crawler files (search engines and AI assistants)
 <key>.txt                     <- IndexNow key; the deploy workflow pings Bing when content changes
-assets/css/                  <- tokens.css, base.css, components.css (hand-written)
-assets/js/                   <- reveal.js, theme-nav.js, site.js, math.js, tunnel.js (footer easter egg), stage-core.js + stage-projects.js (3D viewers)
+assets/css/                  <- fonts.css, tokens.css, base.css, components.css (hand-written, inlined into index.html by the builder)
+assets/fonts/                <- self-hosted Bricolage Grotesque and IBM Plex Mono (woff2, latin and latin-ext)
+assets/img/opt/              <- resized WebP copies made by the builder (needs Pillow); the page serves these via srcset
+assets/js/                   <- reveal.js, theme-nav.js, site.js, math.js, tunnel.js (footer easter egg; these five are inlined into index.html), stage-core.js + stage-projects.js (3D viewers, three.js imported only when a model loads)
 assets/img/profile/          <- your photo
 assets/img/projects/         <- one sub-folder per project (cover.* is the poster and index preview)
 assets/models/               <- source .glb models (local only, gitignored) + obfuscated .bin copies the site loads

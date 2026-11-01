@@ -1,6 +1,6 @@
 /* Shared 3D stage (DESIGN.md sections 0 and 9): lazy three.js viewer for the project models.
-   - Initialises when the stage is within one viewport. On phones it loads directly when the
-     device and connection look capable, otherwise on tap.
+   - Initialises, after the page has loaded, when the stage is within half a viewport. On
+     phones it loads directly when the device and connection look capable, otherwise on tap.
    - Models are fetched as XOR-obfuscated .bin files and decoded here (basic anti-scraping).
    - Carbon-fibre materials are re-tuned as a dielectric weave under a glossy clear coat.
    - Renders only while on screen. Pixel ratio capped at 2.
@@ -10,29 +10,42 @@
      stops on interaction and respects reduced motion.
    - Keyboard-accessible camera presets and 1px callout leaders anchored to named nodes;
      a model can keep its callouts hidden until the stage is hovered.
-   - While the model loads, the poster turns into a dimmed ghost with a progress bar. */
-import * as THREE from "three";
-import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
-import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
-import { toCreasedNormals } from "three/addons/utils/BufferGeometryUtils.js";
+   - While the model loads, the poster turns into a dimmed ghost with a progress bar.
+   - three.js is imported only when a model starts loading, so visitors who only see the
+     posters never download it. */
+let THREE, GLTFLoader, DRACOLoader, MeshoptDecoder, OrbitControls, RoomEnvironment, toCreasedNormals;
+let VIEWS;
+let threeReady;
+function loadThree() {
+  threeReady ??= Promise.all([
+    import("three"),
+    import("three/addons/loaders/GLTFLoader.js"),
+    import("three/addons/loaders/DRACOLoader.js"),
+    import("three/addons/libs/meshopt_decoder.module.js"),
+    import("three/addons/controls/OrbitControls.js"),
+    import("three/addons/environments/RoomEnvironment.js"),
+    import("three/addons/utils/BufferGeometryUtils.js"),
+  ]).then(([t, g, d, m, o, r, u]) => {
+    THREE = t;
+    ({ GLTFLoader } = g); ({ DRACOLoader } = d); ({ MeshoptDecoder } = m);
+    ({ OrbitControls } = o); ({ RoomEnvironment } = r); ({ toCreasedNormals } = u);
+    // Camera directions; every model is exported nose towards -X, +Y up. The top view looks
+    // straight down (the tiny offset only fixes which way is up on screen).
+    VIEWS = {
+      three: new THREE.Vector3(-1, 0.5, 1.05),
+      side: new THREE.Vector3(0, 0.12, 1),
+      front: new THREE.Vector3(-1, 0.18, 0),
+      top: new THREE.Vector3(0, 1, 0.002),
+    };
+  });
+  return threeReady;
+}
 
 const MODEL_KEY = new TextEncoder().encode("ldr-stage-7f3a91"); // matches tools/build_site.py
 
 const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
 const small = matchMedia("(max-width: 767px)");
 const ease = (t) => 1 - Math.pow(1 - t, 3);
-
-// Camera directions; every model is exported nose towards -X, +Y up. The top view looks
-// straight down (the tiny offset only fixes which way is up on screen).
-const VIEWS = {
-  three: new THREE.Vector3(-1, 0.5, 1.05),
-  side: new THREE.Vector3(0, 0.12, 1),
-  front: new THREE.Vector3(-1, 0.18, 0),
-  top: new THREE.Vector3(0, 1, 0.002),
-};
 
 let loader;
 function getLoader() {
@@ -206,10 +219,17 @@ export function mountStage(fig) {
   }, { once: true });
   fig.addEventListener("contextmenu", (e) => e.preventDefault());
   if (!small.matches || canAutoLoad()) {
-    const near = new IntersectionObserver((es) => {
-      if (es.some((e) => e.isIntersecting)) { near.disconnect(); start(); }
-    }, { rootMargin: "100% 0px" });
-    near.observe(fig);
+    // Never compete with the first paint: watch for the stage only once the page has loaded
+    // and the browser is idle.
+    const watch = () => {
+      const near = new IntersectionObserver((es) => {
+        if (es.some((e) => e.isIntersecting)) { near.disconnect(); start(); }
+      }, { rootMargin: "50% 0px" });
+      near.observe(fig);
+    };
+    const idle = () => (window.requestIdleCallback ? requestIdleCallback(watch, { timeout: 3000 }) : setTimeout(watch, 500));
+    if (document.readyState === "complete") idle();
+    else addEventListener("load", idle, { once: true });
   }
 
   // ---- callouts
@@ -243,8 +263,9 @@ export function mountStage(fig) {
     });
   }
 
-  const v = new THREE.Vector3();
+  let v;
   function placeCallouts(camera, w, h) {
+    v ??= new THREE.Vector3();
     // 1. Project anchors and pick a side and a label height for each visible callout.
     const shown = [];
     callouts.forEach((k) => {
@@ -284,6 +305,9 @@ export function mountStage(fig) {
 
   // ---- three.js
   async function init() {
+    await loadThree();
+    center = new THREE.Vector3();
+    sph = new THREE.Spherical();
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
     renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -339,7 +363,7 @@ export function mountStage(fig) {
     status.textContent = "";
   }
 
-  let R = 1, center = new THREE.Vector3(), fitDist = 5;
+  let R = 1, center, fitDist = 5;
 
   async function loadModel(key) {
     const m = byKey[key];
@@ -491,7 +515,7 @@ export function mountStage(fig) {
   }
   new ResizeObserver(resize).observe(box);
 
-  const sph = new THREE.Spherical();
+  let sph;
   function tick(now) {
     const { renderer, scene, camera, controls } = three;
     if (tween) {

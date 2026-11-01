@@ -3,9 +3,13 @@
 
 Usage:  python tools/build_site.py
 
-Standard library only. Writes index.html, the crawler files (robots.txt, sitemap.xml,
-llms.txt) and the obfuscated 3D model files (assets/models/<slug>/<slug>.bin). The CSS and JS in assets/ are hand-written and
-never touched here. Re-run it after any edit to the input file.
+Standard library only, plus Pillow (optional) for the image copies. Writes index.html, the
+crawler files (robots.txt, sitemap.xml, llms.txt), the obfuscated 3D model files
+(assets/models/<slug>/<slug>.bin) and resized WebP copies of every image the page shows
+(assets/img/opt/, made with Pillow when it is installed; without it the page uses the copies
+already there, or the originals). The CSS and JS in assets/ are hand-written: the page inlines
+them, so it needs no extra request before the first paint. Re-run it after any edit to the input
+file or to the CSS and JS.
 """
 from __future__ import annotations
 
@@ -23,8 +27,11 @@ INPUT = ROOT / "content" / "portfolio-input.md"
 OUTPUT = ROOT / "index.html"
 SITE_URL = "https://lorenzodallarosa.com/"
 THREE_VERSION = "0.169.0"
-KATEX_VERSION = "0.16.11"
+KATEX_VERSION = "0.16.11"  # informational: assets/js/math.js loads this version on demand
 MODEL_KEY = b"ldr-stage-7f3a91"  # XOR key shared with assets/js/stage-core.js
+CSS_FILES = ("fonts", "tokens", "base", "components")  # inlined into <head>, in this order
+JS_FILES = ("reveal", "theme-nav", "site", "tunnel", "math")  # inlined at the end of <body>, in this order
+PRELOAD_FONT = "bricolage-grotesque-200-800-latin.woff2"  # the display face of the name in the intro
 
 # 3D stage set-up per project: camera orientation, preset overrides and callouts (DESIGN.md
 # section 0). Top views look straight down; the aircraft's camera sits on the nose side so the
@@ -278,12 +285,52 @@ def img_path(slug: str, file: str) -> str:
     return f"assets/img/projects/{file}" if "/" in file else f"assets/img/projects/{slug}/{file}"
 
 
-def img_tag(rel: str, alt: str, cls: str = "", lazy: bool = True) -> str:
+# Resized WebP copies: the browser picks the smallest one that fills the slot (srcset + sizes).
+# The originals stay untouched for the deck, the LinkedIn images and as the plain src.
+OPT_WIDTHS = (480, 960, 1600)
+OPT_QUALITY = 80
+DEFAULT_SIZES = "(max-width: 767px) 100vw, 50vw"
+
+
+def webp_copies(rel: str) -> list[tuple[str, int]]:
+    """[(path, width)] of the WebP copies of an image, written to assets/img/opt/ when missing."""
+    src = ROOT / rel
+    size = image_size(src)
+    if not size or not rel.startswith("assets/img/"):
+        return []
+    widths = sorted({min(w, size[0]) for w in OPT_WIDTHS})
+    base = Path("assets/img/opt") / Path(rel[len("assets/img/"):]).with_suffix("")
+    out, todo = [], []
+    for w in widths:
+        dst = f"{base.as_posix()}-{w}.webp"
+        out.append((dst, w))
+        if not (ROOT / dst).is_file() or (ROOT / dst).stat().st_mtime < src.stat().st_mtime:
+            todo.append((dst, w))
+    if todo:
+        try:
+            from PIL import Image
+        except ImportError:
+            return [(d, w) for d, w in out if (ROOT / d).is_file()]
+        with Image.open(src) as im:
+            im = im.convert("RGBA" if im.mode in ("RGBA", "LA", "P") else "RGB")
+            for dst, w in todo:
+                (ROOT / dst).parent.mkdir(parents=True, exist_ok=True)
+                h = round(im.height * w / im.width)
+                im.resize((w, h), Image.LANCZOS).save(ROOT / dst, "WEBP", quality=OPT_QUALITY, method=6)
+                print(f"image copy {dst}")
+    return out
+
+
+def img_tag(rel: str, alt: str, cls: str = "", lazy: bool = True, sizes: str = DEFAULT_SIZES,
+            priority: bool = False) -> str:
     size = image_size(ROOT / rel)
     wh = f' width="{size[0]}" height="{size[1]}"' if size else ""
+    copies = webp_copies(rel)
+    ss = f' srcset="{", ".join(f"{esc(d)} {w}w" for d, w in copies)}" sizes="{sizes}"' if copies else ""
     lz = ' loading="lazy" decoding="async"' if lazy else ""
+    pr = ' fetchpriority="high"' if priority else ""
     c = f' class="{cls}"' if cls else ""
-    return f'<img src="{esc(rel)}" alt="{esc(alt)}"{wh}{lz}{c}>'
+    return f'<img src="{esc(rel)}"{ss} alt="{esc(alt)}"{wh}{lz}{pr}{c}>'
 
 
 PENDING: list[str] = []  # image files named in the input but missing on disk (for the report)
@@ -298,10 +345,13 @@ def placeholder(file: str, title: str, ratio: str = "4 / 3") -> str:
 def figure(slug: str, file: str, caption: str, title: str, cls: str = "fig") -> str:
     rel = img_path(slug, file)
     if (ROOT / rel).is_file():
-        body = img_tag(rel, caption or title)
         size = image_size(ROOT / rel)
         if size and size[0] >= 1.9 * size[1]:
             cls += " fig--wide"  # wide plots and strips take the full row
+        sizes = ("(max-width: 767px) 100vw, 33vw" if "card-fig" in cls or "gallery-fig" in cls
+                 else "(max-width: 767px) 100vw, 66vw" if "fig--wide" in cls or "hero-photo" in cls
+                 else DEFAULT_SIZES)
+        body = img_tag(rel, caption or title, sizes=sizes)
     else:
         body = placeholder(rel.replace("assets/img/projects/", ""), f"{title}: {caption}" if caption else title)
     cap = f'<figcaption class="t-cap">{esc(caption)}</figcaption>' if caption else ""
@@ -327,7 +377,7 @@ def links_html(p: dict) -> str:
     for label, url in links:
         if url.lower().endswith(".pdf"):
             thumb = f"assets/img/projects/{p['slug']}/{Path(url).stem}.jpg"
-            prev = f'<span class="doc-thumb">{img_tag(thumb, "")}</span>' if (ROOT / thumb).is_file() else ""
+            prev = f'<span class="doc-thumb">{img_tag(thumb, "", sizes="(max-width: 767px) 50vw, 20vw")}</span>' if (ROOT / thumb).is_file() else ""
             items.append(f'<a class="doc-card" href="{esc(url)}" target="_blank" rel="noopener" data-goatcounter-click="pdf-{esc(Path(url).stem)}">{prev}'
                          f'<span class="doc-meta"><span class="doc-label">{esc(label)}</span>'
                          f'<span class="doc-open t-label">Open PDF ↗</span></span></a>')
@@ -412,7 +462,7 @@ class Page:
             "key": slug, "src": f"assets/models/{slug}/{slug}.bin",
             "poster": img_path(slug, p.get("cover_image", "")), **STAGES.get(slug, {})}]}
         poster_rel = img_path(slug, p.get("cover_image", ""))
-        poster = img_tag(poster_rel, f"{p['title']}", "stage-poster", lazy=False) if (ROOT / poster_rel).is_file() else ""
+        poster = img_tag(poster_rel, f"{p['title']}", "stage-poster", sizes="100vw") if (ROOT / poster_rel).is_file() else ""
         return f"""
       <figure class="stage stage--{theme}" data-stage aria-label="{esc(p['title'])}: interactive 3D model, drag to rotate">
         <div class="stage-box">
@@ -459,7 +509,8 @@ class Page:
                 insts.append((e["org"], e.get("link", "")))
         inst_html = " / ".join(f'<a href="{esc(u)}" rel="noopener">{esc(o)}</a>' if u else esc(o) for o, u in insts)
         photo = f"assets/img/profile/{pr.get('Photo', '')}"
-        portrait = (f'<figure class="intro-portrait rise"><div class="fig-frame">{img_tag(photo, "Portrait of " + pr["Name"], "portrait", lazy=False)}'
+        portrait = (f'<figure class="intro-portrait rise"><div class="fig-frame">{img_tag(photo, "Portrait of " + pr["Name"], "portrait", lazy=False,
+                                                                              sizes="(max-width: 767px) 100vw, 34vw", priority=True)}'
                     f'{corner_ticks()}</div></figure>') if (ROOT / photo).is_file() else ""
         greet = f'<p class="intro-greet">{mask(esc(site["Greeting"]))}</p>' if site.get("Greeting") else ""
         return f"""
@@ -682,7 +733,7 @@ class Page:
             if a.get("image"):
                 rel = f"assets/img/projects/{a['image']}"
                 if (ROOT / rel).is_file():
-                    fig = (f'<figure class="aw-fig"><div class="fig-frame">{img_tag(rel, a["title"])}{corner_ticks()}</div>'
+                    fig = (f'<figure class="aw-fig"><div class="fig-frame">{img_tag(rel, a["title"], sizes="(max-width: 767px) 50vw, 25vw")}{corner_ticks()}</div>'
                            f'<figcaption class="t-cap">{esc(a["title"])}</figcaption></figure>')
             marker = ""
             desc = f'<p class="aw-desc">{inline(a["desc"])}</p>' if a.get("desc") else ""
@@ -831,11 +882,12 @@ class Page:
                     f'<meta name="twitter:image" content="{esc(share)}">\n') if share else ""
         twitter_card = "summary_large_image" if card else "summary"
         ld = json.dumps(self.person_ld(desc, photo), ensure_ascii=False).replace("</", "<\\/")
-        katex = ""
-        if self.needs_math:
-            katex = (f'<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@{KATEX_VERSION}/dist/katex.min.css">\n'
-                     f'<script defer src="https://cdn.jsdelivr.net/npm/katex@{KATEX_VERSION}/dist/katex.min.js"></script>\n'
-                     f'<script defer src="assets/js/math.js"></script>')
+        # CSS inlined (fonts first, with their paths made relative to the page); the page's small
+        # scripts inlined as one block at the end of <body>. math.js fetches KaTeX on demand.
+        css = "\n".join((ROOT / f"assets/css/{n}.css").read_text(encoding="utf-8") for n in CSS_FILES)
+        css = css.replace("url(../fonts/", "url(assets/fonts/").replace("</", "<\\/")
+        scripts = [n for n in JS_FILES if n != "math" or self.needs_math]
+        js = "\n".join((ROOT / f"assets/js/{n}.js").read_text(encoding="utf-8") for n in scripts).replace("</", "<\\/")
         importmap = json.dumps({"imports": {
             "three": f"https://cdn.jsdelivr.net/npm/three@{THREE_VERSION}/build/three.module.js",
             "three/addons/": f"https://cdn.jsdelivr.net/npm/three@{THREE_VERSION}/examples/jsm/"}})
@@ -863,13 +915,10 @@ class Page:
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 <link rel="alternate" type="text/markdown" href="llms.txt" title="Plain-text summary for AI assistants">
 <script type="application/ld+json">{ld}</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,200..800&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
-<link rel="stylesheet" href="assets/css/tokens.css">
-<link rel="stylesheet" href="assets/css/base.css">
-<link rel="stylesheet" href="assets/css/components.css">
-{katex}
+<link rel="preload" href="assets/fonts/{PRELOAD_FONT}" as="font" type="font/woff2" crossorigin>
+<style>
+{css}
+</style>
 <script type="importmap">{importmap}</script>
 <script data-goatcounter="https://lorenzodallarosa.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </head>
@@ -889,10 +938,9 @@ class Page:
 {body}
 </main>
 <div class="counter t-label" aria-hidden="true" data-on="light"><span class="sq"></span><span class="c-num">01</span><span>/ {len(self.sections):02d} —</span><span class="c-name">Intro</span></div>
-<script src="assets/js/reveal.js" defer></script>
-<script src="assets/js/theme-nav.js" defer></script>
-<script src="assets/js/site.js" defer></script>
-<script src="assets/js/tunnel.js" defer></script>
+<script>
+{js}
+</script>
 <script type="module" src="assets/js/stage-projects.js"></script>
 </body>
 </html>

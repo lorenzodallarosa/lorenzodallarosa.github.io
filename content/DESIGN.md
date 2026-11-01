@@ -22,14 +22,14 @@ The design brief for the one-page portfolio of Lorenzo Dalla Rosa (CFD and FEA e
 
 **Hosting constraints**
 - Static files only, served from the domain root. No server code.
-- Fonts and libraries load from Google Fonts, cdnjs or jsDelivr only. Pin versions.
+- Fonts are self-hosted in `assets/fonts/` (copied from Google Fonts); libraries load from cdnjs or jsDelivr only. Pin versions.
 - Keep the page light: images at most ~1600px on the long side, 3D loaded lazily (section 9).
 
 **Content rules**
 - Every piece of copy comes from `content/portfolio-input.md`. Never invent credentials, metrics, logos, dates **or decorative figures** (no generated line drawings, aerofoils or illustrations standing in for real work). An empty `[]` field is omitted from the page.
 - Language is English (British spelling, as written in the input file). Text is used as written.
 - The portrait is shown in full colour (the owner asked for it; it was greyscale before).
-- Markdown in the input file (bold, italic, bullet lists, `$...$` equations) must render; KaTeX loads from jsDelivr only when equations are present.
+- Markdown in the input file (bold, italic, bullet lists, `$...$` equations) must render; KaTeX loads from jsDelivr only when an equation scrolls into view.
 - Missing images render as labelled placeholders (see "Image placeholders"), never as invented content.
 
 **Page structure and themes** (replaces the page anatomy table in section 5; the components and rules in section 6 still apply)

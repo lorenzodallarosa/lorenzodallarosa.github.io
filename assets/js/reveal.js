@@ -7,11 +7,13 @@
   if (reduce || !("IntersectionObserver" in window)) return;
 
   // Whatever is on screen at load is simply there: mark it before enabling transitions.
+  // Measure everything first, then write, so the layout is computed only once.
   const vh = innerHeight;
-  targets.forEach((el) => {
+  const onScreen = targets.filter((el) => {
     const r = el.getBoundingClientRect();
-    if (r.top < vh && r.bottom > 0) el.classList.add("is-in");
+    return r.top < vh && r.bottom > 0;
   });
+  onScreen.forEach((el) => el.classList.add("is-in"));
   root.classList.add("rv");
   const io = new IntersectionObserver((entries) => {
     entries.forEach((e) => {
