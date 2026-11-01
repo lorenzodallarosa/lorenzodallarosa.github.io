@@ -15,3 +15,6 @@ assets/img/projects/**/*.pptx
 assets/img/projects/**/~$*
 assets/img/projects/**/WhatsApp*
 assets/docs/cover_letter.md
+
+# Presentation deck, its PDF and the LinkedIn thumbnail: local only, never published with the site
+presentation/
