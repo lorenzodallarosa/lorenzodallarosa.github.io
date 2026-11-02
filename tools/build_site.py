@@ -838,7 +838,8 @@ class Page:
         if city:
             person["address"] = {"@type": "PostalAddress", "addressLocality": city.strip(), "addressCountry": country.strip()}
         return {"@context": "https://schema.org", "@type": "ProfilePage", "url": SITE_URL,
-                "dateModified": _dt.date.today().isoformat(), "mainEntity": person}
+                # Google's ProfilePage wants a full ISO 8601 datetime with a time zone, not a bare date.
+                "dateModified": _dt.datetime.now().astimezone().isoformat(timespec="seconds"), "mainEntity": person}
 
     def llms(self) -> str:
         pr, d = self.d["profile"], self.d
